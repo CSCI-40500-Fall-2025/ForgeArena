@@ -7,3 +7,5 @@ The FreshCart Local is an online marketplace for local farms and small food prod
 THAT delivers farm-fresh groceries from nearby sources straight to your door
 UNLIKE large grocery delivery services focused on mass-produced food
 OUR PRODUCT offers transparent sourcing, supports local economies, and ensures fresher, seasonal items
+
+NOTE: The idea might change in the upcoming week
