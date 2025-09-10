@@ -76,8 +76,8 @@ interface RaidBoss {
 
 const API_BASE = process.env.REACT_APP_API_URL || 
   (process.env.NODE_ENV === 'production' 
-    ? 'https://project-project-4-production.up.railway.app/api'  // Replace with your actual Railway URL
-    : 'http://localhost:5000/api');
+    ? '/api'  // Use Vercel serverless functions in production
+    : 'http://localhost:5000/api');  // Use local server in development
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
