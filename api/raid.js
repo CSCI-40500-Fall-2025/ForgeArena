@@ -1,6 +1,6 @@
-const { getRaidBoss } = require('../shared/state');
+const { mockRaidBoss } = require('../shared/mockData');
 
-module.exports = async function handler(req, res) {
+module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -12,12 +12,7 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    try {
-      const raidBoss = await getRaidBoss();
-      res.status(200).json(raidBoss);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+    res.status(200).json(mockRaidBoss);
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }
