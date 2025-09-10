@@ -74,9 +74,10 @@ interface RaidBoss {
   participants: number;
 }
 
-const API_BASE = process.env.NODE_ENV === 'production' 
-  ? '/api' 
-  : 'http://localhost:5000/api';
+const API_BASE = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? 'https://project-project-4-production.up.railway.app/api'  // Replace with your actual Railway URL
+    : 'http://localhost:5000/api');
 
 function App() {
   const [user, setUser] = useState<User | null>(null);

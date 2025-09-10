@@ -1,6 +1,6 @@
-const { mockUser } = require('../shared/mockData');
+const { getState } = require('../shared/state');
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -12,7 +12,8 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    res.status(200).json(mockUser);
+    const state = getState();
+    res.status(200).json(state.user);
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

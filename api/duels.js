@@ -1,12 +1,9 @@
-let mockDuels = [
-  { id: 1, challenger: 'TestWarrior', opponent: 'GymHero99', status: 'pending', challenge: 'Most squats in 24h', deadline: new Date(Date.now() + 24*60*60*1000) },
-  { id: 2, challenger: 'FitWarrior', opponent: 'TestWarrior', status: 'active', challenge: 'Most push-ups in 1 hour', deadline: new Date(Date.now() + 60*60*1000) }
-];
+const { getState, addDuel } = require('../shared/state');
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
@@ -15,7 +12,22 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    res.status(200).json(mockDuels);
+    const state = getState();
+    res.status(200).json(state.duels);
+  } else if (req.method === 'POST') {
+    // Handle duel creation
+    const { opponent, challenge } = req.body;
+    const state = getState();
+    const newDuel = {
+      id: state.duels.length + 1,
+      challenger: state.user.username,
+      opponent,
+      status: 'pending',
+      challenge,
+      deadline: new Date(Date.now() + 24*60*60*1000)
+    };
+    addDuel(newDuel);
+    res.status(200).json({ message: `Duel challenge sent to ${opponent}!`, duel: newDuel });
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

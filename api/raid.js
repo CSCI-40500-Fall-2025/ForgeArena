@@ -1,12 +1,6 @@
-let mockRaidBoss = {
-  name: 'The Titan Squat',
-  description: 'Defeat with collective squats!',
-  totalHP: 10000,
-  currentHP: 8500,
-  participants: 47
-};
+const { getState } = require('../shared/state');
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -18,7 +12,8 @@ export default function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    res.status(200).json(mockRaidBoss);
+    const state = getState();
+    res.status(200).json(state.raidBoss);
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }
