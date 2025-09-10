@@ -1,6 +1,6 @@
-const { mockUser } = require('../shared/mockData');
+const { getUser } = require('../shared/supabase');
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -12,7 +12,12 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    res.status(200).json(mockUser);
+    try {
+      const user = await getUser();
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

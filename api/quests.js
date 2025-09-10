@@ -1,6 +1,6 @@
-const { mockQuests, mockUser } = require('../shared/mockData');
+const { getQuests, updateQuest, getUser, updateUser } = require('../shared/supabase');
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -12,18 +12,33 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    res.status(200).json(mockQuests);
+    try {
+      const quests = await getQuests();
+      res.status(200).json(quests);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   } else if (req.method === 'POST') {
-    // Handle quest completion - expect { questId } in body
-    const { questId } = req.body;
-    const quest = mockQuests.find(q => q.id == questId);
-    
-    if (quest) {
-      quest.completed = true;
-      mockUser.avatar.xp += quest.xpReward;
-      res.status(200).json({ message: 'Quest completed!', xpGained: quest.xpReward });
-    } else {
-      res.status(404).json({ message: 'Quest not found' });
+    try {
+      // Handle quest completion - expect { questId } in body
+      const { questId } = req.body;
+      const quests = await getQuests();
+      const quest = quests.find(q => q.id == questId);
+      
+      if (quest) {
+        await updateQuest(questId, { completed: true });
+        
+        // Update user XP
+        const user = await getUser();
+        user.avatar.xp += quest.xpReward;
+        await updateUser(user);
+        
+        res.status(200).json({ message: 'Quest completed!', xpGained: quest.xpReward });
+      } else {
+        res.status(404).json({ message: 'Quest not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });

@@ -1,0 +1,8 @@
+{
+  "name": "forge-arena-api",
+  "version": "1.0.0",
+  "description": "ForgeArena Vercel API functions with Supabase",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
