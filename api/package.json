@@ -1,6 +1,8 @@
 {
   "name": "forge-arena-api",
   "version": "1.0.0",
-  "type": "commonjs",
-  "dependencies": {}
+  "description": "ForgeArena Vercel API functions",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
 }

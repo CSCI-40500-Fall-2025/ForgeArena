@@ -1,6 +1,6 @@
-const { getState } = require('../shared/state');
+const { getRaidBoss } = require('../shared/state');
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -12,8 +12,12 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const state = getState();
-    res.status(200).json(state.raidBoss);
+    try {
+      const raidBoss = await getRaidBoss();
+      res.status(200).json(raidBoss);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

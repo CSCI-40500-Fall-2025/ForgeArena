@@ -1,6 +1,6 @@
-const { getState, updateQuest, addActivity } = require('../shared/state');
+const { getQuests, updateQuest, updateUser, addActivity } = require('../shared/state');
 
-module.exports = function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -12,29 +12,34 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const state = getState();
-    res.status(200).json(state.quests);
+    try {
+      const quests = await getQuests();
+      res.status(200).json(quests);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
   } else if (req.method === 'POST') {
-    // Handle quest completion - expect { questId } in body
-    const { questId } = req.body;
-    const state = getState();
-    const quest = state.quests.find(q => q.id == questId);
-    
-    if (quest) {
-      quest.completed = true;
-      state.user.avatar.xp += quest.xpReward;
+    try {
+      // Handle quest completion - expect { questId } in body
+      const { questId } = req.body;
+      const quests = await getQuests();
+      const quest = quests.find(q => q.id == questId);
       
-      // Add activity for quest completion
-      addActivity({
-        id: Date.now(),
-        user: state.user.username,
-        action: `completed quest "${quest.title}"`,
-        timestamp: new Date()
-      });
-      
-      res.status(200).json({ message: 'Quest completed!', xpGained: quest.xpReward });
-    } else {
-      res.status(404).json({ message: 'Quest not found' });
+      if (quest) {
+        await updateQuest(questId, { completed: true });
+        
+        // Add activity for quest completion
+        await addActivity({
+          user: 'TestWarrior',
+          action: `completed quest "${quest.title}"`
+        });
+        
+        res.status(200).json({ message: 'Quest completed!', xpGained: quest.xpReward });
+      } else {
+        res.status(404).json({ message: 'Quest not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
