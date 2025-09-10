@@ -1,96 +1,152 @@
-/* ForgeArena - Gamified Fitness Platform */
+/* ForgeArena - Clean Modern Design */
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  background-color: #f8f9fa;
   color: #333;
-  min-height: 100vh;
+  line-height: 1.6;
 }
 
 .App {
   text-align: center;
   min-height: 100vh;
   padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .header {
-  background: linear-gradient(135deg, #ff6b6b, #feca57);
-  color: white;
-  padding: 30px;
-  border-radius: 15px;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  padding: 40px;
+  border-radius: 8px;
   margin-bottom: 30px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .header h1 {
   margin: 0;
-  font-size: 3rem;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
 }
 
 .header p {
   margin: 10px 0 0 0;
-  font-size: 1.2rem;
-  opacity: 0.9;
+  font-size: 1.1rem;
+  color: #6c757d;
+}
+
+.user-info {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  color: #495057;
+}
+
+/* Navigation Tabs */
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 4px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+.nav-tab {
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6c757d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-tab:hover {
+  background: #f8f9fa;
+  color: #495057;
+}
+
+.nav-tab.active {
+  background: #007bff;
+  color: white;
+}
+
+.global-message {
+  background: #d1ecf1;
+  color: #0c5460;
+  padding: 12px 20px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border: 1px solid #bee5eb;
+  font-weight: 500;
+  text-align: center;
 }
 
 .dashboard {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
 }
 
 .card {
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  border: 3px solid transparent;
-  background-clip: padding-box;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: box-shadow 0.2s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .card h2 {
   margin-top: 0;
+  margin-bottom: 20px;
   color: #2c3e50;
-  border-bottom: 3px solid #3498db;
-  padding-bottom: 10px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 12px;
 }
 
 /* Avatar Card */
 .avatar-card {
-  border: 3px solid #f39c12;
-  background: linear-gradient(135deg, #fff9e6, #ffffff);
+  border-left: 4px solid #007bff;
 }
 
 .level {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #f39c12;
-  margin-bottom: 15px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #007bff;
+  margin-bottom: 16px;
 }
 
 .xp-bar {
-  background: #ecf0f1;
-  border-radius: 25px;
-  height: 30px;
+  background: #e9ecef;
+  border-radius: 4px;
+  height: 24px;
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
   overflow: hidden;
 }
 
 .xp-fill {
-  background: linear-gradient(90deg, #3498db, #2ecc71);
+  background: #007bff;
   height: 100%;
-  border-radius: 25px;
-  transition: width 0.8s ease;
+  border-radius: 4px;
+  transition: width 0.5s ease;
 }
 
 .xp-text {
@@ -98,141 +154,151 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-weight: bold;
-  color: #2c3e50;
-  font-size: 0.9rem;
+  font-weight: 500;
+  color: #495057;
+  font-size: 0.875rem;
 }
 
 .stats {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #34495e;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6c757d;
 }
 
 /* Workout Card */
 .workout-card {
-  border: 3px solid #e74c3c;
-  background: linear-gradient(135deg, #ffe6e6, #ffffff);
+  border-left: 4px solid #28a745;
 }
 
 .workout-form {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
+  gap: 12px;
+  margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
 .workout-form select, 
 .workout-form input {
-  padding: 12px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
+  padding: 10px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.875rem;
   flex: 1;
-  min-width: 100px;
+  min-width: 120px;
+  background: #fff;
+}
+
+.workout-form select:focus,
+.workout-form input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
 }
 
 .workout-form button {
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  background: #007bff;
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .workout-form button:hover {
-  transform: scale(1.05);
+  background: #0056b3;
 }
 
 .message {
-  background: #d4edda;
-  color: #155724;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #c3e6cb;
-  font-weight: bold;
+  background: #d1ecf1;
+  color: #0c5460;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #bee5eb;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 /* Quests Card */
 .quests-card {
-  border: 3px solid #9b59b6;
-  background: linear-gradient(135deg, #f3e6ff, #ffffff);
+  border-left: 4px solid #6f42c1;
 }
 
 .quest {
   background: #f8f9fa;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  border-left: 5px solid #9b59b6;
+  border-radius: 4px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 3px solid #6f42c1;
   text-align: left;
 }
 
 .quest.completed {
   background: #d4edda;
   border-left-color: #28a745;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .quest h3 {
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   color: #2c3e50;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .quest p {
-  margin: 5px 0;
-  color: #666;
+  margin: 4px 0;
+  color: #6c757d;
+  font-size: 0.875rem;
 }
 
 .quest button {
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  background: #6f42c1;
   color: white;
   border: none;
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-  transition: transform 0.2s ease;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  margin-top: 8px;
 }
 
 .quest button:hover {
-  transform: scale(1.05);
+  background: #5a32a3;
 }
 
 /* Raid Boss Card */
 .raid-card {
-  border: 3px solid #e67e22;
-  background: linear-gradient(135deg, #fdf2e6, #ffffff);
+  border-left: 4px solid #dc3545;
 }
 
 .boss-hp {
-  margin-top: 15px;
+  margin-top: 16px;
 }
 
 .hp-bar {
-  background: #ecf0f1;
-  border-radius: 25px;
-  height: 25px;
+  background: #e9ecef;
+  border-radius: 4px;
+  height: 20px;
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   overflow: hidden;
 }
 
 .hp-fill {
-  background: linear-gradient(90deg, #e74c3c, #c0392b);
+  background: #dc3545;
   height: 100%;
-  border-radius: 25px;
-  transition: width 0.8s ease;
+  border-radius: 4px;
+  transition: width 0.5s ease;
 }
 
 /* Leaderboard Card */
 .leaderboard-card {
-  border: 3px solid #f1c40f;
-  background: linear-gradient(135deg, #fffbe6, #ffffff);
+  border-left: 4px solid #ffc107;
 }
 
 .leaderboard-entry {
@@ -242,47 +308,302 @@ body {
   padding: 12px;
   margin-bottom: 8px;
   background: #f8f9fa;
-  border-radius: 8px;
-  font-weight: bold;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.875rem;
 }
 
 .leaderboard-entry.you {
-  background: linear-gradient(135deg, #3498db, #2980b9);
+  background: #007bff;
   color: white;
-  transform: scale(1.02);
 }
 
 .rank {
-  color: #f39c12;
-  font-size: 1.1rem;
+  color: #ffc107;
+  font-weight: 600;
 }
 
 .name {
   flex: 1;
   text-align: left;
-  margin-left: 15px;
+  margin-left: 12px;
 }
 
 .level, .xp {
-  color: #7f8c8d;
+  color: #6c757d;
+  font-size: 0.875rem;
 }
 
 .leaderboard-entry.you .level,
-.leaderboard-entry.you .xp {
-  color: #ecf0f1;
+.leaderboard-entry.you .xp,
+.leaderboard-entry.you .rank {
+  color: #fff;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
+  .App {
+    padding: 16px;
+  }
+  
   .dashboard {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
   
   .workout-form {
     flex-direction: column;
   }
   
+  .header {
+    padding: 24px;
+  }
+  
   .header h1 {
     font-size: 2rem;
   }
+  
+  .card {
+    padding: 20px;
+  }
+}
+
+/* New Feature Styles */
+
+/* Inventory */
+.inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.inventory-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  border: 2px solid transparent;
+  text-align: center;
+}
+
+.inventory-item.common { border-color: #6c757d; }
+.inventory-item.uncommon { border-color: #28a745; }
+.inventory-item.rare { border-color: #007bff; }
+.inventory-item.epic { border-color: #6f42c1; }
+.inventory-item.legendary { border-color: #ffc107; }
+
+.inventory-item h4 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+}
+
+.item-type {
+  font-size: 0.875rem;
+  color: #6c757d;
+  text-transform: capitalize;
+  margin-bottom: 8px;
+}
+
+.item-stats {
+  margin-bottom: 12px;
+}
+
+.stat {
+  display: inline-block;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  margin: 2px;
+  color: #495057;
+}
+
+.equip-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.equip-btn:hover {
+  background: #0056b3;
+}
+
+/* Achievements */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.achievement {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  position: relative;
+}
+
+.achievement.unlocked {
+  background: #d4edda;
+  border: 2px solid #28a745;
+}
+
+.achievement.locked {
+  opacity: 0.6;
+  background: #e9ecef;
+}
+
+.achievement-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.achievement h4 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+}
+
+.achievement p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.unlocked-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #28a745;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Duels */
+.duel-form {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.duel-form h3 {
+  margin: 0 0 16px 0;
+  color: #2c3e50;
+}
+
+.duel-form input,
+.duel-form select {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.duel-form button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.active-duels h3 {
+  margin: 0 0 16px 0;
+  color: #2c3e50;
+}
+
+.duel-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  border-left: 4px solid #6c757d;
+}
+
+.duel-item.active {
+  border-left-color: #28a745;
+  background: #d4edda;
+}
+
+.duel-item.pending {
+  border-left-color: #ffc107;
+  background: #fff3cd;
+}
+
+.duel-item h4 {
+  margin: 0 0 8px 0;
+  color: #2c3e50;
+}
+
+.duel-status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Gyms */
+.gyms-list {
+  display: grid;
+  gap: 16px;
+}
+
+.gym-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gym-item h4 {
+  margin: 0 0 4px 0;
+  color: #2c3e50;
+}
+
+.gym-item p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.gym-item button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.gym-item button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Activity Feed */
+.activity-item {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activity-time {
+  font-size: 0.75rem;
+  color: #6c757d;
 }
