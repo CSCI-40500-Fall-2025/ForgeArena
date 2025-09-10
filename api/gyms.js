@@ -1,4 +1,4 @@
-const { getState } = require('../shared/state');
+const { mockGyms, mockUser } = require('../shared/mockData');
 
 module.exports = function handler(req, res) {
   // Enable CORS
@@ -12,28 +12,15 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const gyms = [
-      { id: 1, name: 'PowerHouse Fitness', members: 47, location: 'Downtown' },
-      { id: 2, name: 'Iron Paradise', members: 32, location: 'Uptown' },
-      { id: 3, name: 'Flex Zone', members: 28, location: 'Suburbs' },
-      { id: 4, name: 'Beast Mode Gym', members: 19, location: 'East Side' }
-    ];
-    res.status(200).json(gyms);
+    res.status(200).json(mockGyms);
   } else if (req.method === 'POST') {
     // Handle gym joining - expect { gymId } in body
     const { gymId } = req.body;
-    const gymNames = {
-      1: 'PowerHouse Fitness',
-      2: 'Iron Paradise', 
-      3: 'Flex Zone',
-      4: 'Beast Mode Gym'
-    };
+    const gym = mockGyms.find(g => g.id == gymId);
     
-    const gymName = gymNames[gymId];
-    if (gymName) {
-      const state = getState();
-      state.user.gym = gymName;
-      res.status(200).json({ message: `Joined ${gymName}!`, gym: gymName });
+    if (gym) {
+      mockUser.gym = gym.name;
+      res.status(200).json({ message: `Successfully joined ${gym.name}!` });
     } else {
       res.status(404).json({ message: 'Gym not found' });
     }

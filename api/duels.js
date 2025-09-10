@@ -1,4 +1,4 @@
-const { getState, addDuel } = require('../shared/state');
+const { mockDuels } = require('../shared/mockData');
 
 module.exports = function handler(req, res) {
   // Enable CORS
@@ -12,22 +12,20 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const state = getState();
-    res.status(200).json(state.duels);
+    res.status(200).json(mockDuels);
   } else if (req.method === 'POST') {
     // Handle duel creation
     const { opponent, challenge } = req.body;
-    const state = getState();
     const newDuel = {
-      id: state.duels.length + 1,
-      challenger: state.user.username,
+      id: mockDuels.length + 1,
+      challenger: 'TestWarrior',
       opponent,
       status: 'pending',
       challenge,
       deadline: new Date(Date.now() + 24*60*60*1000)
     };
-    addDuel(newDuel);
-    res.status(200).json({ message: `Duel challenge sent to ${opponent}!`, duel: newDuel });
+    mockDuels.push(newDuel);
+    res.status(200).json({ message: `Challenge sent to ${opponent}!` });
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

@@ -144,8 +144,10 @@ function App() {
 
   const completeQuest = async (questId: number) => {
     try {
-      const res = await fetch(`${API_BASE}/quest/${questId}/complete`, {
-        method: 'POST'
+      const res = await fetch(`${API_BASE}/quests`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ questId })
       });
       const data = await res.json();
       setMessage(`${data.message} +${data.xpGained} XP!`);
@@ -170,7 +172,7 @@ function App() {
 
   const createDuel = async () => {
     try {
-      const res = await fetch(`${API_BASE}/duel/create`, {
+      const res = await fetch(`${API_BASE}/duels`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(duelForm)
@@ -186,8 +188,10 @@ function App() {
 
   const joinGym = async (gymId: number) => {
     try {
-      const res = await fetch(`${API_BASE}/gym/join/${gymId}`, {
-        method: 'POST'
+      const res = await fetch(`${API_BASE}/gyms`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gymId })
       });
       const data = await res.json();
       setMessage(data.message);
