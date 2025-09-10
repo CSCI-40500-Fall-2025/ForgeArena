@@ -1,9 +1,5 @@
-require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { initDatabase, seedDatabase } = require('./config/database');
-const UserService = require('./services/userService');
-const GameService = require('./services/gameService');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,73 +8,60 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize database
-initDatabase().then(async () => {
-  // Only seed if database is connected
-  try {
-    await seedDatabase();
-  } catch (error) {
-    console.log('Database seeding skipped:', error.message);
-  }
-}).catch(error => {
-  console.log('Database initialization failed:', error.message);
-});
+// Import shared data and logic
+const { 
+  mockUser, 
+  mockQuests, 
+  mockAchievements, 
+  mockDuels, 
+  mockActivityFeed, 
+  mockRaidBoss, 
+  mockGyms 
+} = require('../shared/mockData');
+
+const { 
+  processWorkout, 
+  getLeaderboard, 
+  getInventory 
+} = require('../shared/gameLogic');
 
 // API Routes
-app.get('/api/user', async (req, res) => {
-  try {
-    const user = await UserService.getUser();
-    res.json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.get('/api/user', (req, res) => {
+  res.json(mockUser);
 });
 
 app.post('/api/workout', async (req, res) => {
   try {
     const { exercise, reps } = req.body;
-    const result = await UserService.processWorkout('TestWarrior', exercise, reps);
-    
-    // Add activity for workout
-    await GameService.addActivity('TestWarrior', `completed ${reps} ${exercise}s`);
-    
+    const result = await processWorkout(exercise, reps);
     res.json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.get('/api/quests', async (req, res) => {
-  try {
-    const quests = await GameService.getQuests();
-    res.json(quests);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+app.get('/api/quests', (req, res) => {
+  res.json(mockQuests);
+});
+
+app.post('/api/quest/:id/complete', (req, res) => {
+  const quest = mockQuests.find(q => q.id == req.params.id);
+  if (quest) {
+    quest.completed = true;
+    mockUser.avatar.xp += quest.xpReward;
+    res.json({ message: 'Quest completed!', xpGained: quest.xpReward });
+  } else {
+    res.status(404).json({ message: 'Quest not found' });
   }
 });
 
-app.post('/api/quest/:id/complete', async (req, res) => {
-  try {
-    const result = await GameService.completeQuest(req.params.id, 'TestWarrior');
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-app.get('/api/raid', async (req, res) => {
-  try {
-    const raidBoss = await GameService.getRaidBoss();
-    res.json(raidBoss);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.get('/api/raid', (req, res) => {
+  res.json(mockRaidBoss);
 });
 
 app.get('/api/leaderboard', async (req, res) => {
   try {
-    const leaderboard = await GameService.getLeaderboard();
-    res.json(leaderboard);
+    res.json(await getLeaderboard());
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -87,99 +70,87 @@ app.get('/api/leaderboard', async (req, res) => {
 // Equipment and inventory endpoints
 app.get('/api/inventory', async (req, res) => {
   try {
-    const user = await UserService.getUser();
-    const equipment = GameService.getEquipment();
-    const inventory = user.avatar.inventory.map(itemId => ({
-      id: itemId,
-      ...equipment[itemId]
-    }));
-    res.json(inventory);
+    res.json(await getInventory());
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
-app.post('/api/equip/:itemId', async (req, res) => {
-  try {
-    const itemId = req.params.itemId;
-    const user = await UserService.getUser();
-    const equipment = GameService.getEquipment();
-    const item = equipment[itemId];
-    
-    if (!item || !user.avatar.inventory.includes(itemId)) {
-      return res.status(400).json({ message: 'Item not found in inventory' });
-    }
-
-    // Unequip current item of same type
-    const currentEquipped = user.avatar.equipment[item.type];
-    if (currentEquipped) {
-      user.avatar.inventory.push(currentEquipped);
-    }
-
-    // Equip new item
-    user.avatar.equipment[item.type] = itemId;
-    user.avatar.inventory = user.avatar.inventory.filter(id => id !== itemId);
-
-    // Apply stat bonuses
-    Object.keys(item.stats).forEach(stat => {
-      user.avatar[stat] += item.stats[stat];
-    });
-
-    // Update user in database
-    await UserService.updateUser('TestWarrior', { avatar: user.avatar });
-
-    res.json({ message: `Equipped ${item.name}!`, equipment: user.avatar.equipment });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+app.post('/api/equip/:itemId', (req, res) => {
+  const itemId = req.params.itemId;
+  const { mockEquipment } = require('../shared/mockData');
+  const item = mockEquipment[itemId];
+  
+  if (!item || !mockUser.avatar.inventory.includes(itemId)) {
+    return res.status(400).json({ message: 'Item not found in inventory' });
   }
+
+  // Unequip current item of same type
+  const currentEquipped = mockUser.avatar.equipment[item.type];
+  if (currentEquipped) {
+    mockUser.avatar.inventory.push(currentEquipped);
+  }
+
+  // Equip new item
+  mockUser.avatar.equipment[item.type] = itemId;
+  mockUser.avatar.inventory = mockUser.avatar.inventory.filter(id => id !== itemId);
+
+  // Apply stat bonuses
+  Object.keys(item.stats).forEach(stat => {
+    mockUser.avatar[stat] += item.stats[stat];
+  });
+
+  res.json({ message: `Equipped ${item.name}!`, equipment: mockUser.avatar.equipment });
 });
 
 // Achievements endpoint
 app.get('/api/achievements', (req, res) => {
-  res.json(GameService.getAchievements());
+  res.json(mockAchievements);
 });
 
 // Duels endpoint
-app.get('/api/duels', async (req, res) => {
-  try {
-    const duels = await GameService.getDuels();
-    res.json(duels);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.get('/api/duels', (req, res) => {
+  res.json(mockDuels);
 });
 
-app.post('/api/duel/create', async (req, res) => {
-  try {
-    const { opponent, challenge } = req.body;
-    const result = await GameService.createDuel('TestWarrior', opponent, challenge);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.post('/api/duel/create', (req, res) => {
+  const { opponent, challenge } = req.body;
+  const newDuel = {
+    id: mockDuels.length + 1,
+    challenger: mockUser.username,
+    opponent,
+    status: 'pending',
+    challenge,
+    deadline: new Date(Date.now() + 24*60*60*1000)
+  };
+  mockDuels.push(newDuel);
+  res.json({ message: `Duel challenge sent to ${opponent}!`, duel: newDuel });
 });
 
 // Activity feed endpoint
-app.get('/api/activity', async (req, res) => {
-  try {
-    const activities = await GameService.getActivities();
-    res.json(activities);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+app.get('/api/activity', (req, res) => {
+  res.json(mockActivityFeed);
 });
 
 // Gym selection endpoint
 app.get('/api/gyms', (req, res) => {
-  res.json(GameService.getGyms());
+  res.json(mockGyms);
 });
 
-app.post('/api/gym/join/:gymId', async (req, res) => {
-  try {
-    const result = await GameService.joinGym('TestWarrior', req.params.gymId);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+app.post('/api/gym/join/:gymId', (req, res) => {
+  const gymNames = {
+    1: 'PowerHouse Fitness',
+    2: 'Iron Paradise', 
+    3: 'Flex Zone',
+    4: 'Beast Mode Gym'
+  };
+  
+  const gymName = gymNames[req.params.gymId];
+  if (gymName) {
+    mockUser.gym = gymName;
+    res.json({ message: `Joined ${gymName}!`, gym: gymName });
+  } else {
+    res.status(404).json({ message: 'Gym not found' });
   }
 });
 
