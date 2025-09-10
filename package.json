@@ -5,16 +5,24 @@
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev:local": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm start",
     "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
     "vercel-build": "npm run install-deps && npm run build"
   },
-  "keywords": ["fitness", "gamification", "PERN"],
+  "keywords": [
+    "fitness",
+    "gamification",
+    "PERN"
+  ],
   "author": "ForgeArena Team",
   "license": "MIT",
   "devDependencies": {
     "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "vercel": "^47.0.7"
   }
 }
