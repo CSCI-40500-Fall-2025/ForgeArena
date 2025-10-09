@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserProfile from './components/UserProfile';
+import ProfileScreen from './components/ProfileScreen';
 import './App.css';
 
 interface Avatar {
@@ -276,7 +277,7 @@ function MainApp() {
       </header>
 
       <nav className="nav-tabs">
-        {['dashboard', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
+        {['dashboard', 'profile', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
           <button 
             key={tab}
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
@@ -463,6 +464,10 @@ function MainApp() {
               </div>
             </div>
           </>
+        )}
+
+        {activeTab === 'profile' && (
+          <ProfileScreen />
         )}
 
         {activeTab === 'social' && (

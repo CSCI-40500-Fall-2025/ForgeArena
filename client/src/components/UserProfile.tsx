@@ -24,13 +24,22 @@ const UserProfile: React.FC<UserProfileProps> = ({ className = '' }) => {
     <div className={`user-profile ${className}`}>
       <div className="user-info">
         <div className="user-avatar">
-          <span className="avatar-letter">
-            {userProfile.username.charAt(0).toUpperCase()}
-          </span>
+          {userProfile.avatarUrl ? (
+            <img 
+              src={userProfile.avatarUrl} 
+              alt="Avatar" 
+              className="avatar-image"
+            />
+          ) : (
+            <span className="avatar-letter">
+              {userProfile.username.charAt(0).toUpperCase()}
+            </span>
+          )}
         </div>
         <div className="user-details">
           <h3 className="username">{userProfile.username}</h3>
           <p className="user-level">Level {userProfile.level}</p>
+          <p className="user-handle">@{userProfile.handle}</p>
         </div>
       </div>
       

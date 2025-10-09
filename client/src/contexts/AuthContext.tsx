@@ -7,8 +7,9 @@ import {
   updateProfile,
   User
 } from 'firebase/auth';
-import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../firebaseConfig';
+import { doc, setDoc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
+import { auth, db, storage } from '../firebaseConfig';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
 // Types
 interface AuthUser extends User {
@@ -19,6 +20,8 @@ interface UserProfile {
   uid: string;
   email: string;
   username: string;
+  handle: string;
+  avatarUrl?: string;
   level: number;
   xp: number;
   strength: number;
@@ -40,6 +43,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUserProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  updateHandle: (newHandle: string) => Promise<void>;
+  uploadAvatar: (file: File) => Promise<string>;
+  checkHandleAvailability: (handle: string) => Promise<boolean>;
 }
 
 // Create context
@@ -63,10 +69,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Create user profile in Firestore
   const createUserProfile = async (user: AuthUser, username: string) => {
     const userDoc = doc(db, 'users', user.uid);
+    
+    // Generate a unique handle based on username
+    let handle = username.toLowerCase().replace(/[^a-z0-9]/g, '');
+    let handleCounter = 0;
+    let originalHandle = handle;
+    
+    // Ensure handle is unique
+    while (!(await checkHandleAvailability(handle))) {
+      handleCounter++;
+      handle = `${originalHandle}${handleCounter}`;
+    }
+    
     const userProfile: UserProfile = {
       uid: user.uid,
       email: user.email || '',
       username,
+      handle,
+      avatarUrl: '',
       level: 1,
       xp: 0,
       strength: 10,
@@ -180,6 +200,83 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return unsubscribe;
   }, []);
 
+  // Check if handle is available
+  const checkHandleAvailability = async (handle: string): Promise<boolean> => {
+    try {
+      const q = query(collection(db, 'users'), where('handle', '==', handle));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.empty;
+    } catch (error) {
+      console.error('Error checking handle availability:', error);
+      return false;
+    }
+  };
+
+  // Update user handle
+  const updateHandle = async (newHandle: string) => {
+    if (!currentUser || !userProfile) {
+      throw new Error('No user logged in');
+    }
+
+    // Validate handle format
+    if (!/^[a-z0-9]{3,20}$/.test(newHandle)) {
+      throw new Error('Handle must be 3-20 characters, letters and numbers only');
+    }
+
+    // Check if handle is available
+    if (!(await checkHandleAvailability(newHandle))) {
+      throw new Error('Handle is already taken');
+    }
+
+    try {
+      const userDoc = doc(db, 'users', currentUser.uid);
+      await setDoc(userDoc, { handle: newHandle }, { merge: true });
+      
+      const updatedProfile = { ...userProfile, handle: newHandle };
+      setUserProfile(updatedProfile);
+    } catch (error) {
+      console.error('Error updating handle:', error);
+      throw new Error('Failed to update handle');
+    }
+  };
+
+  // Upload avatar to Firebase Storage
+  const uploadAvatar = async (file: File): Promise<string> => {
+    if (!currentUser) {
+      throw new Error('No user logged in');
+    }
+
+    try {
+      // Create storage reference
+      const timestamp = Date.now();
+      const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+      const fileName = `avatars/${currentUser.uid}_${timestamp}.${fileExtension}`;
+      const storageRef = ref(storage, fileName);
+
+      // Delete old avatar if exists
+      if (userProfile?.avatarUrl) {
+        try {
+          const oldAvatarRef = ref(storage, userProfile.avatarUrl);
+          await deleteObject(oldAvatarRef);
+        } catch (error) {
+          console.log('Old avatar not found or already deleted');
+        }
+      }
+
+      // Upload new avatar
+      const snapshot = await uploadBytes(storageRef, file);
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // Update user profile with new avatar URL
+      await updateUserProfile({ avatarUrl: downloadURL });
+
+      return downloadURL;
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      throw new Error('Failed to upload avatar');
+    }
+  };
+
   const value: AuthContextType = {
     currentUser,
     userProfile,
@@ -187,7 +284,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signup,
     login,
     logout,
-    updateUserProfile
+    updateUserProfile,
+    updateHandle,
+    uploadAvatar,
+    checkHandleAvailability
   };
 
   return (
