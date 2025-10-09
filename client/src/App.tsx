@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import UserProfile from './components/UserProfile';
 import './App.css';
 
 interface Avatar {
@@ -79,7 +82,9 @@ const API_BASE = process.env.REACT_APP_API_URL ||
     ? '/api'  // Use Vercel serverless functions in production
     : 'http://localhost:5000/api');  // Use local server in development
 
-function App() {
+// Main App Component (without auth wrapper)
+function MainApp() {
+  const { userProfile, updateUserProfile } = useAuth();
   const [user, setUser] = useState<User | null>(null);
   const [quests, setQuests] = useState<Quest[]>([]);
   const [raidBoss, setRaidBoss] = useState<RaidBoss | null>(null);
@@ -94,14 +99,34 @@ function App() {
   const [message, setMessage] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
 
+  // Convert userProfile to User format for compatibility
+  useEffect(() => {
+    if (userProfile) {
+      const compatibleUser: User = {
+        id: 1, // Keep for compatibility
+        username: userProfile.username,
+        gym: userProfile.gym,
+        workoutStreak: userProfile.workoutStreak,
+        avatar: {
+          level: userProfile.level,
+          xp: userProfile.xp,
+          strength: userProfile.strength,
+          endurance: userProfile.endurance,
+          agility: userProfile.agility,
+          equipment: Object.values(userProfile.equipment)
+        }
+      };
+      setUser(compatibleUser);
+    }
+  }, [userProfile]);
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const [userRes, questsRes, raidRes, leaderRes, achieveRes, inventoryRes, duelsRes, activityRes, gymsRes] = await Promise.all([
-        fetch(`${API_BASE}/user`),
+      const [questsRes, raidRes, leaderRes, achieveRes, inventoryRes, duelsRes, activityRes, gymsRes] = await Promise.all([
         fetch(`${API_BASE}/quests`),
         fetch(`${API_BASE}/raid`),
         fetch(`${API_BASE}/leaderboard`),
@@ -112,7 +137,6 @@ function App() {
         fetch(`${API_BASE}/gyms`)
       ]);
       
-      setUser(await userRes.json());
       setQuests(await questsRes.json());
       setRaidBoss(await raidRes.json());
       setLeaderboard(await leaderRes.json());
@@ -136,7 +160,21 @@ function App() {
       });
       const data = await res.json();
       setMessage(`${data.message} +${data.xpGained} XP!`);
-      fetchData(); // Refresh data
+      
+      // Update user profile in Firebase if available
+      if (userProfile && updateUserProfile) {
+        const newXP = userProfile.xp + data.xpGained;
+        const newLevel = Math.floor(newXP / 100) + 1;
+        
+        await updateUserProfile({
+          xp: newXP,
+          level: newLevel,
+          lastWorkout: new Date().toISOString(),
+          workoutStreak: userProfile.workoutStreak + 1
+        });
+      }
+      
+      fetchData(); // Refresh other data
     } catch (error) {
       setMessage('Failed to log workout');
     }
@@ -151,6 +189,18 @@ function App() {
       });
       const data = await res.json();
       setMessage(`${data.message} +${data.xpGained} XP!`);
+      
+      // Update user profile in Firebase if available
+      if (userProfile && updateUserProfile) {
+        const newXP = userProfile.xp + data.xpGained;
+        const newLevel = Math.floor(newXP / 100) + 1;
+        
+        await updateUserProfile({
+          xp: newXP,
+          level: newLevel
+        });
+      }
+      
       fetchData();
     } catch (error) {
       setMessage('Failed to complete quest');
@@ -216,10 +266,12 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1>ForgeArena</h1>
-        <p>Gamified Fitness Platform - Proof of Concept</p>
-        <div className="user-info">
-          <span>{user.username} | {user.gym} | {user.workoutStreak}-day streak</span>
+        <div className="header-content">
+          <div className="header-left">
+            <h1>ForgeArena</h1>
+            <p>Gamified Fitness Platform - Proof of Concept</p>
+          </div>
+          <UserProfile className="header-user" />
         </div>
       </header>
 
@@ -445,6 +497,17 @@ function App() {
         )}
       </div>
     </div>
+  );
+}
+
+// App component with authentication
+function App() {
+  return (
+    <AuthProvider>
+      <ProtectedRoute>
+        <MainApp />
+      </ProtectedRoute>
+    </AuthProvider>
   );
 }
 

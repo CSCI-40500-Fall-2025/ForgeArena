@@ -1,4 +1,4 @@
-const { getUser } = require('../shared/supabase');
+const { getUser } = require('../shared/firebase');
 
 module.exports = async function handler(req, res) {
   // Enable CORS

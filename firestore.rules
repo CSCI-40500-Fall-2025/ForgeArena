@@ -1,0 +1,51 @@
+// Firestore Security Rules
+// Copy these rules to your Firebase Console -> Firestore Database -> Rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection - allow read access to all authenticated users
+    // Users can only update their own profile
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Quests collection - allow read/write access to all authenticated users
+    match /quests/{questId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Raid Boss collection - allow read/write access to all authenticated users
+    match /raidBoss/{raidId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Workouts collection - users can only access their own workouts
+    match /workouts/{workoutId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Parties collection - allow read/write access to all authenticated users
+    match /parties/{partyId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Party members collection - users can manage their own memberships
+    match /partyMembers/{memberId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Contributions collection - users can read all, but only write their own
+    match /contributions/{contributionId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+    
+    // Rewards collection - users can only access their own rewards
+    match /rewards/{rewardId} {
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+    }
+  }
+}

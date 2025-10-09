@@ -9,16 +9,18 @@
 
 ## Proof of Concept Prototype
 
-This is a bare-bones prototype demonstrating the core ForgeArena concepts using the PERN stack (PostgreSQL, Express, React, Node.js). The prototype uses mock data to showcase key features without requiring a full database setup.
+This is a bare-bones prototype demonstrating the core ForgeArena concepts using the FERN stack (Firebase, Express, React, Node.js). The prototype uses mock data to showcase key features with optional Firebase integration for data persistence.
 
 ### Features Demonstrated
 
+- **User Authentication**: Email/password signup, login, logout with session persistence
 - **Avatar Progression**: Watch your avatar level up and gain stats as you log workouts
 - **Workout Logging**: Simple interface to log different exercises and earn XP
 - **Quest System**: Complete fitness challenges to earn rewards and XP
 - **Raid Boss**: Community challenge where users collectively damage a boss
 - **Leaderboard**: See how you rank against other players
 - **Gamification**: XP, levels, stats, and visual progress bars
+- **Protected Routes**: Authentication-based access control
 
 ### Setup Instructions
 
@@ -64,6 +66,33 @@ This is a bare-bones prototype demonstrating the core ForgeArena concepts using 
    npm start
    ```
 
+#### Firebase Setup (Optional)
+
+For persistent data storage, you can set up Firebase:
+
+1. **Create a Firebase project** at [Firebase Console](https://console.firebase.google.com/)
+
+2. **Enable Firestore Database** in your Firebase project
+
+3. **Set up environment variables**
+   ```bash
+   cp firebase.env.example client/.env
+   ```
+   Fill in your Firebase configuration values in `client/.env`
+
+4. **Apply Firestore security rules**
+   - Copy the rules from `firestore.rules`
+   - Paste them in Firebase Console → Firestore Database → Rules
+
+5. **Initialize your database**
+   - See `FIRESTORE_SETUP.md` for detailed database structure
+   - The app will automatically fall back to mock data if Firebase is not configured
+
+6. **Set up Authentication** (Recommended)
+   - Follow the guide in `AUTHENTICATION_SETUP.md`
+   - Enable Email/Password authentication in Firebase Console
+   - Users can now create accounts and have persistent data
+
 ### How to Use the Prototype
 
 1. **View Your Avatar**: See your current level, XP, and stats (Strength, Endurance, Agility)
@@ -82,8 +111,8 @@ This is a bare-bones prototype demonstrating the core ForgeArena concepts using 
 ### Technical Architecture
 
 **Backend (Express + Node.js)**
-- Simple REST API with mock data
-- No database required for prototype
+- Simple REST API with mock data fallback
+- Optional Firebase Firestore integration for data persistence
 - Endpoints for user data, workouts, quests, raids, and leaderboards
 
 **Frontend (React + TypeScript)**
@@ -91,14 +120,19 @@ This is a bare-bones prototype demonstrating the core ForgeArena concepts using 
 - Real-time updates when logging workouts or completing quests
 - Visual progress bars and level-up animations
 
+**Database (Firebase Firestore)**
+- NoSQL document database for flexible data storage
+- Real-time synchronization capabilities
+- Scalable cloud infrastructure
+
 ### Future Features (Not in Prototype)
 
-- User authentication and registration
-- PostgreSQL database integration
+- User authentication and registration (Firebase Auth)
+- Full Firebase Firestore integration
 - Real-time multiplayer raid mechanics
 - Gym-specific leaderboards and communities
 - Avatar customization and equipment system
-- Push notifications for quest reminders
+- Push notifications for quest reminders (Firebase Cloud Messaging)
 - Social features (friend system, sharing achievements)
 - Mobile app version
 
