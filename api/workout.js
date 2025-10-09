@@ -1,4 +1,4 @@
-const { getUser, updateUser, updateRaidBoss } = require('../shared/supabase');
+const { getUser, updateUser, updateRaidBoss } = require('../shared/firebase');
 
 module.exports = async function handler(req, res) {
   // Enable CORS
