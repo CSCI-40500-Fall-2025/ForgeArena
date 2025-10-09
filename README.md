@@ -13,12 +13,14 @@ This is a bare-bones prototype demonstrating the core ForgeArena concepts using 
 
 ### Features Demonstrated
 
+- **User Authentication**: Email/password signup, login, logout with session persistence
 - **Avatar Progression**: Watch your avatar level up and gain stats as you log workouts
 - **Workout Logging**: Simple interface to log different exercises and earn XP
 - **Quest System**: Complete fitness challenges to earn rewards and XP
 - **Raid Boss**: Community challenge where users collectively damage a boss
 - **Leaderboard**: See how you rank against other players
 - **Gamification**: XP, levels, stats, and visual progress bars
+- **Protected Routes**: Authentication-based access control
 
 ### Setup Instructions
 
@@ -85,6 +87,11 @@ For persistent data storage, you can set up Firebase:
 5. **Initialize your database**
    - See `FIRESTORE_SETUP.md` for detailed database structure
    - The app will automatically fall back to mock data if Firebase is not configured
+
+6. **Set up Authentication** (Recommended)
+   - Follow the guide in `AUTHENTICATION_SETUP.md`
+   - Enable Email/Password authentication in Firebase Console
+   - Users can now create accounts and have persistent data
 
 ### How to Use the Prototype
 
