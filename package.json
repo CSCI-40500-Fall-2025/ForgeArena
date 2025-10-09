@@ -20,7 +20,8 @@
   "author": "ForgeArena Team",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "supabase": "^2.48.3"
   },
   "dependencies": {
     "vercel": "^47.0.7"
