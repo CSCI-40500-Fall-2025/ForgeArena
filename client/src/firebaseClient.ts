@@ -1,3 +1,3 @@
-import { db, auth } from './firebaseConfig'
+import { db, auth, storage } from './firebaseConfig'
 
-export { db, auth }
+export { db, auth, storage }

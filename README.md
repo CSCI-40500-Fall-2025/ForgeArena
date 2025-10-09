@@ -14,6 +14,7 @@ This is a bare-bones prototype demonstrating the core ForgeArena concepts using 
 ### Features Demonstrated
 
 - **User Authentication**: Email/password signup, login, logout with session persistence
+- **Profile Management**: Unique handles, avatar uploads, profile customization
 - **Avatar Progression**: Watch your avatar level up and gain stats as you log workouts
 - **Workout Logging**: Simple interface to log different exercises and earn XP
 - **Quest System**: Complete fitness challenges to earn rewards and XP
@@ -93,20 +94,29 @@ For persistent data storage, you can set up Firebase:
    - Enable Email/Password authentication in Firebase Console
    - Users can now create accounts and have persistent data
 
+7. **Set up Profile Management** (Optional)
+   - Follow the guide in `PROFILE_SETUP.md`
+   - Enable Firebase Storage for avatar uploads
+   - Users can customize profiles with unique handles and avatars
+
 ### How to Use the Prototype
 
-1. **View Your Avatar**: See your current level, XP, and stats (Strength, Endurance, Agility)
+1. **Create Your Account**: Sign up with email and password to get started
 
-2. **Log Workouts**: 
+2. **Customize Your Profile**: Go to the Profile tab to upload an avatar and set a unique handle
+
+3. **View Your Avatar**: See your current level, XP, and stats (Strength, Endurance, Agility)
+
+4. **Log Workouts**: 
    - Select an exercise type (Squats, Push-ups, Pull-ups, Running)
    - Enter the number of reps
    - Click "Log Workout" to earn XP and potentially level up
 
-3. **Complete Quests**: Click "Complete Quest" on any active quest to earn bonus XP
+5. **Complete Quests**: Click "Complete Quest" on any active quest to earn bonus XP
 
-4. **Attack Raid Boss**: Log squat exercises to damage the community raid boss "The Titan Squat"
+6. **Attack Raid Boss**: Log squat exercises to damage the community raid boss "The Titan Squat"
 
-5. **Check Leaderboard**: See how your level and XP compare to other players
+7. **Check Leaderboard**: See how your level and XP compare to other players
 
 ### Technical Architecture
 
@@ -124,25 +134,32 @@ For persistent data storage, you can set up Firebase:
 - NoSQL document database for flexible data storage
 - Real-time synchronization capabilities
 - Scalable cloud infrastructure
+- User profiles with avatar storage
+
+**Storage (Firebase Storage)**
+- Secure file uploads for user avatars
+- Automatic image compression and optimization
+- CDN-backed delivery for fast loading
 
 ### Future Features (Not in Prototype)
 
-- User authentication and registration (Firebase Auth)
-- Full Firebase Firestore integration
+- Advanced avatar customization and equipment system
+- Full Firebase Firestore integration for all game data
 - Real-time multiplayer raid mechanics
 - Gym-specific leaderboards and communities
-- Avatar customization and equipment system
 - Push notifications for quest reminders (Firebase Cloud Messaging)
 - Social features (friend system, sharing achievements)
 - Mobile app version
+- Party system with team challenges
 
 ### Notes
 
-- This is a **proof of concept** - data resets when the server restarts
-- No real user accounts - everyone shares the same "TestWarrior" avatar
+- This is a **proof of concept** - some data may reset when the server restarts
+- User accounts and profiles persist across sessions with Firebase
+- Avatar uploads and handles are stored permanently
 - Raid boss HP decreases only with squat exercises
 - Quest completion is simulated (just click the button)
-- Designed to demonstrate core gamification concepts, not production features
+- Designed to demonstrate core gamification concepts and modern web app features
 
 ---
 
