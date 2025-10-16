@@ -166,4 +166,155 @@ For persistent data storage, you can set up Firebase:
 
 ---
 
+**FOR:** Gym-goers and fitness enthusiasts struggling with motivation  
+**WHO:** Want their progress to feel meaningful, social, and visually rewarding  
+
+**FORGEARENA** is a **gamified fitness platform** that blends **avatar evolution** with **social competition** — allowing you to level up your personal avatar (*BodyForge*) while competing in gym-based challenges, quests, and leaderboards (*FitArena*).  
+
+Unlike existing apps that focus on either solo avatar growth or passive global leaderboards, **our product** creates **immersive, local gym communities**. See your avatar evolve as you earn XP, complete quests, and rise on leaderboards among peers.
+
+---
+
+## ✨ Core Features
+
+- **Avatar-Based Progression:** Your avatar grows, levels up, and earns gear.  
+- **Avatar Customization:** Earn cosmetic gear or upgrades (armor, badges, etc.) that reflect real-world milestones.  
+- **Duel Mode:** Friendly competitions to see who logs more reps, steps, or streaks in a set time.  
+- **Gym Quests:** “Attend 3 group classes this week” or “Beat your leg press record.”  
+- **Local Social Competition:** Weekly gym quests, buddy duels, and club leaderboards (with custom clubs per gym).  
+- **Social & Personal Incentives:** Visual rewards and recognition amplify motivation.  
+- **Social Feed & Support:** Share avatar changes, celebrate PRs, and cheer peers in-app.  
+- **Seasonal Boss Challenges:** Conquer a “Giant Squat” boss by cumulative gym visits or lifting achievements.  
+- **RPG Elements + Real Results:** Storytelling meets tangible fitness metrics for emotional engagement.
+
+---
+
+## 🧩 Raid Boss Mechanic for Fitness
+
+**Core Idea:**  
+Each raid boss represents a massive community fitness goal.
+
+| Element | Description |
+|----------|-------------|
+| **Bosses = Fitness Goals** | e.g., *“The Titan Squat” = 10,000 squats collectively* |
+| **Parties/Guilds = Workout Groups** | Join a raid with friends, gym peers, or random matchmaking |
+| **Damage = Workout Output** | Every rep, mile, or minute logged = “damage” dealt to the boss |
+| **Rewards = Avatar Progression** | Unlock cosmetic gear, stat boosts, or XP multipliers |
+
+---
+
+## 🏗️ Layered Software Architecture
+
+ForgeArena focuses on building a strong **fitness community** through **gamification** and **friendly competition**.  
+Users can earn XP by completing quests, tracked securely in a database with leaderboards and detailed user stats.
+
+### **System Layers**
+
+1. **Presentation Layer (UI)**  
+   - React web client with interactive dashboards, leaderboards, and quest tracking  
+2. **Application Layer (API & Request Handling)**  
+   - RESTful Express.js endpoints for workouts, quests, raids, and leaderboards  
+3. **Business Logic Layer**  
+   - Gamification engine: XP, quests, avatar progression, and raid mechanics  
+4. **Data Access Layer**  
+   - Repository pattern managing Firestore collections for users, quests, raids, and gyms  
+5. **Infrastructure Layer**  
+   - Firebase authentication, storage, caching, and monitoring
+
+---
+
+## ⚙️ Technology Stack
+
+| Category | Technologies |
+|-----------|--------------|
+| **Frontend** | React, TypeScript, React Router, Axios, CSS Modules |
+| **Backend** | Node.js, Express.js, Firebase Auth |
+| **Database** | Firebase Firestore |
+| **Storage** | Firebase Storage |
+| **Cache** | Redis (for leaderboard/quest caching) |
+| **Deployment** | Google Cloud Platform / Firebase Hosting |
+| **Build Tools** | Vite, npm, PM2 |
+| **Docs & API** | Swagger / OpenAPI 3.0 |
+
+---
+
+## 🧱 Architectural Qualities
+
+| Quality | Priority | Rationale | Trade-off |
+|----------|-----------|------------|------------|
+| **Scalability & Performance** | Critical | Real-time leaderboards & social features | Increased system complexity |
+| **Evolvability & Maintainability** | High | Frequent feature updates | Added modular overhead |
+| **Security** | High | Protects fitness and personal data | Slightly slower development |
+
+---
+
+## 🧩 Core Components Overview
+
+### **Presentation Layer (Client-Side)**
+- **Authentication** – Login, registration, password recovery  
+- **Dashboard** – Avatar display, progress, quick stats  
+- **Workout Arena** – Log workouts, view history  
+- **Quest Chamber** – View and complete quests  
+- **Raid Portal** – Participate in community boss events  
+- **Social Hub** – Leaderboards and activity feeds  
+- **Profile Forge** – Avatar customization and achievements  
+
+### **Application Layer (Server-Side)**
+- **Controllers:**  
+  `/api/auth`, `/api/users`, `/api/workouts`, `/api/quests`, `/api/raid`, `/api/leaderboard`  
+- **Middleware:** Authentication, rate limiting, session management  
+
+### **Business Logic Layer**
+- **User Service** – Profile & avatar management  
+- **Gamification Engine** – XP, level progression, stat mechanics  
+- **Quest Service** – Quest validation, rewards, and cycling  
+- **Raid Service** – Boss health, damage, and event scheduling  
+- **Leaderboard Service** – Ranking logic & caching  
+
+---
+
+## 🧠 Key Architectural Decisions
+
+1. **Architecture Type:** Modular Monolith  
+   - Simpler for current scale; can evolve to microservices later.  
+2. **Real-time Updates:** Polling first → WebSockets later  
+   - Easier MVP rollout; scalable for live raid events.  
+3. **Data Consistency:** Eventual Consistency  
+   - Minor leaderboard delays tolerated for better performance.  
+
+---
+
+## 🚀 Future Plans
+
+### **Scalability**
+- Database sharding (user-based)
+- Split microservices: Gamification / Social / Analytics  
+- CDN expansion for global delivery  
+
+### **Mobile Strategy**
+1. Responsive web app (current)  
+2. React Native app (shared logic)  
+3. Native features: push notifications, HealthKit/Google Fit integration  
+
+---
+
+## 🗺️ Implementation Roadmap
+
+**Phase 1: Core Architecture (Current)**  
+- Layered backend, gamification engine, Firebase integration, React client  
+
+**Phase 2: Scaling Preparation**  
+- Add caching, rate limiting, and monitoring  
+
+**Phase 3: Advanced Features**  
+- Real-time events, mobile app, gym management tools  
+
+---
+
+### 🧰 Summary
+
+ForgeArena transforms workouts into **quests**, progress into **XP**, and gym communities into **adventure parties**.  
+It’s fitness reimagined as an **RPG with real-world rewards** — one rep, one quest, one victory at a time.
+
+
 *Built for CS 40500 - Software Engineering*
