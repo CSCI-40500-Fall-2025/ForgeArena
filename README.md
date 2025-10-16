@@ -23,7 +23,7 @@ This is a bare-bones prototype demonstrating the core ForgeArena concepts using 
 - **Gamification**: XP, levels, stats, and visual progress bars
 - **Protected Routes**: Authentication-based access control
 
-Important Qualities for our software (layered software architecture project)
+Important Qualities for our software (layered software architecture project):
 Our software focuses on building a strong fitness community and keeping members engaged through gamification and friendly competition. Users can earn XP by completing daily, weekly, and monthly quests, turning workouts into rewarding challenges. A leaderboard system tracks progress among individual members and gym clubs, encouraging consistent participation and healthy rivalry. All user data, progress, and quest history are securely stored in a database, ensuring that performance is tracked accurately and users can monitor their long-term achievements while staying motivated through community-driven competition.
 
 ### Setup Instructions
