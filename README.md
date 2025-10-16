@@ -273,6 +273,11 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
+## ⚙️ System Architecture Diagram
+![Architecture Diagram](./docs/architecture.png)
+
+---
+
 ## 🧠 Key Architectural Decisions
 
 1. **Architecture Type:** Modular Monolith  
