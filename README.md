@@ -274,7 +274,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 ---
 
 ## ⚙️ System Architecture Diagram
-![Architecture Diagram](./docs/architecture.png)
+![Architecture Diagram](./architecture.png)
 
 ---
 
