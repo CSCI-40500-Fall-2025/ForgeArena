@@ -17,6 +17,13 @@ client/node_modules
 client/build/
 dist/
 
+# Test artifacts
+coverage/
+.nyc_output/
+.jest/
+.jest-cache/
+junit.xml
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

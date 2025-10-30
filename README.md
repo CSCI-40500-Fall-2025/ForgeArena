@@ -1,5 +1,7 @@
 # ForgeArena - Gamified Fitness Platform
 
+![Jenkins Build Status](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.yourdomain.com%2Fjob%2FForgeArena%2F)
+
 **FOR:** Gym-goers and fitness enthusiasts struggling with motivation  
 **WHO:** Want their progress to feel meaningful, social, and visually rewarding  
 **FORGEARENA** is a gamified fitness platform that blends avatar evolution with social competition  
@@ -53,6 +55,29 @@ Our software focuses on building a strong fitness community and keeping members 
    This will start:
    - Backend server on `http://localhost:5000`
    - React frontend on `http://localhost:3000`
+
+### Running Tests
+
+- Run shared logic tests (Jest):
+  ```bash
+  npm run test:shared
+  ```
+- Run client tests (Create React App):
+  ```bash
+  npm run test:client
+  ```
+- Run all tests:
+  ```bash
+  npm test
+  ```
+
+### CI (Jenkins)
+
+- This repo includes a `Jenkinsfile` that:
+  - Installs dependencies at the root, `client`, and `server`
+  - Runs shared tests with Jest and client tests via CRA
+  - Archives coverage if available
+- After creating a Jenkins pipeline for this repo named `ForgeArena`, update the badge URL above to your Jenkins domain if needed.
 
 #### Manual Setup (if npm run dev doesn't work)
 
