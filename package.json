@@ -10,7 +10,10 @@
     "client": "cd client && npm start",
     "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
-    "vercel-build": "npm run install-deps && npm run build"
+    "vercel-build": "npm run install-deps && npm run build",
+    "test:shared": "jest --config jest.config.cjs --ci --coverage",
+    "test:client": "cd client && npm test -- --watchAll=false",
+    "test": "npm run test:shared && npm run test:client"
   },
   "keywords": [
     "fitness",
@@ -20,7 +23,8 @@
   "author": "ForgeArena Team",
   "license": "MIT",
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "jest": "^29.7.0"
   },
   "dependencies": {
     "vercel": "^47.0.7"
