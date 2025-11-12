@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -66,8 +66,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Check if handle is available
+  const checkHandleAvailability = useCallback(async (handle: string): Promise<boolean> => {
+    try {
+      const q = query(collection(db, 'users'), where('handle', '==', handle));
+      const querySnapshot = await getDocs(q);
+      return querySnapshot.empty;
+    } catch (error) {
+      console.error('Error checking handle availability:', error);
+      return false;
+    }
+  }, []);
+
   // Create user profile in Firestore
-  const createUserProfile = async (user: AuthUser, username: string) => {
+  const createUserProfile = useCallback(async (user: AuthUser, username: string) => {
     const userDoc = doc(db, 'users', user.uid);
     
     // Generate a unique handle based on username
@@ -102,10 +114,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     await setDoc(userDoc, userProfile);
     return userProfile;
-  };
+  }, [checkHandleAvailability]);
 
   // Get user profile from Firestore
-  const getUserProfile = async (uid: string): Promise<UserProfile | null> => {
+  const getUserProfile = useCallback(async (uid: string): Promise<UserProfile | null> => {
     try {
       const userDoc = doc(db, 'users', uid);
       const docSnap = await getDoc(userDoc);
@@ -118,7 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Error fetching user profile:', error);
       return null;
     }
-  };
+  }, []);
 
   // Sign up function
   const signup = async (email: string, password: string, username: string) => {
@@ -198,19 +210,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return unsubscribe;
-  }, [createUserProfile]);
-
-  // Check if handle is available
-  const checkHandleAvailability = async (handle: string): Promise<boolean> => {
-    try {
-      const q = query(collection(db, 'users'), where('handle', '==', handle));
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.empty;
-    } catch (error) {
-      console.error('Error checking handle availability:', error);
-      return false;
-    }
-  };
+  }, [createUserProfile, getUserProfile]);
 
   // Update user handle
   const updateHandle = async (newHandle: string) => {
