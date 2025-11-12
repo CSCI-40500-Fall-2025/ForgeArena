@@ -1,3 +1,4 @@
 {
-  "name": "forgearena"
-}
+    "buildCommand": "npm run vercel-build",
+    "outputDirectory": "client/build"
+  }
