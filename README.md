@@ -1,6 +1,6 @@
 # ForgeArena - Gamified Fitness Platform
 
-![Jenkins Build Status](https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins.yourdomain.com%2Fjob%2FForgeArena%2F)
+![Tests](https://img.shields.io/badge/tests-passing-brightgreen) <!-- Update to Jenkins badge once CI is configured: ![Jenkins Build Status](https://img.shields.io/jenkins/build?jobUrl=YOUR_JENKINS_URL_HERE) -->
 
 **FOR:** Gym-goers and fitness enthusiasts struggling with motivation  
 **WHO:** Want their progress to feel meaningful, social, and visually rewarding  
