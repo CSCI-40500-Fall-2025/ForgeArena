@@ -56,52 +56,24 @@ jobs:
 
       - name: Pull Vercel Environment Information
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Build Project Artifacts
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy Project Artifacts to Vercel
-        id: deploy
-        run: |
-          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }} 2>&1 | grep -o 'https://[^ ]*\.vercel\.app' | head -1)
-          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
-          echo "Deployed to: $DEPLOYMENT_URL"
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-      - name: Create GitHub Deployment
-        uses: actions/github-script@v7
-        if: success()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const deploymentUrl = '${{ steps.deploy.outputs.url }}' || 'https://project-project-4.vercel.app/';
-            
-            try {
-              const deployment = await github.rest.repos.createDeployment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: context.ref,
-                environment: 'production',
-                auto_merge: false,
-                required_contexts: [],
-                description: `Deployed commit ${context.sha.substring(0, 7)}`
-              });
-              
-              await github.rest.repos.createDeploymentStatus({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                deployment_id: deployment.data.id,
-                state: 'success',
-                environment_url: deploymentUrl,
-                description: 'Successfully deployed to Vercel'
-              });
-              
-              console.log(`✅ Deployment created: ${deploymentUrl}`);
-            } catch (error) {
-              console.error('Failed to create GitHub deployment:', error);
-              // Don't fail the workflow if deployment creation fails
-            }
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-
+      - name: Deploy Project Artifacts to Vercel
+        id: deploy
+        run: >
+          DEPLOYMENT_URL=$(vercel deploy --prebuilt --prod
+          --token=${{ secrets.VERCEL_TOKEN }}
+          --name project-project-4 2>&1 | grep -o 'https://[^ ]*\.vercel\.app' | head -1);
+          echo "url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT;
+          echo "Deployed to: $DEPLOYMENT_URL"
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
