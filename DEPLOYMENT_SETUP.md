@@ -28,7 +28,8 @@ If you haven't already connected this repository to Vercel:
 1. Go to [Vercel Dashboard](https://vercel.com/dashboard)
 2. Click "Add New Project"
 3. Import your GitHub repository: `CSCI-40500-Fall-2025/ForgeArena`
-4. Vercel will auto-detect the settings from `vercel.json`
+4. Set the project name to: `project-project-4` (or use the existing project if already created)
+5. Vercel will auto-detect the settings from `vercel.json`
 
 ### 2. Configure GitHub Secrets
 
@@ -51,7 +52,7 @@ For the GitHub Actions workflow to deploy to Vercel, you need to add these secre
   - Name: `VERCEL_ORG_ID`
 
 - **`VERCEL_PROJECT_ID`**:
-  - Get from: Vercel Dashboard > Your Project > Settings > General
+  - Get from: Vercel Dashboard > Project `project-project-4` > Settings > General
   - Or check `.vercel/project.json` after linking
   - Name: `VERCEL_PROJECT_ID`
 
@@ -152,14 +153,14 @@ vercel --prod
 - Check workflow logs for specific errors
 
 ### Vercel deployment fails
-- Check Vercel dashboard for build logs
+- Check Vercel dashboard for project `project-project-4` build logs
 - Verify `vercel.json` configuration is correct
-- Ensure all environment variables are set in Vercel dashboard
+- Ensure all environment variables are set in Vercel dashboard for project `project-project-4`
 
 ## Environment Variables
 
 If your app requires environment variables (e.g., Firebase config), add them in:
-1. **Vercel Dashboard**: Project Settings > Environment Variables
+1. **Vercel Dashboard**: Project `project-project-4` > Settings > Environment Variables
 2. **GitHub Secrets**: For use in CI/CD workflows (if needed)
 
 ## Monitoring
