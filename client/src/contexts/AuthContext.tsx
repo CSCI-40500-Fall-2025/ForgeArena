@@ -198,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return unsubscribe;
-  }, []);
+  }, [createUserProfile]);
 
   // Check if handle is available
   const checkHandleAvailability = async (handle: string): Promise<boolean> => {
