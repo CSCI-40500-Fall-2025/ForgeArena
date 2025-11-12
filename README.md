@@ -71,13 +71,30 @@ Our software focuses on building a strong fitness community and keeping members 
   npm test
   ```
 
-### CI (Jenkins)
+### CI/CD Pipeline
+
+#### Continuous Integration (Jenkins)
 
 - This repo includes a `Jenkinsfile` that:
   - Installs dependencies at the root, `client`, and `server`
   - Runs shared tests with Jest and client tests via CRA
   - Archives coverage if available
 - After creating a Jenkins pipeline for this repo named `ForgeArena`, update the badge URL above to your Jenkins domain if needed.
+
+#### Continuous Deployment (GitHub Actions + Vercel)
+
+- **Automated Deployment**: Every commit to the `main` branch automatically triggers:
+  1. **Test Suite Execution**: All tests (shared + client) must pass
+  2. **Automatic Deployment**: If tests pass, the app is deployed to Vercel
+  3. **GitHub Deployments**: Deployment status is tracked in GitHub's Deployments section
+
+- **Live Deployment URL**: [https://forge-arena.vercel.app](https://forge-arena.vercel.app) (or your custom Vercel domain)
+
+- **View Deployments**: Check the [Deployments](https://github.com/CSCI-40500-Fall-2025/ForgeArena/deployments) section of this repository to see deployment history
+
+- **Workflow File**: `.github/workflows/deploy.yml` contains the CD pipeline configuration
+
+**Note**: The deployment only proceeds if all tests pass. Failed tests will prevent deployment to production.
 
 #### Manual Setup (if npm run dev doesn't work)
 
