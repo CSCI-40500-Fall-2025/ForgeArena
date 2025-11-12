@@ -88,7 +88,7 @@ Our software focuses on building a strong fitness community and keeping members 
   2. **Automatic Deployment**: If tests pass, the app is deployed to Vercel
   3. **GitHub Deployments**: Deployment status is tracked in GitHub's Deployments section
 
-- **Live Deployment URL**: [https://forge-arena.vercel.app](https://forge-arena.vercel.app) (or your custom Vercel domain)
+- **Live Deployment URL**: [https://project-project-4.vercel.app/](https://project-project-4.vercel.app/)
 
 - **View Deployments**: Check the [Deployments](https://github.com/CSCI-40500-Fall-2025/ForgeArena/deployments) section of this repository to see deployment history
 

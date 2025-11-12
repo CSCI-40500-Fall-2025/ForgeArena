@@ -76,7 +76,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const deploymentUrl = '${{ steps.deploy.outputs.url }}' || 'https://forge-arena.vercel.app';
+            const deploymentUrl = '${{ steps.deploy.outputs.url }}' || 'https://project-project-4.vercel.app/';
             
             try {
               const deployment = await github.rest.repos.createDeployment({

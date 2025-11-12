@@ -90,7 +90,7 @@ After setting up secrets:
    - You should see a new deployment entry
 
 5. Access live app:
-   - Your Vercel deployment URL (e.g., `https://forge-arena.vercel.app`)
+   - Live deployment URL: [https://project-project-4.vercel.app/](https://project-project-4.vercel.app/)
 
 ## How It Works
 
