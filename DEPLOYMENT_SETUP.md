@@ -116,12 +116,12 @@ After setting up secrets:
 
 ### Deployment Conditions
 
-✅ **Deployment happens when:**
+ **Deployment happens when:**
 - Code is pushed to `main` branch
 - All tests pass
 - GitHub secrets are configured
 
-❌ **Deployment is skipped when:**
+ **Deployment is skipped when:**
 - Tests fail
 - Push is to a branch other than `main`
 - GitHub secrets are missing

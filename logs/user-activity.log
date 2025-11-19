@@ -1,0 +1,16 @@
+2025-11-19 13:08:50 [INFO]:  ForgeArena Logger Initialized {"environment":"production","logLevel":"warn","isCI":false}
+2025-11-19 13:08:50 [INFO]: 🚀 Initializing ForgeArena server... {"port":5000,"environment":"production","nodeVersion":"v22.14.0"}
+2025-11-19 13:08:50 [INFO]: ✅ ForgeArena server running on port 5000 {"port":5000,"environment":"production"}
+2025-11-19 13:09:09 [INFO]: SIGINT received, shutting down gracefully... {"signal":"SIGINT","uptime":19.98542}
+2025-11-19 13:09:16 [INFO]:  ForgeArena Logger Initialized {"environment":"production","logLevel":"warn","isCI":false}
+2025-11-19 13:09:16 [INFO]: 🚀 Initializing ForgeArena server... {"port":5000,"environment":"production","nodeVersion":"v22.14.0"}
+2025-11-19 13:09:16 [INFO]: ✅ ForgeArena server running on port 5000 {"port":5000,"environment":"production"}
+2025-11-19 13:11:16 [INFO]: SIGINT received, shutting down gracefully... {"signal":"SIGINT","uptime":120.1243826}
+2025-11-19 13:12:36 [INFO]:  ForgeArena Logger Initialized {"environment":"production","logLevel":"warn","isCI":false}
+2025-11-19 13:12:36 [INFO]: 🚀 Initializing ForgeArena server... {"port":5000,"environment":"production","nodeVersion":"v22.14.0"}
+2025-11-19 13:12:36 [INFO]: ✅ ForgeArena server running on port 5000 {"port":5000,"environment":"production"}
+2025-11-19 13:14:22 [INFO]: SIGINT received, shutting down gracefully... {"signal":"SIGINT","uptime":106.480451}
+2025-11-19 13:14:37 [INFO]:  ForgeArena Logger Initialized {"environment":"production","logLevel":"warn","isCI":false}
+2025-11-19 13:14:37 [INFO]: 🚀 Initializing ForgeArena server... {"port":5000,"environment":"production","nodeVersion":"v22.14.0"}
+2025-11-19 13:14:37 [INFO]: ✅ ForgeArena server running on port 5000 {"port":5000,"environment":"production"}
+2025-11-19 13:15:54 [INFO]: SIGINT received, shutting down gracefully... {"signal":"SIGINT","uptime":77.5294442}

@@ -27,6 +27,7 @@
     "jest": "^29.7.0"
   },
   "dependencies": {
-    "vercel": "^47.0.7"
+    "vercel": "^47.0.7",
+    "winston-cloudwatch": "^6.3.0"
   }
 }
