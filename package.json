@@ -11,6 +11,8 @@
     "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
     "vercel-build": "npm run install-deps && npm run build",
+    "heroku-postbuild": "npm run install-deps && npm run build",
+    "start": "node server/index.js",
     "test:shared": "jest --config jest.config.cjs --ci --coverage",
     "test:client": "cd client && npm test -- --watchAll=false",
     "test": "npm run test:shared && npm run test:client"
@@ -22,6 +24,10 @@
   ],
   "author": "ForgeArena Team",
   "license": "MIT",
+  "engines": {
+    "node": "16.x",
+    "npm": "8.x"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2",
     "jest": "^29.7.0"
