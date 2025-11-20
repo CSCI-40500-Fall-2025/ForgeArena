@@ -109,15 +109,12 @@ const path = require('path');
     // Get your HTTP Source URL from: Manage Data > Collection > Add HTTP Source
     if (process.env.SUMO_LOGIC_URL) {
       try {
-        const SumoLogic = require('winston-sumologic-transport');
+        const SumoLogic = require('winston-sumologic-transport').SumoLogic;
         
         transports.push(new SumoLogic({
           url: process.env.SUMO_LOGIC_URL,
           level: 'debug', // Log all levels to Sumo Logic for monitoring
-          syncInterval: 1000, // Send logs every 1 second for near real-time
-          retryInterval: 5000, // Retry failed requests after 5 seconds
-          maxBatchSize: 100, // Maximum number of logs per batch
-          maxBatchCount: 10, // Maximum number of batches to queue
+          interval: 1000, // Send logs every 1 second for near real-time
           sourceName: 'ForgeArena-Server',
           sourceCategory: 'forgearena/production',
           sourceHost: process.env.HEROKU_APP_NAME || 'local',
