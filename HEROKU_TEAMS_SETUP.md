@@ -425,5 +425,5 @@ heroku rollback --app your-app
 
 ---
 
-**For Heroku Teams**: Remember to add the `HEROKU_TEAM` secret! 🎯
+**For Heroku Teams**: Remember to add the `HEROKU_TEAM` secret! 
 

@@ -1,16 +1,5 @@
 # GitHub Actions - Heroku Deployment Quick Setup
 
-## 🚀 5-Minute Setup for Automated Deployment
-
-### What You Get
-- ✅ Automatic deployment on every push to `main`
-- ✅ Tests run first (deployment only if tests pass)
-- ✅ Health check after deployment
-- ✅ Automatic rollback if health check fails
-
-**📌 Using Heroku Teams?** See `HEROKU_TEAMS_SETUP.md` for team-specific instructions.
-
----
 
 ## Step 1: Get Heroku API Key (1 minute)
 
@@ -78,7 +67,7 @@ git push origin main
 
 ---
 
-## ✅ Done!
+## Done!
 
 Now every push to `main` will:
 1. Run tests
@@ -116,5 +105,5 @@ See `GITHUB_ACTIONS_HEROKU_SETUP.md` for detailed guide.
 
 ---
 
-**Ready to deploy automatically! 🚀**
+**Ready to deploy automatically! **
 
