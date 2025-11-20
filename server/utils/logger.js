@@ -111,18 +111,24 @@ const path = require('path');
       try {
         const SumoLogic = require('winston-sumologic-transport').SumoLogic;
         
-        transports.push(new SumoLogic({
+        const sumoTransport = new SumoLogic({
           url: process.env.SUMO_LOGIC_URL,
           level: 'debug', // Log all levels to Sumo Logic for monitoring
           interval: 1000, // Send logs every 1 second for near real-time
           sourceName: 'ForgeArena-Server',
           sourceCategory: 'forgearena/production',
           sourceHost: process.env.HEROKU_APP_NAME || 'local',
-        }));
+        });
+        
+        transports.push(sumoTransport);
 
         console.log('✅ Sumo Logic transport initialized for real-time log monitoring');
+        console.log('   Source Category: forgearena/production');
+        console.log('   Source Name: ForgeArena-Server');
+        console.log('   Interval: 1000ms');
       } catch (err) {
         console.warn('⚠️  Sumo Logic transport failed to initialize:', err.message);
+        console.warn('   Stack:', err.stack);
       }
     } else {
       console.warn('⚠️  SUMO_LOGIC_URL not set - Sumo Logic monitoring disabled');
@@ -217,10 +223,21 @@ const path = require('path');
   };
   
   // Log initialization
-  logger.info(' ForgeArena Logger Initialized', {
+  logger.info('🔧 ForgeArena Logger Initialized', {
     environment: process.env.NODE_ENV || 'development',
     logLevel: level(),
     isCI: process.env.CI === 'true',
+    sumoLogicEnabled: !!(process.env.NODE_ENV === 'production' && process.env.SUMO_LOGIC_URL && process.env.CI !== 'true'),
   });
+  
+  // Send a test log to verify Sumo Logic is working
+  if (process.env.NODE_ENV === 'production' && process.env.SUMO_LOGIC_URL && process.env.CI !== 'true') {
+    setTimeout(() => {
+      logger.info('🧪 Test log - Sumo Logic integration check', {
+        timestamp: new Date().toISOString(),
+        testMessage: 'If you see this in Sumo Logic, the integration is working!',
+      });
+    }, 2000);
+  }
   
   module.exports = logger;
