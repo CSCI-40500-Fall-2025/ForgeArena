@@ -71,6 +71,18 @@ Our software focuses on building a strong fitness community and keeping members 
   npm test
   ```
 
+### Logging and Monitoring
+
+ForgeArena uses **Winston** for comprehensive logging with **Sumo Logic** for real-time log monitoring:
+
+- **5 Log Levels**: error, warn, info, http, debug
+- **35+ Log Statements** across all granularities
+- **Real-Time Monitoring**: Logs stream to Sumo Logic in production
+- **CI Logging**: Debug level for test diagnostics (not sent to Sumo Logic)
+
+**Setup Guide**: See `LOGGING_MONITORING_SETUP.md` for complete documentation  
+**Quick Setup**: See `SUMO_LOGIC_QUICK_SETUP.md` for 5-minute setup
+
 ### CI/CD Pipeline
 
 #### Continuous Integration (Jenkins)
@@ -85,17 +97,25 @@ Our software focuses on building a strong fitness community and keeping members 
 
 **Heroku Deployment** (Current)
 
-The app is now configured for deployment on Heroku. See deployment guides:
-- **Quick Start**: See `HEROKU_QUICK_START.md` for 5-step deployment
-- **Full Guide**: See `HEROKU_DEPLOYMENT_GUIDE.md` for comprehensive instructions
+The app is configured for deployment on Heroku with automated CD via GitHub Actions.
 
-To deploy to Heroku:
+**Automated Deployment (Recommended)**:
+- Every push to `main` branch automatically deploys to Heroku
+- Tests run first - deployment only happens if tests pass
+- Setup guide: See `GITHUB_ACTIONS_HEROKU_SETUP.md`
+
+**Manual Deployment**:
 ```bash
 heroku create your-app-name
 heroku config:set NODE_ENV=production
 git push heroku main
 heroku open
 ```
+
+**Deployment Guides**:
+- **GitHub Actions Setup**: `GITHUB_ACTIONS_HEROKU_SETUP.md` (automated CD)
+- **Quick Start**: `HEROKU_QUICK_START.md` (5-step manual deployment)
+- **Full Guide**: `HEROKU_DEPLOYMENT_GUIDE.md` (comprehensive instructions)
 
 **Previous Deployment** (Vercel)
 - The app was previously configured for Vercel deployment

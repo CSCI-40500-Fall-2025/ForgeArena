@@ -105,6 +105,32 @@ const path = require('path');
   
   // Add cloud logging transports for production (exclude CI)
   if (process.env.NODE_ENV === 'production' && process.env.CI !== 'true') {
+    // Sumo Logic (recommended - free tier available)
+    // Get your HTTP Source URL from: Manage Data > Collection > Add HTTP Source
+    if (process.env.SUMO_LOGIC_URL) {
+      try {
+        const SumoLogic = require('winston-sumologic-transport');
+        
+        transports.push(new SumoLogic({
+          url: process.env.SUMO_LOGIC_URL,
+          level: 'debug', // Log all levels to Sumo Logic for monitoring
+          syncInterval: 1000, // Send logs every 1 second for near real-time
+          retryInterval: 5000, // Retry failed requests after 5 seconds
+          maxBatchSize: 100, // Maximum number of logs per batch
+          maxBatchCount: 10, // Maximum number of batches to queue
+          sourceName: 'ForgeArena-Server',
+          sourceCategory: 'forgearena/production',
+          sourceHost: process.env.HEROKU_APP_NAME || 'local',
+        }));
+
+        console.log('✅ Sumo Logic transport initialized for real-time log monitoring');
+      } catch (err) {
+        console.warn('⚠️  Sumo Logic transport failed to initialize:', err.message);
+      }
+    } else {
+      console.warn('⚠️  SUMO_LOGIC_URL not set - Sumo Logic monitoring disabled');
+    }
+    
     // Logtail (optional)
     try {
       const { Logtail } = require('@logtail/node');
@@ -114,8 +140,6 @@ const path = require('path');
         const logtail = new Logtail(process.env.LOGTAIL_SOURCE_TOKEN);
         transports.push(new LogtailTransport(logtail));
         console.log('Logtail transport initialized for production logging');
-      } else {
-        console.warn(' LOGTAIL_SOURCE_TOKEN not found - Logtail disabled');
       }
     } catch (e) {
       // If @logtail packages are not installed, skip silently
