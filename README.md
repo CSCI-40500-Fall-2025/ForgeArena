@@ -81,20 +81,26 @@ Our software focuses on building a strong fitness community and keeping members 
   - Archives coverage if available
 - After creating a Jenkins pipeline for this repo named `ForgeArena`, update the badge URL above to your Jenkins domain if needed.
 
-#### Continuous Deployment (GitHub Actions + Vercel)
+#### Deployment
 
-- **Automated Deployment**: Every commit to the `main` branch automatically triggers:
-  1. **Test Suite Execution**: All tests (shared + client) must pass
-  2. **Automatic Deployment**: If tests pass, the app is deployed to Vercel
-  3. **GitHub Deployments**: Deployment status is tracked in GitHub's Deployments section
+**Heroku Deployment** (Current)
 
-- **Live Deployment URL**: [https://project-project-4.vercel.app/](https://project-project-4.vercel.app/)
+The app is now configured for deployment on Heroku. See deployment guides:
+- **Quick Start**: See `HEROKU_QUICK_START.md` for 5-step deployment
+- **Full Guide**: See `HEROKU_DEPLOYMENT_GUIDE.md` for comprehensive instructions
 
-- **View Deployments**: Check the [Deployments](https://github.com/CSCI-40500-Fall-2025/ForgeArena/deployments) section of this repository to see deployment history
+To deploy to Heroku:
+```bash
+heroku create your-app-name
+heroku config:set NODE_ENV=production
+git push heroku main
+heroku open
+```
 
-- **Workflow File**: `.github/workflows/deploy.yml` contains the CD pipeline configuration
-
-**Note**: The deployment only proceeds if all tests pass. Failed tests will prevent deployment to production.
+**Previous Deployment** (Vercel)
+- The app was previously configured for Vercel deployment
+- Vercel configuration files remain in the repo for backwards compatibility
+- See `DEPLOYMENT_SETUP.md` for Vercel-specific instructions
 
 #### Manual Setup (if npm run dev doesn't work)
 
@@ -274,7 +280,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 | **Database** | Firebase Firestore |
 | **Storage** | Firebase Storage |
 | **Cache** | Redis (for leaderboard/quest caching) |
-| **Deployment** | Google Cloud Platform / Firebase Hosting |
+| **Deployment** | Heroku / Firebase Hosting |
 | **Build Tools** | Vite, npm, PM2 |
 | **Docs & API** | Swagger / OpenAPI 3.0 |
 
