@@ -11,6 +11,14 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# Firebase Service Account (NEVER COMMIT THIS!)
+serviceAccount.json
+*-serviceAccount.json
+
+# User database (local development)
+data/
+users.json
+
 # Logs
 logs
 *.log
