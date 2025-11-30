@@ -49,3 +49,5 @@
 
 **All acceptance criteria met**: Unique handles, Firebase Storage avatars, profile persistence, and UI integration.
 
+
+

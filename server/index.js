@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const logger = require('./utils/logger');
+const userService = require('./services/user.service');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -11,6 +12,11 @@ logger.info('🚀 Initializing ForgeArena server...', {
   port: PORT,
   environment: process.env.NODE_ENV || 'development',
   nodeVersion: process.version,
+});
+
+// Initialize user database
+userService.initUsersDb().catch(err => {
+  logger.error('Failed to initialize users database', { error: err.message });
 });
 
 // Middleware
@@ -66,8 +72,22 @@ logger.debug('Mock data and game logic loaded', {
 // API Routes
 // ============================================================================
 
-// Get user profile
-app.get('/api/user', (req, res) => {
+// Auth routes
+const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes');
+const authMiddleware = require('./middleware/auth.middleware');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/user', userRoutes);
+
+// Get user profile (legacy - will be replaced by /api/user/profile)
+app.get('/api/user', authMiddleware.optionalAuth, (req, res) => {
+  // If authenticated, use their profile
+  if (req.user) {
+    return res.json(req.user);
+  }
+  
+  // Otherwise, use mock user for backwards compatibility
   logger.debug('Fetching user profile', {
     userId: mockUser.id,
     username: mockUser.username,
@@ -77,8 +97,8 @@ app.get('/api/user', (req, res) => {
   res.json(mockUser);
 });
 
-// Process workout
-app.post('/api/workout', async (req, res) => {
+// Process workout (now requires authentication)
+app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
   try {
     const { exercise, reps } = req.body;
     

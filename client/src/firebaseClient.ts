@@ -1,3 +1,7 @@
-import { db, auth, storage } from './firebaseConfig'
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
-export { db, auth, storage }
+// Re-export from firebaseConfig for backward compatibility
+export { db, storage } from './firebaseConfig';
+

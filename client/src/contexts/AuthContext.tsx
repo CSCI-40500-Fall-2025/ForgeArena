@@ -1,22 +1,10 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
-  onAuthStateChanged,
-  updateProfile,
-  User
-} from 'firebase/auth';
-import { doc, setDoc, getDoc, query, collection, where, getDocs } from 'firebase/firestore';
-import { auth, db, storage } from '../firebaseConfig';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
+
+// API configuration
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 // Types
-interface AuthUser extends User {
-  displayName: string | null;
-}
-
-interface UserProfile {
+interface AuthUser {
   uid: string;
   email: string;
   username: string;
@@ -37,15 +25,16 @@ interface UserProfile {
 
 interface AuthContextType {
   currentUser: AuthUser | null;
-  userProfile: UserProfile | null;
+  userProfile: AuthUser | null;
   loading: boolean;
   signup: (email: string, password: string, username: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  updateUserProfile: (updates: Partial<UserProfile>) => Promise<void>;
+  updateUserProfile: (updates: Partial<AuthUser>) => Promise<void>;
   updateHandle: (newHandle: string) => Promise<void>;
   uploadAvatar: (file: File) => Promise<string>;
   checkHandleAvailability: (handle: string) => Promise<boolean>;
+  getAccessToken: () => string | null;
 }
 
 // Create context
@@ -63,86 +52,164 @@ export const useAuth = (): AuthContextType => {
 // Auth Provider Component
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [userProfile, setUserProfile] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const [accessToken, setAccessToken] = useState<string | null>(null);
+  const [refreshToken, setRefreshToken] = useState<string | null>(null);
+
+  // Get access token
+  const getAccessToken = useCallback(() => {
+    return accessToken;
+  }, [accessToken]);
+
+  // Save tokens to localStorage
+  const saveTokens = useCallback((access: string, refresh: string) => {
+    setAccessToken(access);
+    setRefreshToken(refresh);
+    localStorage.setItem('accessToken', access);
+    localStorage.setItem('refreshToken', refresh);
+  }, []);
+
+  // Clear tokens from localStorage
+  const clearTokens = useCallback(() => {
+    setAccessToken(null);
+    setRefreshToken(null);
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+  }, []);
+
+  // Refresh access token
+  const refreshAccessToken = useCallback(async () => {
+    const storedRefreshToken = localStorage.getItem('refreshToken');
+    
+    if (!storedRefreshToken) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/api/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refreshToken: storedRefreshToken }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to refresh token');
+      }
+
+      const data = await response.json();
+      
+      setAccessToken(data.accessToken);
+      localStorage.setItem('accessToken', data.accessToken);
+      
+      return true;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      clearTokens();
+      return false;
+    }
+  }, [clearTokens]);
+
+  // Fetch user profile with authentication
+  const fetchUserProfile = useCallback(async (token: string) => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch profile');
+      }
+
+      const user = await response.json();
+      setCurrentUser(user);
+      setUserProfile(user);
+      
+      return user;
+    } catch (error) {
+      console.error('Failed to fetch profile:', error);
+      throw error;
+    }
+  }, []);
+
+  // Check authentication on mount
+  useEffect(() => {
+    const initAuth = async () => {
+      const storedAccessToken = localStorage.getItem('accessToken');
+      const storedRefreshToken = localStorage.getItem('refreshToken');
+
+      if (storedAccessToken && storedRefreshToken) {
+        setAccessToken(storedAccessToken);
+        setRefreshToken(storedRefreshToken);
+
+        try {
+          // Try to fetch user profile with stored token
+          await fetchUserProfile(storedAccessToken);
+        } catch (error) {
+          // If failed, try to refresh token
+          const refreshed = await refreshAccessToken();
+          
+          if (refreshed) {
+            const newToken = localStorage.getItem('accessToken');
+            if (newToken) {
+              try {
+                await fetchUserProfile(newToken);
+              } catch (err) {
+                clearTokens();
+              }
+            }
+          } else {
+            clearTokens();
+          }
+        }
+      }
+
+      setLoading(false);
+    };
+
+    initAuth();
+  }, [fetchUserProfile, refreshAccessToken, clearTokens]);
 
   // Check if handle is available
   const checkHandleAvailability = useCallback(async (handle: string): Promise<boolean> => {
     try {
-      const q = query(collection(db, 'users'), where('handle', '==', handle));
-      const querySnapshot = await getDocs(q);
-      return querySnapshot.empty;
+      const response = await fetch(`${API_URL}/api/user/handle/${handle}/availability`);
+      const data = await response.json();
+      return data.available;
     } catch (error) {
       console.error('Error checking handle availability:', error);
       return false;
     }
   }, []);
 
-  // Create user profile in Firestore
-  const createUserProfile = useCallback(async (user: AuthUser, username: string) => {
-    const userDoc = doc(db, 'users', user.uid);
-    
-    // Generate a unique handle based on username
-    let handle = username.toLowerCase().replace(/[^a-z0-9]/g, '');
-    let handleCounter = 0;
-    let originalHandle = handle;
-    
-    // Ensure handle is unique
-    while (!(await checkHandleAvailability(handle))) {
-      handleCounter++;
-      handle = `${originalHandle}${handleCounter}`;
-    }
-    
-    const userProfile: UserProfile = {
-      uid: user.uid,
-      email: user.email || '',
-      username,
-      handle,
-      avatarUrl: '',
-      level: 1,
-      xp: 0,
-      strength: 10,
-      endurance: 10,
-      agility: 10,
-      gym: '',
-      workoutStreak: 0,
-      lastWorkout: null,
-      equipment: {},
-      inventory: [],
-      createdAt: new Date().toISOString()
-    };
-    
-    await setDoc(userDoc, userProfile);
-    return userProfile;
-  }, [checkHandleAvailability]);
-
-  // Get user profile from Firestore
-  const getUserProfile = useCallback(async (uid: string): Promise<UserProfile | null> => {
-    try {
-      const userDoc = doc(db, 'users', uid);
-      const docSnap = await getDoc(userDoc);
-      
-      if (docSnap.exists()) {
-        return docSnap.data() as UserProfile;
-      }
-      return null;
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-      return null;
-    }
-  }, []);
-
   // Sign up function
   const signup = async (email: string, password: string, username: string) => {
     try {
-      const { user } = await createUserWithEmailAndPassword(auth, email, password);
+      const response = await fetch(`${API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, username }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create account');
+      }
+
+      const data = await response.json();
       
-      // Update the user's display name
-      await updateProfile(user, { displayName: username });
+      // Save tokens
+      saveTokens(data.accessToken, data.refreshToken);
       
-      // Create user profile in Firestore
-      const profile = await createUserProfile(user as AuthUser, username);
-      setUserProfile(profile);
+      // Set user
+      setCurrentUser(data.user);
+      setUserProfile(data.user);
       
     } catch (error: any) {
       console.error('Signup error:', error);
@@ -153,7 +220,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Login function
   const login = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const response = await fetch(`${API_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to log in');
+      }
+
+      const data = await response.json();
+      
+      // Save tokens
+      saveTokens(data.accessToken, data.refreshToken);
+      
+      // Set user
+      setCurrentUser(data.user);
+      setUserProfile(data.user);
+      
     } catch (error: any) {
       console.error('Login error:', error);
       throw new Error(error.message || 'Failed to log in');
@@ -163,58 +251,63 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Logout function
   const logout = async () => {
     try {
-      await signOut(auth);
+      // Call logout endpoint (optional, as JWT is stateless)
+      if (accessToken) {
+        await fetch(`${API_URL}/api/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${accessToken}`,
+          },
+        });
+      }
+      
+      // Clear tokens and user state
+      clearTokens();
+      setCurrentUser(null);
       setUserProfile(null);
+      
     } catch (error: any) {
       console.error('Logout error:', error);
-      throw new Error(error.message || 'Failed to log out');
+      // Still clear local state even if API call fails
+      clearTokens();
+      setCurrentUser(null);
+      setUserProfile(null);
     }
   };
 
   // Update user profile
-  const updateUserProfile = async (updates: Partial<UserProfile>) => {
-    if (!currentUser || !userProfile) return;
+  const updateUserProfile = async (updates: Partial<AuthUser>) => {
+    if (!currentUser || !accessToken) return;
     
     try {
-      const userDoc = doc(db, 'users', currentUser.uid);
-      const updatedProfile = { ...userProfile, ...updates };
+      const response = await fetch(`${API_URL}/api/user/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      const data = await response.json();
+      const updatedUser = data.user;
       
-      await setDoc(userDoc, updatedProfile, { merge: true });
-      setUserProfile(updatedProfile);
+      setCurrentUser(updatedUser);
+      setUserProfile(updatedUser);
+      
     } catch (error) {
       console.error('Error updating user profile:', error);
       throw new Error('Failed to update profile');
     }
   };
 
-  // Auth state listener
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setCurrentUser(user as AuthUser);
-        
-        // Fetch user profile from Firestore
-        const profile = await getUserProfile(user.uid);
-        if (profile) {
-          setUserProfile(profile);
-        } else {
-          // If no profile exists, create one (for existing users)
-          const newProfile = await createUserProfile(user as AuthUser, user.displayName || 'User');
-          setUserProfile(newProfile);
-        }
-      } else {
-        setCurrentUser(null);
-        setUserProfile(null);
-      }
-      setLoading(false);
-    });
-
-    return unsubscribe;
-  }, [createUserProfile, getUserProfile]);
-
   // Update user handle
   const updateHandle = async (newHandle: string) => {
-    if (!currentUser || !userProfile) {
+    if (!currentUser || !accessToken) {
       throw new Error('No user logged in');
     }
 
@@ -229,24 +322,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     try {
-      const userDoc = doc(db, 'users', currentUser.uid);
-      await setDoc(userDoc, { handle: newHandle }, { merge: true });
+      const response = await fetch(`${API_URL}/api/user/handle`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ handle: newHandle }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update handle');
+      }
+
+      const data = await response.json();
+      const updatedUser = data.user;
       
-      const updatedProfile = { ...userProfile, handle: newHandle };
-      setUserProfile(updatedProfile);
-    } catch (error) {
+      setCurrentUser(updatedUser);
+      setUserProfile(updatedUser);
+      
+    } catch (error: any) {
       console.error('Error updating handle:', error);
-      throw new Error('Failed to update handle');
+      throw new Error(error.message || 'Failed to update handle');
     }
   };
 
   // Upload avatar to Firebase Storage
   const uploadAvatar = async (file: File): Promise<string> => {
-    if (!currentUser) {
+    if (!currentUser || !accessToken) {
       throw new Error('No user logged in');
     }
 
     try {
+      // Import Firebase Storage functions dynamically
+      const { ref, uploadBytes, getDownloadURL, deleteObject } = await import('firebase/storage');
+      const { storage } = await import('../firebaseConfig');
+
       // Create storage reference
       const timestamp = Date.now();
       const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'jpg';
@@ -287,7 +399,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateUserProfile,
     updateHandle,
     uploadAvatar,
-    checkHandleAvailability
+    checkHandleAvailability,
+    getAccessToken,
   };
 
   return (
