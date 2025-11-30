@@ -78,10 +78,11 @@ interface RaidBoss {
   participants: number;
 }
 
-const API_BASE = process.env.REACT_APP_API_URL || 
-  (process.env.NODE_ENV === 'production' 
-    ? '/api'  // Use Vercel serverless functions in production
-    : 'http://localhost:5000/api');  // Use local server in development
+const API_BASE = process.env.REACT_APP_API_URL 
+  ? `${process.env.REACT_APP_API_URL}/api`
+  : (process.env.NODE_ENV === 'production' 
+      ? '/api'  // Use same domain in production (Heroku)
+      : 'http://localhost:5000/api');  // Use local server in development
 
 // Main App Component (without auth wrapper)
 function MainApp() {

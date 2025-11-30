@@ -1,7 +1,10 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 
 // API configuration
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 
+  (process.env.NODE_ENV === 'production' 
+    ? '' // Use same domain in production (Heroku)
+    : 'http://localhost:5000'); // Use local in development
 
 // Types
 interface AuthUser {
