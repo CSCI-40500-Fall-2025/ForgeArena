@@ -80,13 +80,18 @@ async function upsertGymLocation(placeData) {
 
 /**
  * Get gym locations near a coordinate
+ * @param {number} lat - Latitude
+ * @param {number} lng - Longitude  
+ * @param {number} radiusKm - Search radius in kilometers (max ~161km / 100 miles)
  */
-async function getNearbyGyms(lat, lng, radiusKm = 5) {
+async function getNearbyGyms(lat, lng, radiusKm = 8) {
   try {
     const gymsRef = getGymLocationsCollection();
     // Firestore doesn't support geo queries natively, so we fetch all and filter
     // In production, consider using GeoFirestore or a different approach
-    const snapshot = await gymsRef.limit(100).get();
+    // Increase limit for larger radius searches
+    const limit = radiusKm > 80 ? 500 : radiusKm > 40 ? 300 : 100;
+    const snapshot = await gymsRef.limit(limit).get();
     
     const gyms = snapshot.docs.map(doc => {
       const data = doc.data();
