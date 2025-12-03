@@ -33,14 +33,6 @@ interface Achievement {
   icon: string;
 }
 
-interface Equipment {
-  id: string;
-  name: string;
-  type: string;
-  stats: { [key: string]: number };
-  rarity: string;
-}
-
 interface Duel {
   id: number;
   challenger: string;
@@ -88,7 +80,6 @@ function MainApp() {
   const [raidBoss, setRaidBoss] = useState<RaidBoss | null>(null);
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [inventory, setInventory] = useState<Equipment[]>([]);
   const [duels, setDuels] = useState<Duel[]>([]);
   const [activityFeed, setActivityFeed] = useState<Activity[]>([]);
   const [workoutForm, setWorkoutForm] = useState({ exercise: 'squat', reps: 10 });
@@ -123,12 +114,11 @@ function MainApp() {
 
   const fetchData = async () => {
     try {
-      const [questsRes, raidRes, leaderRes, achieveRes, inventoryRes, duelsRes, activityRes] = await Promise.all([
+      const [questsRes, raidRes, leaderRes, achieveRes, duelsRes, activityRes] = await Promise.all([
         fetch(`${API_BASE}/quests`),
         fetch(`${API_BASE}/raid`),
         fetch(`${API_BASE}/leaderboard`),
         fetch(`${API_BASE}/achievements`),
-        fetch(`${API_BASE}/inventory`),
         fetch(`${API_BASE}/duels`),
         fetch(`${API_BASE}/activity`)
       ]);
@@ -137,7 +127,6 @@ function MainApp() {
       setRaidBoss(await raidRes.json());
       setLeaderboard(await leaderRes.json());
       setAchievements(await achieveRes.json());
-      setInventory(await inventoryRes.json());
       setDuels(await duelsRes.json());
       setActivityFeed(await activityRes.json());
     } catch (error) {
@@ -202,19 +191,6 @@ function MainApp() {
     }
   };
 
-  const equipItem = async (itemId: string) => {
-    try {
-      const res = await fetch(`${API_BASE}/equip/${itemId}`, {
-        method: 'POST'
-      });
-      const data = await res.json();
-      setMessage(data.message);
-      fetchData();
-    } catch (error) {
-      setMessage('Failed to equip item');
-    }
-  };
-
   const createDuel = async () => {
     try {
       const res = await fetch(`${API_BASE}/duels`, {
@@ -256,14 +232,14 @@ function MainApp() {
       </header>
 
       <nav className="nav-tabs">
-        {['dashboard', 'avatar', 'ai-coach', 'profile', 'inventory', 'achievements', 'duels', 'clubs', 'social'].map(tab => (
+        {['dashboard', 'avatar', 'ai-coach', 'profile', 'achievements', 'duels', 'clubs', 'social'].map(tab => (
           <button 
             key={tab}
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
             onClick={() => setActiveTab(tab)}
           >
             {tab === 'ai-coach' ? 'AI Coach' : 
-             tab === 'avatar' ? 'Avatar' : 
+             tab === 'avatar' ? 'Avatar & Inventory' : 
              tab === 'clubs' ? '⚔️ Clubs' :
              tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
@@ -345,30 +321,6 @@ function MainApp() {
                   <span className="xp">{player.xp} XP</span>
                 </div>
               ))}
-            </div>
-          </>
-        )}
-
-        {activeTab === 'inventory' && (
-          <>
-            <div className="card inventory-card">
-              <h2>Inventory & Equipment</h2>
-              <div className="inventory-grid">
-                {inventory.map(item => (
-                  <div key={item.id} className={`inventory-item ${item.rarity}`}>
-                    <h4>{item.name}</h4>
-                    <p className="item-type">{item.type}</p>
-                    <div className="item-stats">
-                      {Object.entries(item.stats).map(([stat, value]) => (
-                        <span key={stat} className="stat">+{value} {stat}</span>
-                      ))}
-                    </div>
-                    <button onClick={() => equipItem(item.id)} className="equip-btn">
-                      Equip
-                    </button>
-                  </div>
-                ))}
-              </div>
             </div>
           </>
         )}

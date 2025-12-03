@@ -66,7 +66,7 @@ export const ICON_LABELS: { [key: string]: string } = {
   'check': 'OK',
   'flame': 'HOT',
   'castle': 'HQ',
-  'sword': 'ATK',
+  'attack': 'ATK',
 };
 
 /**
