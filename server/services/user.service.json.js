@@ -131,6 +131,7 @@ async function createUser(userData) {
     lastWorkout: null,
     equipment: {},
     inventory: [],
+    authProvider: 'email',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
@@ -151,6 +152,60 @@ async function createUser(userData) {
 }
 
 /**
+ * Create a new user from OAuth provider (no password required)
+ * @param {object} userData - User data
+ * @returns {Promise<object>} Created user
+ */
+async function createOAuthUser(userData) {
+  const users = await readUsers();
+  
+  // Check if email already exists
+  const existingUser = await findUserByEmail(userData.email);
+  if (existingUser) {
+    throw new Error('Email already registered');
+  }
+  
+  // Generate unique handle
+  const handle = await authUtils.generateUniqueHandle(userData.username, isHandleAvailable);
+  
+  // Create user object (no password for OAuth users)
+  const newUser = {
+    uid: `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    email: userData.email,
+    username: userData.username,
+    handle,
+    avatarUrl: userData.avatarUrl || '',
+    level: 1,
+    xp: 0,
+    strength: 10,
+    endurance: 10,
+    agility: 10,
+    gym: '',
+    workoutStreak: 0,
+    lastWorkout: null,
+    equipment: {},
+    inventory: [],
+    authProvider: userData.authProvider,
+    firebaseUid: userData.firebaseUid,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+  
+  users.push(newUser);
+  await writeUsers(users);
+  
+  logger.info('OAuth user created successfully', {
+    uid: newUser.uid,
+    email: newUser.email,
+    username: newUser.username,
+    handle: newUser.handle,
+    authProvider: newUser.authProvider,
+  });
+  
+  return newUser;
+}
+
+/**
  * Update user profile
  * @param {string} uid - User ID
  * @param {object} updates - Fields to update
@@ -168,7 +223,8 @@ async function updateUser(uid, updates) {
   const allowedFields = [
     'username', 'handle', 'avatarUrl', 'level', 'xp',
     'strength', 'endurance', 'agility', 'gym',
-    'workoutStreak', 'lastWorkout', 'equipment', 'inventory'
+    'workoutStreak', 'lastWorkout', 'equipment', 'inventory',
+    'authProvider', 'firebaseUid'
   ];
   
   const filteredUpdates = {};
@@ -225,6 +281,7 @@ module.exports = {
   findUserByHandle,
   isHandleAvailable,
   createUser,
+  createOAuthUser,
   updateUser,
   verifyCredentials,
 };

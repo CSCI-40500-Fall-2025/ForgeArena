@@ -16,5 +16,10 @@ module.exports = {
   usernameMaxLength: 20,
   handleMinLength: 3,
   handleMaxLength: 20,
+  
+  // OAuth Providers (configured in Firebase Console)
+  // - Google: Enable in Firebase Console > Authentication > Sign-in method
+  // - GitHub: Enable and add OAuth credentials from GitHub Developer Settings
+  oauthProviders: ['google', 'github'],
 };
 
