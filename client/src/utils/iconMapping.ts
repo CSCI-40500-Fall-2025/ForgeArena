@@ -90,7 +90,7 @@ export function getIconUrl(iconId: string): string | null {
   // - 'none': Use text labels only
   // - 'svg': Use generated SVG placeholders (free, included)
   // - 'png': Use AI-generated PNG images (requires running generate script with API key)
-  const ICON_MODE: 'none' | 'svg' | 'png' = 'svg';
+  const ICON_MODE = 'svg' as 'none' | 'svg' | 'png';
   
   if (ICON_MODE === 'png') {
     return `/assets/icons/${iconId}.png`;
