@@ -75,10 +75,19 @@ logger.debug('Mock data and game logic loaded', {
 // Auth routes
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
+const mlRoutes = require('./routes/ml.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/ml', mlRoutes);
+
+// INFO: ML Service initialized
+logger.info('🤖 ForgeMaster AI (ML Service) initialized', {
+  features: ['recommendations', 'predictions', 'motivation', 'quest-suggestions', 'patterns'],
+  engine: process.env.GEMINI_API_KEY ? 'gemini_enhanced' : 'rule_based_ai',
+  geminiEnabled: !!process.env.GEMINI_API_KEY
+});
 
 // Get user profile (legacy - will be replaced by /api/user/profile)
 app.get('/api/user', authMiddleware.optionalAuth, (req, res) => {
