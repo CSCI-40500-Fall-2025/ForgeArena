@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserProfile from './components/UserProfile';
 import ProfileScreen from './components/ProfileScreen';
+import AICoach from './components/AICoach';
 import './App.css';
 
 interface Avatar {
@@ -278,13 +279,13 @@ function MainApp() {
       </header>
 
       <nav className="nav-tabs">
-        {['dashboard', 'profile', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
+        {['dashboard', 'ai-coach', 'profile', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
           <button 
             key={tab}
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'ai-coach' ? '🤖 AI Coach' : tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </nav>
@@ -469,6 +470,10 @@ function MainApp() {
 
         {activeTab === 'profile' && (
           <ProfileScreen />
+        )}
+
+        {activeTab === 'ai-coach' && (
+          <AICoach />
         )}
 
         {activeTab === 'social' && (
