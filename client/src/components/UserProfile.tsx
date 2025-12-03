@@ -48,7 +48,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ className = '' }) => {
         onClick={handleLogout}
         title="Logout"
       >
-        🚪
+        Exit
       </button>
     </div>
   );

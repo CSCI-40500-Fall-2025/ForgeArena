@@ -176,7 +176,7 @@ const ProfileScreen: React.FC = () => {
                 </div>
               )}
               <div className="avatar-overlay">
-                <span>📷</span>
+                <span>EDIT</span>
               </div>
             </div>
             <input

@@ -67,7 +67,7 @@
 }
 
 .toast-message.error::before {
-  content: '⚠️';
+  content: '!';
 }
 
 .toast-message.info {

@@ -281,20 +281,20 @@ Recommend the best workout. Respond ONLY with valid JSON (no markdown):
   // Streak-based motivation
   let motivationalTip;
   if (workoutStreak === 0) {
-    motivationalTip = "🔥 Start your streak today! Every journey begins with a single rep!";
+    motivationalTip = "Start your streak today! Every journey begins with a single rep!";
   } else if (workoutStreak < 3) {
-    motivationalTip = `🔥 ${workoutStreak}-day streak! Keep it going to unlock streak bonuses!`;
+    motivationalTip = `${workoutStreak}-day streak! Keep it going to unlock streak bonuses!`;
   } else if (workoutStreak < 7) {
-    motivationalTip = `🔥 ${workoutStreak}-day streak! You're on fire! Push for that 7-day milestone!`;
+    motivationalTip = `${workoutStreak}-day streak! You're on fire! Push for that 7-day milestone!`;
   } else {
-    motivationalTip = `🔥 LEGENDARY ${workoutStreak}-day streak! You're an inspiration to the arena!`;
+    motivationalTip = `LEGENDARY ${workoutStreak}-day streak! You're an inspiration to the arena!`;
   }
   
   // Check if it's been a while since last workout
   if (lastWorkout) {
     const daysSince = Math.floor((Date.now() - new Date(lastWorkout).getTime()) / (1000 * 60 * 60 * 24));
     if (daysSince > 3) {
-      motivationalTip = "💪 Welcome back, warrior! The arena missed you. Let's ease back in!";
+      motivationalTip = "Welcome back, warrior! The arena missed you. Let's ease back in!";
     }
   }
 
@@ -397,13 +397,13 @@ Respond ONLY with valid JSON (no markdown):
     streakStatus = `${workoutStreak}-day streak building`;
     streakRecommendation = 'Keep going! 3-day streaks unlock bonus XP!';
   } else if (workoutStreak < 7) {
-    streakStatus = `${workoutStreak}-day streak active! 🔥`;
+    streakStatus = `${workoutStreak}-day streak active!`;
     streakRecommendation = 'Amazing progress! 7-day milestone is within reach!';
   } else if (workoutStreak < 30) {
-    streakStatus = `${workoutStreak}-day streak! 🔥🔥`;
+    streakStatus = `${workoutStreak}-day streak!`;
     streakRecommendation = 'Legendary dedication! You\'re in the top tier of warriors!';
   } else {
-    streakStatus = `${workoutStreak}-day LEGENDARY streak! 🔥🔥🔥`;
+    streakStatus = `${workoutStreak}-day LEGENDARY streak!`;
     streakRecommendation = 'You are a true ForgeArena champion! Keep inspiring others!';
   }
   
@@ -513,7 +513,7 @@ Respond ONLY with valid JSON (no markdown):
         `Good to see you, ${greeting}! The leaderboard trembles at your dedication!`,
         `${username}, your avatar grows stronger with each workout. Let's earn some XP!`
       ],
-      emoji: '⚔️',
+      icon: 'sword',
       actionPrompt: 'Log your first workout of the day!'
     },
     streak_broken: {
@@ -523,17 +523,17 @@ Respond ONLY with valid JSON (no markdown):
         `${username}, even the mightiest warriors rest. Now let's forge a new path!`,
         `Your avatar missed you! Let's start fresh and build something legendary!`
       ],
-      emoji: '🔥',
+      icon: 'flame',
       actionPrompt: 'Start a new streak with a quick workout!'
     },
     level_up: {
       messages: [
-        `🎉 LEVEL UP! ${username} has reached Level ${avatar.level}! The arena celebrates your power!`,
-        `⬆️ LEGENDARY! You've ascended to Level ${avatar.level}! New challenges await!`,
-        `🏆 ${greeting} ${username} grows stronger! Level ${avatar.level} unlocked!`,
-        `✨ The forge glows bright! ${username} has achieved Level ${avatar.level}!`
+        `LEVEL UP! ${username} has reached Level ${avatar.level}! The arena celebrates your power!`,
+        `LEGENDARY! You've ascended to Level ${avatar.level}! New challenges await!`,
+        `${greeting} ${username} grows stronger! Level ${avatar.level} unlocked!`,
+        `The forge glows bright! ${username} has achieved Level ${avatar.level}!`
       ],
-      emoji: '⬆️',
+      icon: 'level-up',
       actionPrompt: 'Check out new quests available at your level!'
     },
     quest_complete: {
@@ -543,7 +543,7 @@ Respond ONLY with valid JSON (no markdown):
         `Another quest falls before ${username}'s might! Well done!`,
         `${greeting} ${username} completes another challenge! The arena cheers!`
       ],
-      emoji: '✅',
+      icon: 'check',
       actionPrompt: 'Take on your next challenge!'
     },
     new_user: {
@@ -553,7 +553,7 @@ Respond ONLY with valid JSON (no markdown):
         `Greetings, ${username}! The forge is ready to shape your destiny!`,
         `${username} joins the battle! Every workout will evolve your avatar!`
       ],
-      emoji: '🏰',
+      icon: 'castle',
       actionPrompt: 'Complete your first workout to begin your journey!'
     },
     comeback: {
@@ -563,7 +563,7 @@ Respond ONLY with valid JSON (no markdown):
         `${username} returns! The leaderboard awaits your climb!`,
         `Long time no see, warrior! Let's get back in fighting shape!`
       ],
-      emoji: '💪',
+      icon: 'strength',
       actionPrompt: 'Log a workout to restart your journey!'
     }
   };
@@ -573,7 +573,7 @@ Respond ONLY with valid JSON (no markdown):
 
   let bonusInfo = '';
   if (workoutStreak > 0 && context === 'daily') {
-    bonusInfo = ` 🔥 ${workoutStreak}-day streak active!`;
+    bonusInfo = ` ${workoutStreak}-day streak active!`;
   }
 
   return {
@@ -582,7 +582,7 @@ Respond ONLY with valid JSON (no markdown):
     generatedAt: new Date().toISOString(),
     context,
     message: message + bonusInfo,
-    emoji: response.emoji,
+    icon: response.icon,
     actionPrompt: response.actionPrompt,
     userLevel: avatar.level,
     currentStreak: workoutStreak
@@ -682,9 +682,9 @@ function analyzeWorkoutPatterns(workoutHistory = []) {
       consistency: 'new_user',
       trend: 'starting',
       insights: [
-        '🆕 Welcome to ForgeArena! Start logging workouts to unlock personalized insights.',
-        '💡 Tip: Try different exercises to find what you enjoy most!',
-        '🎯 Your first workout will set the foundation for your avatar\'s growth!'
+        'Welcome to ForgeArena! Start logging workouts to unlock personalized insights.',
+        'Tip: Try different exercises to find what you enjoy most!',
+        'Your first workout will set the foundation for your avatar\'s growth!'
       ],
       recommendations: ['Log your first workout to begin your journey!']
     };
@@ -728,28 +728,28 @@ function analyzeWorkoutPatterns(workoutHistory = []) {
   const insights = [];
   
   if (favoriteExercise) {
-    insights.push(`💪 Your go-to exercise is ${favoriteExercise} (${exerciseCounts[favoriteExercise]} sessions)!`);
+    insights.push(`Your go-to exercise is ${favoriteExercise} (${exerciseCounts[favoriteExercise]} sessions)!`);
   }
   
   if (avgReps > 25) {
-    insights.push('🔥 Impressive rep counts! You\'re pushing your limits!');
+    insights.push('Impressive rep counts! You\'re pushing your limits!');
   } else if (avgReps > 15) {
-    insights.push('📈 Solid workout volume! Consider pushing for higher reps for more XP.');
+    insights.push('Solid workout volume! Consider pushing for higher reps for more XP.');
   } else {
-    insights.push('💡 Try increasing your reps gradually for faster leveling!');
+    insights.push('Try increasing your reps gradually for faster leveling!');
   }
 
   const exerciseTypes = Object.keys(exerciseCounts).length;
   if (exerciseTypes < 2) {
-    insights.push('🎯 Try mixing in different exercises for balanced avatar stats!');
+    insights.push('Try mixing in different exercises for balanced avatar stats!');
   } else if (exerciseTypes >= 4) {
-    insights.push('⚖️ Great exercise variety! Your avatar is well-rounded!');
+    insights.push('Great exercise variety! Your avatar is well-rounded!');
   }
 
   if (trend === 'improving') {
-    insights.push('📈 Your performance is trending upward! Keep the momentum!');
+    insights.push('Your performance is trending upward! Keep the momentum!');
   } else if (trend === 'declining') {
-    insights.push('💪 Time to push harder! Your avatar believes in you!');
+    insights.push('Time to push harder! Your avatar believes in you!');
   }
 
   const recommendations = [];

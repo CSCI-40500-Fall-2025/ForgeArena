@@ -77,28 +77,28 @@ const SLOT_GROUPS = {
 };
 
 const SLOT_ICONS: { [key: string]: string } = {
-  head: '🗣️',
-  face: '😎',
-  hair: '💇',
-  hat: '🎩',
-  torso: '🦺',
-  shirt: '👕',
-  jacket: '🧥',
-  back: '🎒',
-  leftArm: '💪',
-  rightArm: '🦾',
-  gloves: '🧤',
-  pants: '👖',
-  legs: '🦿',
-  shoes: '👟',
-  neck: '📿',
-  waist: '🥋',
-  leftWrist: '⌚',
-  rightWrist: '⌚',
-  weapon: '⚔️',
-  offhand: '🛡️',
-  aura: '✨',
-  pet: '🐾'
+  head: 'HEAD',
+  face: 'FACE',
+  hair: 'HAIR',
+  hat: 'HAT',
+  torso: 'TORSO',
+  shirt: 'SHIRT',
+  jacket: 'JACKET',
+  back: 'BACK',
+  leftArm: 'L-ARM',
+  rightArm: 'R-ARM',
+  gloves: 'GLOVES',
+  pants: 'PANTS',
+  legs: 'LEGS',
+  shoes: 'SHOES',
+  neck: 'NECK',
+  waist: 'WAIST',
+  leftWrist: 'L-WRIST',
+  rightWrist: 'R-WRIST',
+  weapon: 'WEAPON',
+  offhand: 'OFFHAND',
+  aura: 'AURA',
+  pet: 'PET'
 };
 
 // ============================================
@@ -417,7 +417,7 @@ const AvatarEditor: React.FC = () => {
 
       {/* Header */}
       <div className="editor-header">
-        <h1>⚔️ Avatar Editor</h1>
+        <h1>Avatar Editor</h1>
         <p className="subtitle">Customize your warrior's appearance and gear</p>
       </div>
 
@@ -427,42 +427,42 @@ const AvatarEditor: React.FC = () => {
           className={`tab ${activeTab === 'avatar' ? 'active' : ''}`}
           onClick={() => setActiveTab('avatar')}
         >
-          🎭 Avatar
+          Avatar
         </button>
         <button 
           className={`tab ${activeTab === 'inventory' ? 'active' : ''}`}
           onClick={() => setActiveTab('inventory')}
         >
-          🎒 Inventory ({inventory.length})
+          Inventory ({inventory.length})
         </button>
         <button 
           className={`tab ${activeTab === 'rewards' ? 'active' : ''}`}
           onClick={() => setActiveTab('rewards')}
         >
-          🎁 Rewards
+          Rewards
         </button>
       </div>
 
       {/* Stats Overview */}
       <div className="stats-overview">
         <div className="stat-card">
-          <span className="stat-icon">💪</span>
+          <span className="stat-icon stat-str">STR</span>
           <span className="stat-label">Strength</span>
           <span className="stat-number">+{equipmentStats.strength || 0}</span>
         </div>
         <div className="stat-card">
-          <span className="stat-icon">🛡️</span>
+          <span className="stat-icon stat-end">END</span>
           <span className="stat-label">Endurance</span>
           <span className="stat-number">+{equipmentStats.endurance || 0}</span>
         </div>
         <div className="stat-card">
-          <span className="stat-icon">⚡</span>
+          <span className="stat-icon stat-agi">AGI</span>
           <span className="stat-label">Agility</span>
           <span className="stat-number">+{equipmentStats.agility || 0}</span>
         </div>
         {xpBonus > 0 && (
           <div className="stat-card bonus">
-            <span className="stat-icon">✨</span>
+            <span className="stat-icon stat-xp">XP</span>
             <span className="stat-label">XP Bonus</span>
             <span className="stat-number">+{(xpBonus * 100).toFixed(0)}%</span>
           </div>
@@ -479,13 +479,13 @@ const AvatarEditor: React.FC = () => {
                 <div className="avatar-silhouette">
                   {/* Head area */}
                   <div className="avatar-part head">
-                    {equipment.head?.icon || equipment.hat?.icon || equipment.hair?.icon || '👤'}
+                    {equipment.head?.icon || equipment.hat?.icon || equipment.hair?.icon || 'HEAD'}
                   </div>
                   {equipment.face && <div className="avatar-part face">{equipment.face.icon}</div>}
                   
                   {/* Body area */}
                   <div className="avatar-part body">
-                    {equipment.torso?.icon || equipment.shirt?.icon || equipment.jacket?.icon || '👕'}
+                    {equipment.torso?.icon || equipment.shirt?.icon || equipment.jacket?.icon || 'BODY'}
                   </div>
                   {equipment.back && <div className="avatar-part back">{equipment.back.icon}</div>}
                   
@@ -499,10 +499,10 @@ const AvatarEditor: React.FC = () => {
                   
                   {/* Legs */}
                   <div className="avatar-part legs">
-                    {equipment.pants?.icon || equipment.legs?.icon || '👖'}
+                    {equipment.pants?.icon || equipment.legs?.icon || 'LEGS'}
                   </div>
                   <div className="avatar-part feet">
-                    {equipment.shoes?.icon || '👟'}
+                    {equipment.shoes?.icon || 'FEET'}
                   </div>
                   
                   {/* Gear */}
@@ -620,14 +620,14 @@ const AvatarEditor: React.FC = () => {
 
         {activeTab === 'rewards' && (
           <div className="rewards-view">
-            <h2>🎁 Claim Rewards</h2>
+            <h2>Claim Rewards</h2>
             <p className="rewards-description">
               Test the item generation system by claiming different types of rewards!
             </p>
             
             <div className="reward-categories">
               <div className="reward-category">
-                <h3>📜 Quest Rewards</h3>
+                <h3>Quest Rewards</h3>
                 <div className="reward-buttons">
                   <button onClick={() => claimReward('quest', { difficulty: 'easy' })} disabled={rewardLoading}>
                     Easy Quest
@@ -645,7 +645,7 @@ const AvatarEditor: React.FC = () => {
               </div>
 
               <div className="reward-category">
-                <h3>⚔️ Raid Rewards</h3>
+                <h3>Raid Rewards</h3>
                 <div className="reward-buttons">
                   <button onClick={() => claimReward('raid', { participationLevel: 'low', bossDefeated: true })} disabled={rewardLoading}>
                     Low Participation
@@ -663,7 +663,7 @@ const AvatarEditor: React.FC = () => {
               </div>
 
               <div className="reward-category">
-                <h3>🎉 Event Rewards</h3>
+                <h3>Event Rewards</h3>
                 <div className="reward-buttons">
                   <button onClick={() => claimReward('event', { eventType: 'daily' })} disabled={rewardLoading}>
                     Daily Event
@@ -718,7 +718,7 @@ const AvatarEditor: React.FC = () => {
               {selectedItem.stats.agility && renderStatBar('Agility', selectedItem.stats.agility, 50, '#3B82F6')}
               {selectedItem.xpBonus > 0 && (
                 <div className="xp-bonus">
-                  <span>✨ XP Bonus: +{(selectedItem.xpBonus * 100).toFixed(0)}%</span>
+                  <span>XP Bonus: +{(selectedItem.xpBonus * 100).toFixed(0)}%</span>
                 </div>
               )}
             </div>

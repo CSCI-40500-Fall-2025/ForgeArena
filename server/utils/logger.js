@@ -122,16 +122,16 @@ const path = require('path');
         
         transports.push(sumoTransport);
 
-        console.log('✅ Sumo Logic transport initialized for real-time log monitoring');
+        console.log('[OK] Sumo Logic transport initialized for real-time log monitoring');
         console.log('   Source Category: forgearena/production');
         console.log('   Source Name: ForgeArena-Server');
         console.log('   Interval: 1000ms');
       } catch (err) {
-        console.warn('⚠️  Sumo Logic transport failed to initialize:', err.message);
+        console.warn('[WARN] Sumo Logic transport failed to initialize:', err.message);
         console.warn('   Stack:', err.stack);
       }
     } else {
-      console.warn('⚠️  SUMO_LOGIC_URL not set - Sumo Logic monitoring disabled');
+      console.warn('[WARN] SUMO_LOGIC_URL not set - Sumo Logic monitoring disabled');
     }
     
     // Logtail (optional)

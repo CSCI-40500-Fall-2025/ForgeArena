@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // INFO: Server initialization
-logger.info('🚀 Initializing ForgeArena server...', {
+logger.info('Initializing ForgeArena server...', {
   port: PORT,
   environment: process.env.NODE_ENV || 'development',
   nodeVersion: process.version,
@@ -87,7 +87,7 @@ app.use('/api/avatar', avatarRoutes);
 app.use('/api/events', eventRoutes);
 
 // INFO: ML Service initialized
-logger.info('🤖 ForgeMaster AI (ML Service) initialized', {
+logger.info('ForgeMaster AI (ML Service) initialized', {
   features: ['recommendations', 'predictions', 'motivation', 'quest-suggestions', 'patterns'],
   engine: process.env.GEMINI_API_KEY ? 'gemini_enhanced' : 'rule_based_ai',
   geminiEnabled: !!process.env.GEMINI_API_KEY
@@ -202,7 +202,7 @@ app.post('/api/quest/:id/complete', (req, res) => {
       mockUser.avatar.level = newLevel;
       
       // INFO: Level up event
-      logger.info('🎉 User leveled up!', {
+      logger.info('User leveled up!', {
         userId: mockUser.id,
         questId,
         oldLevel,
@@ -575,7 +575,7 @@ app.use((err, req, res, next) => {
 
 const server = app.listen(PORT, () => {
   // INFO: Server started successfully
-  logger.info(`✅ ForgeArena server running on port ${PORT}`, {
+  logger.info(`ForgeArena server running on port ${PORT}`, {
     port: PORT,
     environment: process.env.NODE_ENV || 'development',
     timestamp: new Date().toISOString(),
@@ -613,7 +613,7 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 // ERROR: Unhandled promise rejections
 process.on('unhandledRejection', (reason, promise) => {
-  logger.error(' Unhandled Promise Rejection', {
+  logger.error('Unhandled Promise Rejection', {
     reason: reason?.message || reason,
     stack: reason?.stack,
     promise: promise.toString(),

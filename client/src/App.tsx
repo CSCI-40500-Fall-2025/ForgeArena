@@ -286,7 +286,7 @@ function MainApp() {
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab === 'ai-coach' ? '🤖 AI Coach' : tab === 'avatar' ? '🎭 Avatar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'ai-coach' ? 'AI Coach' : tab === 'avatar' ? 'Avatar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </nav>

@@ -235,7 +235,7 @@
 }
 
 .auth-error::before {
-  content: '⚠️';
+  content: '!';
 }
 
 @keyframes shake {

@@ -265,11 +265,11 @@ router.post('/analyze-workout', authMiddleware.optionalAuth, async (req, res) =>
     const feedback = [];
     
     if (isHighPerformance) {
-      feedback.push(`🔥 Incredible ${exerciseNames[exercise] || exercise} session! ${reps} reps is impressive!`);
+      feedback.push(`Incredible ${exerciseNames[exercise] || exercise} session! ${reps} reps is impressive!`);
     } else if (reps >= 10) {
-      feedback.push(`💪 Solid ${exerciseNames[exercise] || exercise} workout! Keep pushing!`);
+      feedback.push(`Solid ${exerciseNames[exercise] || exercise} workout! Keep pushing!`);
     } else {
-      feedback.push(`👍 Good start with ${exerciseNames[exercise] || exercise}! Every rep counts!`);
+      feedback.push(`Good start with ${exerciseNames[exercise] || exercise}! Every rep counts!`);
     }
     
     // Stat impact analysis
@@ -281,13 +281,13 @@ router.post('/analyze-workout', authMiddleware.optionalAuth, async (req, res) =>
     };
     
     const impact = statImpact[exercise] || { primary: 'strength', secondary: 'endurance' };
-    feedback.push(`📊 This workout primarily boosts your ${impact.primary}!`);
+    feedback.push(`This workout primarily boosts your ${impact.primary}!`);
     
     // Streak reminder
     if (userData.workoutStreak > 0) {
-      feedback.push(`🔥 ${userData.workoutStreak + 1}-day streak incoming!`);
+      feedback.push(`${userData.workoutStreak + 1}-day streak incoming!`);
     } else {
-      feedback.push(`🎯 First workout of a new streak!`);
+      feedback.push(`First workout of a new streak!`);
     }
     
     res.json({

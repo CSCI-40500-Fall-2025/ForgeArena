@@ -32,11 +32,11 @@ let mockQuests = [
 ];
 
 let mockAchievements = [
-  { id: 1, name: 'First Blood', description: 'Complete your first workout', unlocked: true, icon: '🏆' },
-  { id: 2, name: 'Level Up!', description: 'Reach level 2', unlocked: false, icon: '⬆️' },
-  { id: 3, name: 'Streak Warrior', description: 'Maintain a 5-day streak', unlocked: false, icon: '🔥' },
-  { id: 4, name: 'Boss Slayer', description: 'Deal 1000 damage to raid boss', unlocked: false, icon: '⚔️' },
-  { id: 5, name: 'Gym Legend', description: 'Reach top 3 on leaderboard', unlocked: false, icon: '👑' }
+  { id: 1, name: 'First Blood', description: 'Complete your first workout', unlocked: true, icon: 'trophy' },
+  { id: 2, name: 'Level Up!', description: 'Reach level 2', unlocked: false, icon: 'level-up' },
+  { id: 3, name: 'Streak Warrior', description: 'Maintain a 5-day streak', unlocked: false, icon: 'streak' },
+  { id: 4, name: 'Boss Slayer', description: 'Deal 1000 damage to raid boss', unlocked: false, icon: 'sword' },
+  { id: 5, name: 'Gym Legend', description: 'Reach top 3 on leaderboard', unlocked: false, icon: 'crown' }
 ];
 
 let mockEquipment = {

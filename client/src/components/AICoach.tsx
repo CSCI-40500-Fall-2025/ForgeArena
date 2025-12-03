@@ -120,33 +120,33 @@ const AICoach: React.FC = () => {
     fetchMLData();
   }, [fetchMLData]);
 
-  const getExerciseEmoji = (exercise: string) => {
-    const emojis: { [key: string]: string } = {
-      squat: '🦵',
-      pushup: '💪',
-      pullup: '🏋️',
-      run: '🏃'
+  const getExerciseLabel = (exercise: string) => {
+    const labels: { [key: string]: string } = {
+      squat: 'SQUAT',
+      pushup: 'PUSH',
+      pullup: 'PULL',
+      run: 'RUN'
     };
-    return emojis[exercise] || '🎯';
+    return labels[exercise] || 'WORKOUT';
   };
 
-  const getStatEmoji = (stat: string) => {
-    const emojis: { [key: string]: string } = {
-      strength: '💪',
-      endurance: '❤️',
-      agility: '⚡'
+  const getStatLabel = (stat: string) => {
+    const labels: { [key: string]: string } = {
+      strength: 'STR',
+      endurance: 'END',
+      agility: 'AGI'
     };
-    return emojis[stat] || '📊';
+    return labels[stat] || 'STAT';
   };
 
   const getConsistencyBadge = (consistency: string) => {
     const badges: { [key: string]: { label: string; color: string } } = {
-      legendary: { label: '🏆 Legendary', color: '#ffd700' },
-      dedicated: { label: '⭐ Dedicated', color: '#c0c0c0' },
-      consistent: { label: '🎯 Consistent', color: '#cd7f32' },
-      building: { label: '📈 Building', color: '#4a90d9' },
-      starting: { label: '🌱 Starting', color: '#4caf50' },
-      new_user: { label: '🆕 New', color: '#9c27b0' }
+      legendary: { label: 'Legendary', color: '#ffd700' },
+      dedicated: { label: 'Dedicated', color: '#c0c0c0' },
+      consistent: { label: 'Consistent', color: '#cd7f32' },
+      building: { label: 'Building', color: '#4a90d9' },
+      starting: { label: 'Starting', color: '#4caf50' },
+      new_user: { label: 'New', color: '#9c27b0' }
     };
     return badges[consistency] || badges.starting;
   };
@@ -155,7 +155,7 @@ const AICoach: React.FC = () => {
     return (
       <div className="ai-coach-container">
         <div className="ai-coach-loading">
-          <div className="ai-avatar-loading">🤖</div>
+          <div className="ai-avatar-loading">AI</div>
           <h2>ForgeMaster AI is analyzing your profile...</h2>
           <div className="loading-bar">
             <div className="loading-progress"></div>
@@ -169,7 +169,7 @@ const AICoach: React.FC = () => {
     return (
       <div className="ai-coach-container">
         <div className="ai-coach-error">
-          <div className="error-icon">⚠️</div>
+          <div className="error-icon">!</div>
           <h2>AI Coach Unavailable</h2>
           <p>{error}</p>
           <button onClick={fetchMLData} className="retry-btn">
@@ -184,14 +184,14 @@ const AICoach: React.FC = () => {
     <div className="ai-coach-container">
       {/* AI Coach Header */}
       <div className="ai-coach-header">
-        <div className="ai-avatar">🤖</div>
+        <div className="ai-avatar">AI</div>
         <div className="ai-info">
           <h2>ForgeMaster AI</h2>
           <p className="ai-subtitle">Your Personal Fitness Coach</p>
           <span className="ai-badge">Powered by ML</span>
         </div>
         <button onClick={fetchMLData} className="refresh-btn" title="Refresh recommendations">
-          🔄
+          Refresh
         </button>
       </div>
 
@@ -201,26 +201,25 @@ const AICoach: React.FC = () => {
           className={`ai-nav-tab ${activeSection === 'coach' ? 'active' : ''}`}
           onClick={() => setActiveSection('coach')}
         >
-          🎯 Today's Plan
+          Today's Plan
         </button>
         <button 
           className={`ai-nav-tab ${activeSection === 'predictions' ? 'active' : ''}`}
           onClick={() => setActiveSection('predictions')}
         >
-          📈 Predictions
+          Predictions
         </button>
         <button 
           className={`ai-nav-tab ${activeSection === 'patterns' ? 'active' : ''}`}
           onClick={() => setActiveSection('patterns')}
         >
-          📊 Insights
+          Insights
         </button>
       </div>
 
       {/* Motivation Banner */}
       {motivation && (
         <div className="motivation-banner">
-          <span className="motivation-emoji">{motivation.emoji}</span>
           <p className="motivation-message">{motivation.message}</p>
         </div>
       )}
@@ -231,13 +230,13 @@ const AICoach: React.FC = () => {
           {/* Primary Recommendation */}
           <div className="recommendation-card primary">
             <div className="recommendation-header">
-              <span className="rec-emoji">
-                {getExerciseEmoji(recommendations.primaryRecommendation.exercise)}
+              <span className="rec-label">
+                {getExerciseLabel(recommendations.primaryRecommendation.exercise)}
               </span>
               <div className="rec-title">
                 <h3>Recommended Workout</h3>
                 <span className="focus-badge">
-                  {getStatEmoji(recommendations.focusArea)} Focus: {recommendations.focusArea}
+                  {getStatLabel(recommendations.focusArea)} Focus: {recommendations.focusArea}
                 </span>
               </div>
             </div>
@@ -252,7 +251,7 @@ const AICoach: React.FC = () => {
               </div>
               <p className="rec-reason">{recommendations.primaryRecommendation.reason}</p>
               <div className="xp-preview">
-                <span className="xp-icon">⭐</span>
+                <span className="xp-icon">XP</span>
                 <span className="xp-amount">+{recommendations.predictedXP} XP</span>
               </div>
             </div>
@@ -264,7 +263,7 @@ const AICoach: React.FC = () => {
             <div className="alternatives-grid">
               {recommendations.alternativeWorkouts.map((workout, index) => (
                 <div key={index} className="alternative-card">
-                  <span className="alt-emoji">{getExerciseEmoji(workout.exercise)}</span>
+                  <span className="alt-label">{getExerciseLabel(workout.exercise)}</span>
                   <span className="alt-name">
                     {workout.exercise.charAt(0).toUpperCase() + workout.exercise.slice(1)}s
                   </span>
@@ -276,7 +275,7 @@ const AICoach: React.FC = () => {
 
           {/* Motivational Tip */}
           <div className="tip-card">
-            <span className="tip-icon">💡</span>
+            <span className="tip-icon">TIP</span>
             <p>{recommendations.motivationalTip}</p>
           </div>
 
@@ -284,7 +283,7 @@ const AICoach: React.FC = () => {
           {questSuggestions?.topQuest && (
             <div className="quest-suggestion-card">
               <div className="quest-header">
-                <span className="quest-icon">📜</span>
+                <span className="quest-icon">QUEST</span>
                 <h4>Recommended Quest</h4>
               </div>
               <div className="quest-body">
@@ -302,7 +301,7 @@ const AICoach: React.FC = () => {
         <div className="ai-section">
           {/* Level Up Prediction */}
           <div className="prediction-card level-up">
-            <div className="prediction-icon">⬆️</div>
+            <div className="prediction-icon">LVL</div>
             <div className="prediction-content">
               <h4>Level Up Prediction</h4>
               <p className="prediction-main">
@@ -320,7 +319,7 @@ const AICoach: React.FC = () => {
 
           {/* Streak Analysis */}
           <div className="prediction-card streak">
-            <div className="prediction-icon">🔥</div>
+            <div className="prediction-icon">STREAK</div>
             <div className="prediction-content">
               <h4>Streak Analysis</h4>
               <p className="prediction-main">{predictions.streakAnalysis.status}</p>
@@ -330,20 +329,20 @@ const AICoach: React.FC = () => {
 
           {/* Stats Focus */}
           <div className="prediction-card stats">
-            <div className="prediction-icon">📊</div>
+            <div className="prediction-icon">STATS</div>
             <div className="prediction-content">
               <h4>Stat Analysis</h4>
               <div className="stat-comparison">
                 <div className="stat-item strongest">
                   <span className="stat-label">Strongest</span>
                   <span className="stat-value">
-                    {getStatEmoji(predictions.statsFocus.strongest)} {predictions.statsFocus.strongest}
+                    {getStatLabel(predictions.statsFocus.strongest)} {predictions.statsFocus.strongest}
                   </span>
                 </div>
                 <div className="stat-item weakest">
                   <span className="stat-label">Needs Work</span>
                   <span className="stat-value">
-                    {getStatEmoji(predictions.statsFocus.needsWork)} {predictions.statsFocus.needsWork}
+                    {getStatLabel(predictions.statsFocus.needsWork)} {predictions.statsFocus.needsWork}
                   </span>
                 </div>
               </div>
@@ -353,7 +352,7 @@ const AICoach: React.FC = () => {
 
           {/* Weekly Goal */}
           <div className="prediction-card weekly-goal">
-            <div className="prediction-icon">🎯</div>
+            <div className="prediction-icon">GOAL</div>
             <div className="prediction-content">
               <h4>Weekly Goal</h4>
               <p className="prediction-main">
@@ -400,7 +399,7 @@ const AICoach: React.FC = () => {
           {/* Favorite Exercise */}
           {patterns.favoriteExercise && (
             <div className="favorite-exercise-card">
-              <span className="fav-emoji">{getExerciseEmoji(patterns.favoriteExercise)}</span>
+              <span className="fav-label">{getExerciseLabel(patterns.favoriteExercise)}</span>
               <div className="fav-content">
                 <h4>Favorite Exercise</h4>
                 <p>{patterns.favoriteExercise.charAt(0).toUpperCase() + patterns.favoriteExercise.slice(1)}s</p>
@@ -411,8 +410,8 @@ const AICoach: React.FC = () => {
           {/* Trend Indicator */}
           <div className={`trend-card ${patterns.trend}`}>
             <span className="trend-icon">
-              {patterns.trend === 'improving' ? '📈' : 
-               patterns.trend === 'declining' ? '📉' : '➡️'}
+              {patterns.trend === 'improving' ? 'UP' : 
+               patterns.trend === 'declining' ? 'DOWN' : 'STEADY'}
             </span>
             <div className="trend-content">
               <h4>Performance Trend</h4>
@@ -426,7 +425,7 @@ const AICoach: React.FC = () => {
 
           {/* Insights */}
           <div className="insights-card">
-            <h4>🧠 AI Insights</h4>
+            <h4>AI Insights</h4>
             <ul className="insights-list">
               {patterns.insights.map((insight, index) => (
                 <li key={index}>{insight}</li>
@@ -437,7 +436,7 @@ const AICoach: React.FC = () => {
           {/* Recommendations */}
           {patterns.recommendations.length > 0 && (
             <div className="ai-recommendations-card">
-              <h4>💡 Recommendations</h4>
+              <h4>Recommendations</h4>
               <ul className="recommendations-list">
                 {patterns.recommendations.map((rec, index) => (
                   <li key={index}>{rec}</li>
@@ -450,7 +449,7 @@ const AICoach: React.FC = () => {
 
       {/* Footer */}
       <div className="ai-coach-footer">
-        <p>🤖 ForgeMaster AI • 100% Free • No API Key Required</p>
+        <p>ForgeMaster AI - 100% Free - No API Key Required</p>
       </div>
     </div>
   );

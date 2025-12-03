@@ -131,7 +131,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 2 },
     variants: ['Sweat', 'Warrior', 'Champion', 'Elite', 'Ninja'],
     materials: ['Cotton', 'Silk', 'Leather', 'Steel-Woven', 'Dragon Scale'],
-    icon: '🎀'
+    icon: 'headband'
   },
   helmet: {
     baseId: 'helmet',
@@ -141,7 +141,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 3, endurance: 1 },
     variants: ['Training', 'Battle', 'Gladiator', 'Knight', 'Ancient'],
     materials: ['Plastic', 'Iron', 'Steel', 'Titanium', 'Mythril'],
-    icon: '⛑️'
+    icon: 'helmet'
   },
   cap: {
     baseId: 'cap',
@@ -151,7 +151,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 1 },
     variants: ['Gym', 'Sports', 'Pro', 'Limited', 'Vintage'],
     materials: ['Cotton', 'Polyester', 'Performance', 'Premium', 'Legendary'],
-    icon: '🧢'
+    icon: 'cap'
   },
 
   // ===== FACE ITEMS =====
@@ -163,7 +163,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 1, agility: 1 },
     variants: ['Training', 'Altitude', 'Ninja', 'Phantom', 'Void'],
     materials: ['Fabric', 'Neoprene', 'Carbon', 'Shadow', 'Ethereal'],
-    icon: '😷'
+    icon: 'mask'
   },
   glasses: {
     baseId: 'glasses',
@@ -173,7 +173,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 2 },
     variants: ['Sport', 'Tactical', 'Cyber', 'Holo', 'Quantum'],
     materials: ['Plastic', 'Titanium', 'Carbon Fiber', 'Nano-Tech', 'Void Crystal'],
-    icon: '🕶️'
+    icon: 'glasses'
   },
 
   // ===== HAIR ITEMS =====
@@ -185,7 +185,7 @@ const ITEM_TEMPLATES = {
     baseStats: {},
     variants: ['Casual', 'Wild', 'Super', 'Ultra', 'Legendary'],
     colors: ['Black', 'Brown', 'Blonde', 'Red', 'Blue', 'Silver', 'Rainbow'],
-    icon: '💇'
+    icon: 'hair-spiky'
   },
   hairstyle_long: {
     baseId: 'hairstyle_long',
@@ -195,7 +195,7 @@ const ITEM_TEMPLATES = {
     baseStats: {},
     variants: ['Flowing', 'Warrior', 'Mystic', 'Ethereal', 'Divine'],
     colors: ['Black', 'Brown', 'Blonde', 'Red', 'Purple', 'White', 'Cosmic'],
-    icon: '💇‍♀️'
+    icon: 'hair-long'
   },
 
   // ===== TORSO ITEMS =====
@@ -207,7 +207,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 1 },
     variants: ['Basic', 'Performance', 'Pro', 'Elite', 'Champion'],
     materials: ['Cotton', 'Polyester', 'Dry-Fit', 'Compression', 'Nano-Fiber'],
-    icon: '👕'
+    icon: 'tank-top'
   },
   armor_chest: {
     baseId: 'armor_chest',
@@ -217,7 +217,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 2, endurance: 3 },
     variants: ['Training', 'Battle', 'War', 'Legendary', 'Divine'],
     materials: ['Leather', 'Iron', 'Steel', 'Adamantine', 'Celestial'],
-    icon: '🛡️'
+    icon: 'armor-chest'
   },
   hoodie: {
     baseId: 'hoodie',
@@ -227,7 +227,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 2 },
     variants: ['Gym', 'Street', 'Tech', 'Phantom', 'Mythic'],
     materials: ['Cotton', 'Fleece', 'Performance', 'Shadow-Weave', 'Void-Touched'],
-    icon: '🧥'
+    icon: 'hoodie'
   },
 
   // ===== BACK ITEMS =====
@@ -239,7 +239,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 2 },
     variants: ['Training', 'Warrior', 'Hero', 'Champion', 'Godly'],
     materials: ['Cloth', 'Silk', 'Enchanted', 'Phoenix Feather', 'Starlight'],
-    icon: '🦸'
+    icon: 'cape'
   },
   backpack: {
     baseId: 'backpack',
@@ -249,7 +249,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 1 },
     variants: ['Gym', 'Tactical', 'Adventure', 'Explorer', 'Dimensional'],
     materials: ['Nylon', 'Canvas', 'Kevlar', 'Dragon Hide', 'Void Pocket'],
-    icon: '🎒'
+    icon: 'backpack'
   },
   wings: {
     baseId: 'wings',
@@ -259,7 +259,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 5 },
     variants: ['Feathered', 'Mechanical', 'Angelic', 'Demonic', 'Cosmic'],
     materials: ['Feathers', 'Steel', 'Light', 'Shadow', 'Stardust'],
-    icon: '🪽'
+    icon: 'wings'
   },
 
   // ===== GLOVES =====
@@ -271,7 +271,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 2 },
     variants: ['Basic', 'Pro', 'Champion', 'Master', 'Legendary'],
     materials: ['Leather', 'Synthetic', 'Reinforced', 'Titanium-Weave', 'Dragon Scale'],
-    icon: '🧤'
+    icon: 'gloves'
   },
   gloves_boxing: {
     baseId: 'gloves_boxing',
@@ -281,7 +281,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 3, agility: 1 },
     variants: ['Training', 'Sparring', 'Competition', 'Champion', 'Mythic'],
     materials: ['Vinyl', 'Leather', 'Premium Leather', 'Enchanted', 'Infernal'],
-    icon: '🥊'
+    icon: 'boxing-gloves'
   },
   gauntlets: {
     baseId: 'gauntlets',
@@ -291,7 +291,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 4, endurance: 2 },
     variants: ['Iron', 'Steel', 'War', 'Titan', 'Godslayer'],
     materials: ['Iron', 'Steel', 'Mithril', 'Adamantine', 'Cosmic Metal'],
-    icon: '🦾'
+    icon: 'gauntlets'
   },
 
   // ===== PANTS =====
@@ -303,7 +303,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 2 },
     variants: ['Gym', 'Performance', 'Pro', 'Elite', 'Champion'],
     materials: ['Cotton', 'Polyester', 'Compression', 'Nano-Fiber', 'Wind-Weave'],
-    icon: '🩳'
+    icon: 'shorts'
   },
   leggings: {
     baseId: 'leggings',
@@ -313,7 +313,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 1, endurance: 1 },
     variants: ['Basic', 'Performance', 'Compression', 'Elite', 'Legendary'],
     materials: ['Spandex', 'Polyester', 'Compression', 'Tech-Fiber', 'Shadow-Silk'],
-    icon: '👖'
+    icon: 'leggings'
   },
   armor_legs: {
     baseId: 'armor_legs',
@@ -323,7 +323,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 3, strength: 1 },
     variants: ['Training', 'Battle', 'War', 'Champion', 'Divine'],
     materials: ['Leather', 'Iron', 'Steel', 'Titanium', 'Celestial'],
-    icon: '🦿'
+    icon: 'armor-legs'
   },
 
   // ===== SHOES =====
@@ -335,7 +335,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 2 },
     variants: ['Basic', 'Running', 'Training', 'Pro', 'Limited Edition'],
     materials: ['Canvas', 'Mesh', 'Synthetic', 'Boost-Tech', 'Air-Weave'],
-    icon: '👟'
+    icon: 'sneakers'
   },
   boots: {
     baseId: 'boots',
@@ -345,7 +345,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 1, endurance: 2 },
     variants: ['Work', 'Combat', 'Tactical', 'War', 'Titan'],
     materials: ['Leather', 'Steel-Toe', 'Reinforced', 'Mithril', 'Void-Walker'],
-    icon: '🥾'
+    icon: 'boots'
   },
 
   // ===== ACCESSORIES =====
@@ -357,7 +357,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 1, endurance: 1, agility: 1 },
     variants: ['Simple', 'Elegant', 'Power', 'Ancient', 'Divine'],
     materials: ['Silver', 'Gold', 'Platinum', 'Enchanted', 'Cosmic'],
-    icon: '📿'
+    icon: 'necklace'
   },
   belt: {
     baseId: 'belt',
@@ -367,7 +367,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 2 },
     variants: ['Basic', 'Weight', 'Power', 'Champion', 'Legendary'],
     materials: ['Leather', 'Nylon', 'Reinforced', 'Titan-Weave', 'Dragon Hide'],
-    icon: '🥋'
+    icon: 'belt'
   },
   wristband: {
     baseId: 'wristband',
@@ -377,7 +377,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 1 },
     variants: ['Sweat', 'Power', 'Tech', 'Champion', 'Mythic'],
     materials: ['Cotton', 'Elastic', 'Smart-Fiber', 'Energy-Weave', 'Void-Touched'],
-    icon: '⌚'
+    icon: 'wristband'
   },
   watch: {
     baseId: 'watch',
@@ -387,7 +387,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 1 },
     variants: ['Sport', 'Smart', 'Tactical', 'Quantum', 'Chrono'],
     materials: ['Plastic', 'Steel', 'Titanium', 'Nano-Tech', 'Time Crystal'],
-    icon: '⌚'
+    icon: 'watch'
   },
 
   // ===== WEAPONS =====
@@ -399,7 +399,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 4 },
     variants: ['Training', 'Heavy', 'Champion', 'Titan', 'World-Breaker'],
     materials: ['Iron', 'Steel', 'Chrome', 'Enchanted', 'Cosmic Metal'],
-    icon: '🏋️'
+    icon: 'dumbbell'
   },
   sword: {
     baseId: 'sword',
@@ -409,7 +409,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 5, agility: 2 },
     variants: ['Training', 'Battle', 'War', 'Legendary', 'Divine'],
     materials: ['Iron', 'Steel', 'Mithril', 'Adamantine', 'Starforged'],
-    icon: '⚔️'
+    icon: 'sword'
   },
   staff: {
     baseId: 'staff',
@@ -419,7 +419,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 3, agility: 3 },
     variants: ['Wooden', 'Reinforced', 'Battle', 'Arcane', 'Celestial'],
     materials: ['Oak', 'Ironwood', 'Crystal', 'Enchanted', 'World Tree'],
-    icon: '🪄'
+    icon: 'staff'
   },
 
   // ===== OFFHAND =====
@@ -431,7 +431,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 5, strength: 1 },
     variants: ['Training', 'Battle', 'Tower', 'Champion', 'Aegis'],
     materials: ['Wood', 'Iron', 'Steel', 'Mithril', 'Divine Light'],
-    icon: '🛡️'
+    icon: 'shield'
   },
   towel: {
     baseId: 'towel',
@@ -441,7 +441,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 2 },
     variants: ['Basic', 'Quick-Dry', 'Pro', 'Champion', 'Legendary'],
     materials: ['Cotton', 'Microfiber', 'Bamboo', 'Cooling-Tech', 'Phoenix Down'],
-    icon: '🧻'
+    icon: 'towel'
   },
 
   // ===== AURAS =====
@@ -453,7 +453,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 3 },
     variants: ['Ember', 'Fire', 'Inferno', 'Phoenix', 'Solar'],
     colors: ['Orange', 'Red', 'Blue', 'White', 'Black'],
-    icon: '🔥'
+    icon: 'aura-flame'
   },
   aura_lightning: {
     baseId: 'aura_lightning',
@@ -463,7 +463,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 3 },
     variants: ['Spark', 'Thunder', 'Storm', 'Tempest', 'Divine'],
     colors: ['Yellow', 'Blue', 'Purple', 'White', 'Gold'],
-    icon: '⚡'
+    icon: 'aura-lightning'
   },
   aura_cosmic: {
     baseId: 'aura_cosmic',
@@ -473,7 +473,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 1, endurance: 1, agility: 1 },
     variants: ['Starlight', 'Nebula', 'Galaxy', 'Void', 'Universe'],
     colors: ['Purple', 'Blue', 'Pink', 'Black', 'Rainbow'],
-    icon: '✨'
+    icon: 'aura-cosmic'
   },
 
   // ===== PETS =====
@@ -485,7 +485,7 @@ const ITEM_TEMPLATES = {
     baseStats: { strength: 2, agility: 2 },
     variants: ['Baby', 'Young', 'Adult', 'Elder', 'Ancient'],
     colors: ['Red', 'Blue', 'Green', 'Black', 'Gold'],
-    icon: '🐉'
+    icon: 'pet-dragon'
   },
   pet_phoenix: {
     baseId: 'pet_phoenix',
@@ -495,7 +495,7 @@ const ITEM_TEMPLATES = {
     baseStats: { endurance: 3, agility: 1 },
     variants: ['Hatchling', 'Fledgling', 'Mature', 'Elder', 'Eternal'],
     colors: ['Orange', 'Red', 'Gold', 'Blue', 'White'],
-    icon: '🦅'
+    icon: 'pet-phoenix'
   },
   pet_wolf: {
     baseId: 'pet_wolf',
@@ -505,7 +505,7 @@ const ITEM_TEMPLATES = {
     baseStats: { agility: 3, strength: 1 },
     variants: ['Pup', 'Young', 'Alpha', 'Spirit', 'Celestial'],
     colors: ['Gray', 'White', 'Black', 'Silver', 'Spectral'],
-    icon: '🐺'
+    icon: 'pet-wolf'
   }
 };
 

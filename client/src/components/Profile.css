@@ -131,7 +131,7 @@
 }
 
 .profile-error::before {
-  content: '⚠️';
+  content: '!';
 }
 
 /* ============================================
@@ -453,11 +453,11 @@
   background-clip: text;
 }
 
-/* Stat icons */
-.stat-item:nth-child(1) .stat-value::before { content: '⚔️ '; -webkit-text-fill-color: initial; }
-.stat-item:nth-child(2) .stat-value::before { content: '🛡️ '; -webkit-text-fill-color: initial; }
-.stat-item:nth-child(3) .stat-value::before { content: '⚡ '; -webkit-text-fill-color: initial; }
-.stat-item:nth-child(4) .stat-value::before { content: '🔥 '; -webkit-text-fill-color: initial; }
+/* Stat icons - using text labels */
+.stat-item:nth-child(1) .stat-value::before { content: 'STR '; -webkit-text-fill-color: initial; }
+.stat-item:nth-child(2) .stat-value::before { content: 'END '; -webkit-text-fill-color: initial; }
+.stat-item:nth-child(3) .stat-value::before { content: 'AGI '; -webkit-text-fill-color: initial; }
+.stat-item:nth-child(4) .stat-value::before { content: 'STREAK '; -webkit-text-fill-color: initial; }
 
 /* ============================================
    RESPONSIVE DESIGN

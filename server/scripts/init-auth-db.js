@@ -10,20 +10,20 @@ async function initializeDatabase() {
     
     // Create data directory
     await fs.mkdir(DATA_DIR, { recursive: true });
-    console.log('✅ Data directory created/verified');
+    console.log('[OK] Data directory created/verified');
     
     // Check if users.json exists
     try {
       await fs.access(USERS_DB_PATH);
-      console.log('✅ users.json already exists');
+      console.log('[OK] users.json already exists');
     } catch {
       // Create empty users database
       await fs.writeFile(USERS_DB_PATH, JSON.stringify({ users: [] }, null, 2));
-      console.log('✅ users.json created');
+      console.log('[OK] users.json created');
     }
     
-    console.log('✨ Database initialization complete!');
-    console.log(`📁 Database location: ${USERS_DB_PATH}`);
+    console.log('[DONE] Database initialization complete!');
+    console.log(`[PATH] Database location: ${USERS_DB_PATH}`);
     
   } catch (error) {
     console.error('❌ Failed to initialize database:', error.message);

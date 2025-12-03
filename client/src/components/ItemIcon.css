@@ -1,0 +1,130 @@
+/* ============================================
+   FORGEARENA - ITEM ICON STYLES
+   ============================================ */
+
+.item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  transition: all var(--transition-base);
+}
+
+/* Size variants */
+.item-icon-sm {
+  width: 32px;
+  height: 32px;
+  font-size: var(--font-size-xs);
+}
+
+.item-icon-md {
+  width: 48px;
+  height: 48px;
+  font-size: var(--font-size-sm);
+}
+
+.item-icon-lg {
+  width: 64px;
+  height: 64px;
+  font-size: var(--font-size-base);
+}
+
+.item-icon-xl {
+  width: 96px;
+  height: 96px;
+  font-size: var(--font-size-lg);
+}
+
+/* Text-based icon styling */
+.item-icon-text {
+  background: linear-gradient(135deg, var(--color-neutral-100), var(--color-neutral-200));
+  border: 2px solid var(--border-default);
+  color: var(--text-primary);
+}
+
+.item-icon-label {
+  display: block;
+  line-height: 1;
+}
+
+/* Image-based icon styling */
+.item-icon-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: inherit;
+}
+
+/* Rarity-based styling */
+.item-icon.rarity-common {
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  border-color: var(--rarity-common);
+}
+
+.item-icon.rarity-uncommon {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border-color: var(--rarity-uncommon);
+}
+
+.item-icon.rarity-rare {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-color: var(--rarity-rare);
+}
+
+.item-icon.rarity-epic {
+  background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+  border-color: var(--rarity-epic);
+}
+
+.item-icon.rarity-legendary {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: var(--rarity-legendary);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.item-icon.rarity-mythic {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  border-color: var(--rarity-mythic);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  animation: mythicPulse 2s ease-in-out infinite;
+}
+
+@keyframes mythicPulse {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(239, 68, 68, 0.6);
+  }
+}
+
+/* Icon type styling */
+.icon-aura {
+  border-radius: var(--radius-full);
+}
+
+.icon-pet {
+  border-radius: var(--radius-xl);
+}
+
+.icon-armor {
+  border-radius: var(--radius-md);
+}
+
+.icon-cosmetic {
+  border-radius: var(--radius-lg);
+}
+
+/* Hover effects */
+.item-icon:hover {
+  transform: scale(1.05);
+}
+
+.item-icon.rarity-legendary:hover,
+.item-icon.rarity-mythic:hover {
+  transform: scale(1.1);
+}
+
