@@ -5,6 +5,7 @@ import UserProfile from './components/UserProfile';
 import ProfileScreen from './components/ProfileScreen';
 import AICoach from './components/AICoach';
 import AvatarEditor from './components/AvatarEditor';
+import ClubsScreen from './components/ClubsScreen';
 import './App.css';
 
 interface Avatar {
@@ -56,13 +57,6 @@ interface Activity {
   timestamp: Date;
 }
 
-interface Gym {
-  id: number;
-  name: string;
-  members: number;
-  location: string;
-}
-
 interface Quest {
   id: number;
   title: string;
@@ -97,7 +91,6 @@ function MainApp() {
   const [inventory, setInventory] = useState<Equipment[]>([]);
   const [duels, setDuels] = useState<Duel[]>([]);
   const [activityFeed, setActivityFeed] = useState<Activity[]>([]);
-  const [gyms, setGyms] = useState<Gym[]>([]);
   const [workoutForm, setWorkoutForm] = useState({ exercise: 'squat', reps: 10 });
   const [duelForm, setDuelForm] = useState({ opponent: '', challenge: 'Most squats in 24h' });
   const [message, setMessage] = useState('');
@@ -130,15 +123,14 @@ function MainApp() {
 
   const fetchData = async () => {
     try {
-      const [questsRes, raidRes, leaderRes, achieveRes, inventoryRes, duelsRes, activityRes, gymsRes] = await Promise.all([
+      const [questsRes, raidRes, leaderRes, achieveRes, inventoryRes, duelsRes, activityRes] = await Promise.all([
         fetch(`${API_BASE}/quests`),
         fetch(`${API_BASE}/raid`),
         fetch(`${API_BASE}/leaderboard`),
         fetch(`${API_BASE}/achievements`),
         fetch(`${API_BASE}/inventory`),
         fetch(`${API_BASE}/duels`),
-        fetch(`${API_BASE}/activity`),
-        fetch(`${API_BASE}/gyms`)
+        fetch(`${API_BASE}/activity`)
       ]);
       
       setQuests(await questsRes.json());
@@ -148,7 +140,6 @@ function MainApp() {
       setInventory(await inventoryRes.json());
       setDuels(await duelsRes.json());
       setActivityFeed(await activityRes.json());
-      setGyms(await gymsRes.json());
     } catch (error) {
       console.error('Failed to fetch data:', error);
       setMessage('Backend not running! Start server with: cd server && npm run dev');
@@ -240,21 +231,6 @@ function MainApp() {
     }
   };
 
-  const joinGym = async (gymId: number) => {
-    try {
-      const res = await fetch(`${API_BASE}/gyms`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gymId })
-      });
-      const data = await res.json();
-      setMessage(data.message);
-      fetchData();
-    } catch (error) {
-      setMessage('Failed to join gym');
-    }
-  };
-
   if (!user) {
     return (
       <div className="App">
@@ -280,13 +256,16 @@ function MainApp() {
       </header>
 
       <nav className="nav-tabs">
-        {['dashboard', 'avatar', 'ai-coach', 'profile', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
+        {['dashboard', 'avatar', 'ai-coach', 'profile', 'inventory', 'achievements', 'duels', 'clubs', 'social'].map(tab => (
           <button 
             key={tab}
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab === 'ai-coach' ? 'AI Coach' : tab === 'avatar' ? 'Avatar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'ai-coach' ? 'AI Coach' : 
+             tab === 'avatar' ? 'Avatar' : 
+             tab === 'clubs' ? '⚔️ Clubs' :
+             tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </nav>
@@ -449,24 +428,8 @@ function MainApp() {
           </>
         )}
 
-        {activeTab === 'gyms' && (
-          <>
-            <div className="card gyms-card">
-              <h2>Gym Selection</h2>
-              <p>Current Gym: <strong>{user.gym}</strong></p>
-              <div className="gyms-list">
-                {gyms.map(gym => (
-                  <div key={gym.id} className="gym-item">
-                    <h4>{gym.name}</h4>
-                    <p>{gym.location} • {gym.members} members</p>
-                    <button onClick={() => joinGym(gym.id)}>
-                      {user.gym === gym.name ? 'Current Gym' : 'Join Gym'}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
+        {activeTab === 'clubs' && (
+          <ClubsScreen />
         )}
 
         {activeTab === 'profile' && (

@@ -218,7 +218,8 @@ async function updateUser(uid, updates) {
     const allowedFields = [
       'username', 'handle', 'avatarUrl', 'level', 'xp',
       'strength', 'endurance', 'agility', 'gym',
-      'workoutStreak', 'lastWorkout', 'equipment', 'inventory'
+      'workoutStreak', 'lastWorkout', 'equipment', 'inventory',
+      'clubId', 'clubRole', 'weeklyXP'
     ];
     
     const filteredUpdates = {};

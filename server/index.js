@@ -78,6 +78,7 @@ const userRoutes = require('./routes/user.routes');
 const mlRoutes = require('./routes/ml.routes');
 const avatarRoutes = require('./routes/avatar.routes');
 const eventRoutes = require('./routes/event.routes');
+const clubRoutes = require('./routes/club.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 
 app.use('/api/auth', authRoutes);
@@ -85,12 +86,19 @@ app.use('/api/user', userRoutes);
 app.use('/api/ml', mlRoutes);
 app.use('/api/avatar', avatarRoutes);
 app.use('/api/events', eventRoutes);
+app.use('/api/clubs', clubRoutes);
 
 // INFO: ML Service initialized
 logger.info('ForgeMaster AI (ML Service) initialized', {
   features: ['recommendations', 'predictions', 'motivation', 'quest-suggestions', 'patterns'],
   engine: process.env.GEMINI_API_KEY ? 'gemini_enhanced' : 'rule_based_ai',
   geminiEnabled: !!process.env.GEMINI_API_KEY
+});
+
+// INFO: Clubs & Territory System initialized
+logger.info('Clubs & Territory System initialized', {
+  features: ['clubs', 'territories', 'battles', 'leaderboard'],
+  googlePlacesEnabled: !!process.env.GOOGLE_PLACES_API_KEY
 });
 
 // Get user profile (legacy - will be replaced by /api/user/profile)
