@@ -68,11 +68,151 @@ let mockRaidBoss = {
   participants: 47
 };
 
+// Legacy gym data (kept for backward compatibility)
 const mockGyms = [
   { id: 1, name: 'PowerHouse Fitness', members: 47, location: 'Downtown' },
   { id: 2, name: 'Iron Paradise', members: 32, location: 'Uptown' },
   { id: 3, name: 'Flex Zone', members: 28, location: 'Suburbs' },
   { id: 4, name: 'Beast Mode Gym', members: 19, location: 'East Side' }
+];
+
+// New Club System - Clubs compete for control of real-world gym locations
+const mockClubs = [
+  {
+    id: 'club_iron_warriors',
+    name: 'Iron Warriors',
+    tag: 'IRON',
+    description: 'Forged in iron, built to conquer. We dominate every territory we touch.',
+    color: '#DC2626',
+    emblem: 'shield',
+    founderId: 'user_1',
+    founderName: 'GymHero99',
+    memberCount: 47,
+    territoriesControlled: 8,
+    totalPower: 752,
+    wins: 34,
+    losses: 12,
+    isRecruiting: true,
+    minLevelToJoin: 5,
+  },
+  {
+    id: 'club_flex_nation',
+    name: 'Flex Nation',
+    tag: 'FLEX',
+    description: 'United by gains, driven by excellence. Join the nation!',
+    color: '#7C3AED',
+    emblem: 'crown',
+    founderId: 'user_2',
+    founderName: 'FitWarrior',
+    memberCount: 32,
+    territoriesControlled: 6,
+    totalPower: 498,
+    wins: 28,
+    losses: 15,
+    isRecruiting: true,
+    minLevelToJoin: 3,
+  },
+  {
+    id: 'club_beast_mode',
+    name: 'Beast Mode Elite',
+    tag: 'BEAST',
+    description: 'Only the strongest survive. Are you beast enough?',
+    color: '#059669',
+    emblem: 'sword',
+    founderId: 'user_3',
+    founderName: 'StrengthMaster',
+    memberCount: 28,
+    territoriesControlled: 5,
+    totalPower: 412,
+    wins: 22,
+    losses: 18,
+    isRecruiting: true,
+    minLevelToJoin: 10,
+  },
+  {
+    id: 'club_cardio_kings',
+    name: 'Cardio Kings',
+    tag: 'CARDIO',
+    description: 'Endurance is our weapon. We outlast everyone.',
+    color: '#0891B2',
+    emblem: 'lightning',
+    founderId: 'user_4',
+    founderName: 'CardioQueen',
+    memberCount: 19,
+    territoriesControlled: 3,
+    totalPower: 287,
+    wins: 15,
+    losses: 20,
+    isRecruiting: true,
+    minLevelToJoin: 1,
+  },
+];
+
+// Mock gym locations (real-world gyms that clubs fight over)
+const mockGymLocations = [
+  {
+    id: 'gym_mock_1',
+    placeId: 'mock_place_1',
+    name: 'Iron Paradise Fitness',
+    address: '123 Main St, Downtown',
+    location: { lat: 40.7128, lng: -74.0060 },
+    rating: 4.5,
+    controllingClubId: 'club_iron_warriors',
+    controllingClubName: 'Iron Warriors',
+    controllingClubColor: '#DC2626',
+    controlStrength: 150,
+    defenders: [
+      { userId: 'user_1', username: 'GymHero99', level: 15 },
+      { userId: 'user_5', username: 'IronFist', level: 12 },
+    ],
+    totalBattles: 23,
+  },
+  {
+    id: 'gym_mock_2',
+    placeId: 'mock_place_2',
+    name: 'PowerHouse Gym',
+    address: '456 Oak Ave, Uptown',
+    location: { lat: 40.7200, lng: -74.0100 },
+    rating: 4.2,
+    controllingClubId: 'club_flex_nation',
+    controllingClubName: 'Flex Nation',
+    controllingClubColor: '#7C3AED',
+    controlStrength: 120,
+    defenders: [
+      { userId: 'user_2', username: 'FitWarrior', level: 12 },
+    ],
+    totalBattles: 18,
+  },
+  {
+    id: 'gym_mock_3',
+    placeId: 'mock_place_3',
+    name: 'CrossFit Thunder',
+    address: '789 Pine Rd, Suburbs',
+    location: { lat: 40.7050, lng: -74.0200 },
+    rating: 4.8,
+    controllingClubId: null,
+    controllingClubName: null,
+    controllingClubColor: null,
+    controlStrength: 0,
+    defenders: [],
+    totalBattles: 5,
+  },
+  {
+    id: 'gym_mock_4',
+    placeId: 'mock_place_4',
+    name: 'Planet Fitness',
+    address: '321 Elm St, East Side',
+    location: { lat: 40.7180, lng: -73.9900 },
+    rating: 3.9,
+    controllingClubId: 'club_beast_mode',
+    controllingClubName: 'Beast Mode Elite',
+    controllingClubColor: '#059669',
+    controlStrength: 95,
+    defenders: [
+      { userId: 'user_3', username: 'StrengthMaster', level: 8 },
+    ],
+    totalBattles: 12,
+  },
 ];
 
 module.exports = {
@@ -83,5 +223,7 @@ module.exports = {
   mockDuels,
   mockActivityFeed,
   mockRaidBoss,
-  mockGyms
+  mockGyms,
+  mockClubs,
+  mockGymLocations,
 };

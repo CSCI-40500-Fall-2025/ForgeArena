@@ -24,6 +24,10 @@ interface AuthUser {
   equipment: Record<string, any>;
   inventory: any[];
   createdAt: string;
+  // Club fields
+  clubId?: string;
+  clubRole?: 'founder' | 'officer' | 'member';
+  weeklyXP?: number;
 }
 
 interface AuthContextType {
