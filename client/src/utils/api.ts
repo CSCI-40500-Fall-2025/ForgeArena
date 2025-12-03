@@ -1,5 +1,10 @@
 // API configuration
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// In production (Heroku), use same domain. In development, use localhost:5000
+const API_URL = process.env.REACT_APP_API_URL 
+  ? process.env.REACT_APP_API_URL
+  : (process.env.NODE_ENV === 'production' 
+      ? ''  // Use same domain in production (Heroku serves both frontend and API)
+      : 'http://localhost:5000');
 
 /**
  * Get access token from localStorage

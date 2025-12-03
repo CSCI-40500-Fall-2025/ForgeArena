@@ -11,7 +11,7 @@ const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 
 // ============================================================================
-// CLUB MANAGEMENT ROUTES
+// STATIC ROUTES FIRST (before :clubId parameter routes)
 // ============================================================================
 
 /**
@@ -49,79 +49,8 @@ router.get('/leaderboard', async (req, res) => {
 });
 
 /**
- * GET /api/clubs/:clubId - Get club details
- */
-router.get('/:clubId', async (req, res) => {
-  try {
-    const club = await clubService.getClubById(req.params.clubId);
-    
-    if (!club) {
-      return res.status(404).json({ error: 'Club not found' });
-    }
-    
-    res.json(club);
-  } catch (error) {
-    logger.error('Error fetching club', { error: error.message });
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * GET /api/clubs/:clubId/members - Get club members
- */
-router.get('/:clubId/members', async (req, res) => {
-  try {
-    const members = await clubService.getClubMembers(req.params.clubId);
-    res.json(members);
-  } catch (error) {
-    logger.error('Error fetching club members', { error: error.message });
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * POST /api/clubs - Create a new club (requires auth)
- */
-router.post('/', authMiddleware.authenticateToken, async (req, res) => {
-  try {
-    const { name, tag, description, color, emblem, minLevelToJoin } = req.body;
-    
-    if (!name || name.length < 3) {
-      return res.status(400).json({ error: 'Club name must be at least 3 characters' });
-    }
-    
-    const club = await clubService.createClub(req.user.uid, {
-      name,
-      tag,
-      description,
-      color,
-      emblem,
-      minLevelToJoin,
-    });
-    
-    logger.info('Club created via API', { clubId: club.id, userId: req.user.uid });
-    res.status(201).json(club);
-  } catch (error) {
-    logger.error('Error creating club', { error: error.message });
-    res.status(400).json({ error: error.message });
-  }
-});
-
-/**
- * POST /api/clubs/:clubId/join - Join a club (requires auth)
- */
-router.post('/:clubId/join', authMiddleware.authenticateToken, async (req, res) => {
-  try {
-    const result = await clubService.joinClub(req.user.uid, req.params.clubId);
-    res.json(result);
-  } catch (error) {
-    logger.error('Error joining club', { error: error.message });
-    res.status(400).json({ error: error.message });
-  }
-});
-
-/**
  * POST /api/clubs/leave - Leave current club (requires auth)
+ * NOTE: Must be before /:clubId routes
  */
 router.post('/leave', authMiddleware.authenticateToken, async (req, res) => {
   try {
@@ -133,21 +62,8 @@ router.post('/leave', authMiddleware.authenticateToken, async (req, res) => {
   }
 });
 
-/**
- * PUT /api/clubs/:clubId - Update club settings (requires auth + permission)
- */
-router.put('/:clubId', authMiddleware.authenticateToken, async (req, res) => {
-  try {
-    const club = await clubService.updateClub(req.user.uid, req.params.clubId, req.body);
-    res.json(club);
-  } catch (error) {
-    logger.error('Error updating club', { error: error.message });
-    res.status(400).json({ error: error.message });
-  }
-});
-
 // ============================================================================
-// TERRITORY / GYM LOCATION ROUTES
+// GYM/TERRITORY ROUTES (before :clubId to prevent "gyms" matching as clubId)
 // ============================================================================
 
 /**
@@ -202,6 +118,9 @@ router.get('/gyms/nearby', async (req, res) => {
         return { ...gym, distance };
       })
     );
+    
+    // Sort by distance
+    gymsWithTerritory.sort((a, b) => a.distance - b.distance);
     
     res.json(gymsWithTerritory);
   } catch (error) {
@@ -307,6 +226,41 @@ router.post('/gyms/:gymId/defend', authMiddleware.authenticateToken, async (req,
   }
 });
 
+// ============================================================================
+// CLUB MANAGEMENT ROUTES WITH :clubId PARAMETER (must be after static routes)
+// ============================================================================
+
+/**
+ * GET /api/clubs/:clubId - Get club details
+ */
+router.get('/:clubId', async (req, res) => {
+  try {
+    const club = await clubService.getClubById(req.params.clubId);
+    
+    if (!club) {
+      return res.status(404).json({ error: 'Club not found' });
+    }
+    
+    res.json(club);
+  } catch (error) {
+    logger.error('Error fetching club', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/clubs/:clubId/members - Get club members
+ */
+router.get('/:clubId/members', async (req, res) => {
+  try {
+    const members = await clubService.getClubMembers(req.params.clubId);
+    res.json(members);
+  } catch (error) {
+    logger.error('Error fetching club members', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
 /**
  * GET /api/clubs/:clubId/territories - Get club's controlled territories
  */
@@ -320,5 +274,58 @@ router.get('/:clubId/territories', async (req, res) => {
   }
 });
 
-module.exports = router;
+/**
+ * POST /api/clubs - Create a new club (requires auth)
+ */
+router.post('/', authMiddleware.authenticateToken, async (req, res) => {
+  try {
+    const { name, tag, description, color, emblem, minLevelToJoin } = req.body;
+    
+    if (!name || name.length < 3) {
+      return res.status(400).json({ error: 'Club name must be at least 3 characters' });
+    }
+    
+    const club = await clubService.createClub(req.user.uid, {
+      name,
+      tag,
+      description,
+      color,
+      emblem,
+      minLevelToJoin,
+    });
+    
+    logger.info('Club created via API', { clubId: club.id, userId: req.user.uid });
+    res.status(201).json(club);
+  } catch (error) {
+    logger.error('Error creating club', { error: error.message });
+    res.status(400).json({ error: error.message });
+  }
+});
 
+/**
+ * POST /api/clubs/:clubId/join - Join a club (requires auth)
+ */
+router.post('/:clubId/join', authMiddleware.authenticateToken, async (req, res) => {
+  try {
+    const result = await clubService.joinClub(req.user.uid, req.params.clubId);
+    res.json(result);
+  } catch (error) {
+    logger.error('Error joining club', { error: error.message });
+    res.status(400).json({ error: error.message });
+  }
+});
+
+/**
+ * PUT /api/clubs/:clubId - Update club settings (requires auth + permission)
+ */
+router.put('/:clubId', authMiddleware.authenticateToken, async (req, res) => {
+  try {
+    const club = await clubService.updateClub(req.user.uid, req.params.clubId, req.body);
+    res.json(club);
+  } catch (error) {
+    logger.error('Error updating club', { error: error.message });
+    res.status(400).json({ error: error.message });
+  }
+});
+
+module.exports = router;
