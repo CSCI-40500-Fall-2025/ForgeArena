@@ -4,6 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import UserProfile from './components/UserProfile';
 import ProfileScreen from './components/ProfileScreen';
 import AICoach from './components/AICoach';
+import AvatarEditor from './components/AvatarEditor';
 import './App.css';
 
 interface Avatar {
@@ -279,13 +280,13 @@ function MainApp() {
       </header>
 
       <nav className="nav-tabs">
-        {['dashboard', 'ai-coach', 'profile', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
+        {['dashboard', 'avatar', 'ai-coach', 'profile', 'inventory', 'achievements', 'duels', 'gyms', 'social'].map(tab => (
           <button 
             key={tab}
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
             onClick={() => setActiveTab(tab)}
           >
-            {tab === 'ai-coach' ? '🤖 AI Coach' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'ai-coach' ? '🤖 AI Coach' : tab === 'avatar' ? '🎭 Avatar' : tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </nav>
@@ -470,6 +471,10 @@ function MainApp() {
 
         {activeTab === 'profile' && (
           <ProfileScreen />
+        )}
+
+        {activeTab === 'avatar' && (
+          <AvatarEditor />
         )}
 
         {activeTab === 'ai-coach' && (
