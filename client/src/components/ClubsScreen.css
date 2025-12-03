@@ -4,7 +4,7 @@
 
 .clubs-screen {
   padding: var(--space-4);
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -81,16 +81,94 @@
    ============================================ */
 
 .clubs-map-section h2 {
-  margin: 0 0 var(--space-2) 0;
+  margin: 0 0 var(--space-4) 0;
   font-size: var(--font-size-2xl);
+}
+
+/* Search Controls */
+.search-controls {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.radius-slider {
+  margin-bottom: var(--space-3);
+}
+
+.radius-slider label {
+  display: block;
+  margin-bottom: var(--space-3);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+}
+
+.radius-slider label strong {
+  color: var(--color-primary-600);
+  font-size: var(--font-size-lg);
+}
+
+/* Custom Range Slider */
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, 
+    var(--color-primary-200) 0%, 
+    var(--color-primary-400) 50%, 
+    var(--color-primary-600) 100%
+  );
+  outline: none;
+  margin-bottom: var(--space-2);
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary-500);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-base);
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  background: var(--color-primary-600);
+}
+
+.slider::-moz-range-thumb {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--color-primary-500);
+  cursor: pointer;
+  border: 3px solid white;
+  box-shadow: var(--shadow-md);
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-xs);
+  color: var(--text-tertiary);
 }
 
 .map-subtitle {
   color: var(--text-secondary);
-  margin-bottom: var(--space-6);
+  margin: 0;
+  font-size: var(--font-size-sm);
 }
 
-.location-prompt {
+.location-prompt,
+.map-error,
+.map-loading {
   text-align: center;
   padding: var(--space-12);
   background: var(--surface-card);
@@ -99,29 +177,173 @@
 }
 
 .location-icon {
-  font-size: 4rem;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-500);
   margin-bottom: var(--space-4);
 }
 
-/* Gym Grid */
+/* Map Container */
+.map-container {
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: var(--space-6);
+}
+
+/* Info Window Styles */
+.info-window {
+  padding: var(--space-2);
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.info-window h3 {
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--font-size-lg);
+  color: #1f2937;
+}
+
+.info-address {
+  color: #6b7280;
+  font-size: var(--font-size-sm);
+  margin: 0 0 var(--space-3) 0;
+}
+
+.info-control {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.info-unclaimed {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  margin-bottom: var(--space-3);
+  border: 2px dashed #d1d5db;
+}
+
+.info-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: var(--font-size-xs);
+  color: #6b7280;
+  margin-bottom: var(--space-3);
+}
+
+.info-stats span {
+  background: #f3f4f6;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.info-defenders {
+  font-size: var(--font-size-xs);
+  color: #6b7280;
+  margin-bottom: var(--space-3);
+}
+
+.info-defenders strong {
+  display: block;
+  margin-bottom: var(--space-1);
+}
+
+.info-defenders span {
+  display: inline-block;
+  background: #e5e7eb;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  margin-right: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+
+.info-actions {
+  margin-top: var(--space-3);
+}
+
+.info-warning {
+  color: #9ca3af;
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  text-align: center;
+  margin: 0;
+}
+
+.info-btn {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.info-btn.claim {
+  background: #10B981;
+  color: white;
+}
+
+.info-btn.challenge {
+  background: #EF4444;
+  color: white;
+}
+
+.info-btn.defend {
+  background: #3B82F6;
+  color: white;
+}
+
+.info-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.info-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Gym List */
+.gym-list {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+.gym-list h3 {
+  margin: 0 0 var(--space-4) 0;
+}
+
 .gym-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--space-4);
 }
 
 .gym-card {
-  background: var(--surface-card);
+  background: var(--color-neutral-50);
   border-radius: var(--radius-xl);
-  padding: var(--space-5);
+  padding: var(--space-4);
   border: 3px solid var(--color-neutral-200);
   cursor: pointer;
   transition: all var(--transition-base);
 }
 
 .gym-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .gym-card.selected {
@@ -145,9 +367,9 @@
   margin-bottom: var(--space-2);
 }
 
-.gym-header h3 {
+.gym-header h4 {
   margin: 0;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-base);
   flex: 1;
 }
 
@@ -160,176 +382,20 @@
   white-space: nowrap;
 }
 
-.control-badge.large {
-  padding: var(--space-2) var(--space-4);
-  font-size: var(--font-size-sm);
-}
-
 .gym-address {
   color: var(--text-secondary);
   font-size: var(--font-size-sm);
-  margin: 0 0 var(--space-3) 0;
+  margin: 0 0 var(--space-2) 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .gym-stats {
   display: flex;
-  gap: var(--space-4);
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-.gym-defenders {
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--border-subtle);
-  font-size: var(--font-size-sm);
-}
-
-.defender-label {
-  color: var(--text-secondary);
-  margin-right: var(--space-2);
-}
-
-.defender-name {
-  background: var(--color-neutral-100);
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-md);
-  margin-right: var(--space-1);
-  font-size: var(--font-size-xs);
-}
-
-.more-defenders {
-  color: var(--text-tertiary);
-  font-style: italic;
-}
-
-/* Gym Modal */
-.gym-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-  padding: var(--space-4);
-}
-
-.gym-modal {
-  background: var(--surface-card);
-  border-radius: var(--radius-2xl);
-  padding: var(--space-8);
-  max-width: 500px;
-  width: 100%;
-  position: relative;
-  animation: modalIn 0.2s ease-out;
-}
-
-@keyframes modalIn {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.gym-modal .close-btn {
-  position: absolute;
-  top: var(--space-4);
-  right: var(--space-4);
-  width: 32px;
-  height: 32px;
-  border: none;
-  background: var(--color-neutral-100);
-  border-radius: 50%;
-  font-size: var(--font-size-xl);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gym-modal h2 {
-  margin: 0 0 var(--space-2) 0;
-  padding-right: var(--space-8);
-}
-
-.control-info,
-.unclaimed-info {
-  margin: var(--space-6) 0;
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  text-align: center;
-}
-
-.control-info {
-  background: var(--color-neutral-50);
-  border: 2px solid;
-}
-
-.unclaimed-info {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(234, 88, 12, 0.1));
-  border: 2px dashed var(--color-accent-500);
-}
-
-.unclaimed-badge {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-accent-600);
-}
-
-.gym-actions {
-  display: flex;
-  flex-direction: column;
   gap: var(--space-3);
-}
-
-.gym-actions .warning {
-  text-align: center;
+  font-size: var(--font-size-xs);
   color: var(--text-secondary);
-  font-style: italic;
-}
-
-.action-btn {
-  padding: var(--space-4);
-  border: none;
-  border-radius: var(--radius-lg);
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-  transition: all var(--transition-base);
-}
-
-.action-btn.claim {
-  background: linear-gradient(135deg, #10B981, #059669);
-  color: white;
-}
-
-.action-btn.challenge {
-  background: linear-gradient(135deg, #EF4444, #DC2626);
-  color: white;
-}
-
-.action-btn.defend {
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
-  color: white;
-}
-
-.action-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
-}
-
-.action-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
 }
 
 /* ============================================
@@ -567,7 +633,9 @@
 }
 
 .no-club-icon {
-  font-size: 5rem;
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-500);
   margin-bottom: var(--space-4);
 }
 
@@ -601,7 +669,8 @@
 }
 
 .club-emblem {
-  font-size: 4rem;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
   background: rgba(255, 255, 255, 0.2);
   width: 100px;
   height: 100px;
@@ -645,7 +714,9 @@
 }
 
 .stat-card .stat-icon {
-  font-size: 2rem;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-500);
   display: block;
   margin-bottom: var(--space-2);
 }
@@ -807,8 +878,22 @@
 
 .leaderboard-entry .rank {
   font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   min-width: 50px;
   text-align: center;
+  color: var(--text-secondary);
+}
+
+.leaderboard-entry.top-1 .rank {
+  color: #F59E0B;
+}
+
+.leaderboard-entry.top-2 .rank {
+  color: #9CA3AF;
+}
+
+.leaderboard-entry.top-3 .rank {
+  color: #B45309;
 }
 
 .leaderboard-entry .club-info {
@@ -902,5 +987,8 @@
   .leaderboard-entry .territories {
     margin-left: auto;
   }
+  
+  .slider-labels {
+    font-size: 10px;
+  }
 }
-

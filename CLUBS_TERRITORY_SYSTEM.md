@@ -5,7 +5,9 @@ ForgeArena now features a **Clubs & Territory Control** system, similar to how P
 ## Overview
 
 - **Clubs** are teams that users join to compete together
-- **Gym Locations** are real-world fitness centers discovered via Google Maps Places API
+- **Gym Locations** are real-world fitness centers discovered via **Google Maps Places API**
+- **Interactive Google Map** displays gym locations with territory control status
+- **Range slider** allows searching for gyms up to **100 miles** away
 - Clubs **battle for control** of gym locations in their area
 - **Territory control** gives clubs prestige and leaderboard rankings
 
@@ -18,10 +20,14 @@ ForgeArena now features a **Clubs & Territory Control** system, similar to how P
 - Minimum level requirements to join certain clubs
 - Club statistics: wins, losses, territories controlled, total power
 
-### 2. Real Gym Discovery
-- Uses **Google Places API** to find actual gyms near the user
+### 2. Real Gym Discovery & Interactive Map
+- Uses **Google Maps Places API** to find actual gyms near the user
+- **Interactive Google Map** with markers showing gym locations
+- **Range slider** to search 1-100 miles radius
+- Color-coded markers indicate territory control (club color or gray for unclaimed)
+- Click markers to view gym details and take actions
 - Falls back to mock data if API key is not configured
-- Gym details include: name, address, rating, photos
+- Gym details include: name, address, rating, distance
 
 ### 3. Territory Control
 - **Claim** unclaimed gym locations for your club
@@ -62,14 +68,24 @@ GET    /api/clubs/:clubId/territories - Get club's controlled territories
 
 ## Configuration
 
-### Google Places API (Optional)
-To enable real gym discovery, add your Google Places API key:
+### Google Maps & Places API
+To enable real gym discovery and interactive maps, add your Google API keys:
 
+**Server (.env):**
 ```env
-GOOGLE_PLACES_API_KEY=your_api_key_here
+GOOGLE_PLACES_API_KEY=your_places_api_key_here
 ```
 
-Without the API key, the system uses mock gym data for development/testing.
+**Client (.env or environment):**
+```env
+REACT_APP_GOOGLE_MAPS_API_KEY=your_maps_api_key_here
+```
+
+**Required Google APIs:**
+- Maps JavaScript API (for interactive map)
+- Places API (for gym discovery)
+
+Without the API keys, the system uses mock gym data for development/testing.
 
 ### Firestore Collections
 The system uses these Firestore collections:

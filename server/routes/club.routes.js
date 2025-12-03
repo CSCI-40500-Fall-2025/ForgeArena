@@ -152,6 +152,9 @@ router.put('/:clubId', authMiddleware.authenticateToken, async (req, res) => {
 
 /**
  * GET /api/clubs/gyms/nearby - Search for nearby gyms
+ * @query lat - Latitude
+ * @query lng - Longitude
+ * @query radius - Radius in meters (default 16000, max ~161000 for 100 miles)
  */
 router.get('/gyms/nearby', async (req, res) => {
   try {
@@ -163,7 +166,8 @@ router.get('/gyms/nearby', async (req, res) => {
     
     const latitude = parseFloat(lat);
     const longitude = parseFloat(lng);
-    const radiusMeters = parseInt(radius) || 5000;
+    // Default to ~10 miles (16km), max 100 miles (~161km)
+    const radiusMeters = Math.min(parseInt(radius) || 16000, 161000);
     
     // Fetch from Google Places
     const placesResults = await googlePlacesService.searchNearbyGyms(
@@ -172,11 +176,30 @@ router.get('/gyms/nearby', async (req, res) => {
       radiusMeters
     );
     
-    // Upsert to our database and get territory info
+    // Helper to calculate distance in miles
+    const calculateDistanceMiles = (lat1, lng1, lat2, lng2) => {
+      const R = 3959; // Earth's radius in miles
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLng = (lng2 - lng1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLng/2) * Math.sin(dLng/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    };
+    
+    // Upsert to our database and get territory info with distance
     const gymsWithTerritory = await Promise.all(
       placesResults.map(async (place) => {
         const gym = await gymLocationService.upsertGymLocation(place);
-        return gym;
+        // Add distance in miles
+        const distance = calculateDistanceMiles(
+          latitude, 
+          longitude, 
+          place.geometry.location.lat, 
+          place.geometry.location.lng
+        );
+        return { ...gym, distance };
       })
     );
     
