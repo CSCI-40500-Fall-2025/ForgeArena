@@ -76,11 +76,15 @@ logger.debug('Mock data and game logic loaded', {
 const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const mlRoutes = require('./routes/ml.routes');
+const avatarRoutes = require('./routes/avatar.routes');
+const eventRoutes = require('./routes/event.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/ml', mlRoutes);
+app.use('/api/avatar', avatarRoutes);
+app.use('/api/events', eventRoutes);
 
 // INFO: ML Service initialized
 logger.info('🤖 ForgeMaster AI (ML Service) initialized', {
@@ -161,6 +165,7 @@ app.get('/api/quests', (req, res) => {
 app.post('/api/quest/:id/complete', (req, res) => {
   const questId = req.params.id;
   const quest = mockQuests.find(q => q.id == questId);
+  const itemService = require('./services/item.service');
   
   if (quest) {
     // DEBUG: Quest completion validation
@@ -207,6 +212,12 @@ app.post('/api/quest/:id/complete', (req, res) => {
       });
     }
     
+    // Award item rewards based on quest difficulty
+    const questDifficulty = quest.xpReward >= 300 ? 'legendary' : 
+                           quest.xpReward >= 150 ? 'hard' : 
+                           quest.xpReward >= 100 ? 'normal' : 'easy';
+    const itemReward = itemService.awardQuestItems('default_user', questDifficulty);
+    
     // INFO: Quest completed
     logger.info('Quest completed successfully', {
       userId: mockUser.id,
@@ -216,6 +227,7 @@ app.post('/api/quest/:id/complete', (req, res) => {
       oldXp,
       newXp: mockUser.avatar.xp,
       leveledUp,
+      itemsAwarded: itemReward.items.length,
       action: 'QUEST',
     });
     
@@ -223,7 +235,8 @@ app.post('/api/quest/:id/complete', (req, res) => {
       message: 'Quest completed!', 
       xpGained: quest.xpReward,
       leveledUp,
-      newLevel: mockUser.avatar.level
+      newLevel: mockUser.avatar.level,
+      itemReward: itemReward.items
     });
   } else {
     // WARN: Quest not found

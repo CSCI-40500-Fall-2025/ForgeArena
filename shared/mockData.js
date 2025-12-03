@@ -21,11 +21,14 @@ let mockUser = {
 };
 
 let mockQuests = [
-  { id: 1, title: 'First Steps', description: 'Complete your first workout', completed: false, xpReward: 50, reward: { item: 'training_shoes' } },
-  { id: 2, title: 'Cardio Warrior', description: 'Run 5 miles total', progress: '0/5', completed: false, xpReward: 200, reward: { item: 'running_gear' } },
-  { id: 3, title: 'Strength Builder', description: 'Complete 100 reps', progress: '0/100', completed: false, xpReward: 150, reward: { item: 'weight_belt' } },
-  { id: 4, title: 'Streak Master', description: 'Maintain a 7-day workout streak', progress: '3/7', completed: false, xpReward: 300, reward: { item: 'champion_badge' } },
-  { id: 5, title: 'Social Butterfly', description: 'Challenge 3 gym buddies to duels', progress: '0/3', completed: false, xpReward: 100, reward: { item: 'friendship_ring' } }
+  { id: 1, title: 'First Steps', description: 'Complete your first workout', completed: false, xpReward: 50, difficulty: 'easy', reward: { item: 'training_shoes' } },
+  { id: 2, title: 'Cardio Warrior', description: 'Run 5 miles total', progress: '0/5', completed: false, xpReward: 200, difficulty: 'hard', reward: { item: 'running_gear' } },
+  { id: 3, title: 'Strength Builder', description: 'Complete 100 reps', progress: '0/100', completed: false, xpReward: 150, difficulty: 'normal', reward: { item: 'weight_belt' } },
+  { id: 4, title: 'Streak Master', description: 'Maintain a 7-day workout streak', progress: '3/7', completed: false, xpReward: 300, difficulty: 'legendary', reward: { item: 'champion_badge' } },
+  { id: 5, title: 'Social Butterfly', description: 'Challenge 3 gym buddies to duels', progress: '0/3', completed: false, xpReward: 100, difficulty: 'normal', reward: { item: 'friendship_ring' } },
+  { id: 6, title: 'Beast Mode', description: 'Complete 500 total reps in a week', progress: '0/500', completed: false, xpReward: 400, difficulty: 'legendary', reward: { item: 'beast_gauntlets' } },
+  { id: 7, title: 'Early Bird', description: 'Work out before 7 AM for 5 days', progress: '0/5', completed: false, xpReward: 175, difficulty: 'hard', reward: { item: 'sunrise_cape' } },
+  { id: 8, title: 'Raid Champion', description: 'Deal 1000 damage to raid bosses', progress: '0/1000', completed: false, xpReward: 350, difficulty: 'legendary', reward: { item: 'raid_armor' } }
 ];
 
 let mockAchievements = [
