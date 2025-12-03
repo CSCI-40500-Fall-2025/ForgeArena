@@ -1,6 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  GithubAuthProvider, 
+  signInWithPopup,
+  signOut as firebaseSignOut
+} from 'firebase/auth';
 
 // Your Firebase configuration
 // Replace these values with your actual Firebase project configuration
@@ -16,9 +23,23 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firebase services (keeping Storage and Firestore, removing Auth)
+// Initialize Firebase services
 export const db = getFirestore(app);
 export const storage = getStorage(app);
+export const auth = getAuth(app);
+
+// OAuth Providers
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
+
+export const githubProvider = new GithubAuthProvider();
+githubProvider.addScope('user:email');
+
+// OAuth Sign-in Functions
+export const signInWithGoogle = () => signInWithPopup(auth, googleProvider);
+export const signInWithGithub = () => signInWithPopup(auth, githubProvider);
+export const signOutFirebase = () => firebaseSignOut(auth);
 
 export default app;
 

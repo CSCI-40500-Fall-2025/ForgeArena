@@ -1,4 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { 
+  signInWithGoogle, 
+  signInWithGithub, 
+  signOutFirebase 
+} from '../firebaseConfig';
 
 // API configuration
 const API_URL = process.env.REACT_APP_API_URL || 
@@ -7,6 +12,8 @@ const API_URL = process.env.REACT_APP_API_URL ||
     : 'http://localhost:5000'); // Use local in development
 
 // Types
+export type OAuthProvider = 'google' | 'github';
+
 interface AuthUser {
   uid: string;
   email: string;
@@ -28,6 +35,8 @@ interface AuthUser {
   clubId?: string;
   clubRole?: 'founder' | 'officer' | 'member';
   weeklyXP?: number;
+  // OAuth fields
+  authProvider?: 'email' | 'google' | 'github' | 'apple';
 }
 
 interface AuthContextType {
@@ -36,6 +45,7 @@ interface AuthContextType {
   loading: boolean;
   signup: (email: string, password: string, username: string) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
+  loginWithOAuth: (provider: OAuthProvider) => Promise<void>;
   logout: () => Promise<void>;
   updateUserProfile: (updates: Partial<AuthUser>) => Promise<void>;
   updateHandle: (newHandle: string) => Promise<void>;
@@ -255,6 +265,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // OAuth Login function
+  const loginWithOAuth = async (provider: OAuthProvider) => {
+    try {
+      // Select the right OAuth provider
+      let oauthResult;
+      switch (provider) {
+        case 'google':
+          oauthResult = await signInWithGoogle();
+          break;
+        case 'github':
+          oauthResult = await signInWithGithub();
+          break;
+        default:
+          throw new Error('Invalid OAuth provider');
+      }
+
+      // Get Firebase ID token
+      const idToken = await oauthResult.user.getIdToken();
+      
+      // Send token to backend for verification and user creation/login
+      const response = await fetch(`${API_URL}/api/auth/oauth`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          idToken,
+          provider,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        // Sign out from Firebase if backend fails
+        await signOutFirebase();
+        throw new Error(error.error || 'OAuth authentication failed');
+      }
+
+      const data = await response.json();
+      
+      // Save tokens
+      saveTokens(data.accessToken, data.refreshToken);
+      
+      // Set user
+      setCurrentUser(data.user);
+      setUserProfile(data.user);
+      
+    } catch (error: any) {
+      console.error('OAuth login error:', error);
+      // Handle specific Firebase Auth errors
+      if (error.code === 'auth/popup-closed-by-user') {
+        throw new Error('Sign-in cancelled');
+      } else if (error.code === 'auth/account-exists-with-different-credential') {
+        throw new Error('An account already exists with the same email. Try signing in with a different method.');
+      } else if (error.code === 'auth/popup-blocked') {
+        throw new Error('Pop-up blocked by browser. Please allow pop-ups and try again.');
+      }
+      throw new Error(error.message || 'OAuth authentication failed');
+    }
+  };
+
   // Logout function
   const logout = async () => {
     try {
@@ -266,6 +337,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             'Authorization': `Bearer ${accessToken}`,
           },
         });
+      }
+      
+      // Sign out from Firebase (for OAuth users)
+      try {
+        await signOutFirebase();
+      } catch (e) {
+        // Ignore Firebase sign out errors
       }
       
       // Clear tokens and user state
@@ -402,6 +480,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading,
     signup,
     login,
+    loginWithOAuth,
     logout,
     updateUserProfile,
     updateHandle,

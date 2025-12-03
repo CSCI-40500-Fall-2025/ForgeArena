@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const admin = require('firebase-admin');
 const authUtils = require('../utils/auth.utils');
 const userService = require('../services/user.service');
 const logger = require('../utils/logger');
@@ -123,6 +124,110 @@ router.post('/login', async (req, res) => {
     });
     
     res.status(401).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/auth/oauth
+ * Authenticate with OAuth provider (Google, GitHub, Apple)
+ */
+router.post('/oauth', async (req, res) => {
+  try {
+    const { idToken, provider } = req.body;
+    
+    // Validate input
+    if (!idToken || !provider) {
+      return res.status(400).json({
+        error: 'ID token and provider are required',
+      });
+    }
+    
+    // Validate provider
+    const validProviders = ['google', 'github'];
+    if (!validProviders.includes(provider)) {
+      return res.status(400).json({
+        error: 'Invalid OAuth provider',
+      });
+    }
+    
+    // Verify Firebase ID token
+    let decodedToken;
+    try {
+      decodedToken = await admin.auth().verifyIdToken(idToken);
+    } catch (error) {
+      logger.warn('Invalid Firebase ID token', {
+        error: error.message,
+        provider,
+        action: 'OAUTH_VERIFY',
+      });
+      return res.status(401).json({ error: 'Invalid or expired token' });
+    }
+    
+    const { uid: firebaseUid, email, name, picture } = decodedToken;
+    
+    if (!email) {
+      return res.status(400).json({
+        error: 'Email is required for OAuth authentication',
+      });
+    }
+    
+    // Check if user exists
+    let user = await userService.findUserByEmail(email);
+    
+    if (user) {
+      // User exists - update OAuth provider if needed
+      if (!user.authProvider || user.authProvider === 'email') {
+        await userService.updateUser(user.uid, { 
+          authProvider: provider,
+          firebaseUid,
+        });
+      }
+      // Refresh user data
+      user = await userService.findUserByUid(user.uid);
+    } else {
+      // Create new user from OAuth
+      const username = name || email.split('@')[0];
+      user = await userService.createOAuthUser({
+        email,
+        username,
+        avatarUrl: picture || '',
+        authProvider: provider,
+        firebaseUid,
+      });
+    }
+    
+    // Generate tokens
+    const accessToken = authUtils.generateAccessToken({
+      uid: user.uid,
+      email: user.email,
+    });
+    
+    const refreshToken = authUtils.generateRefreshToken({
+      uid: user.uid,
+      email: user.email,
+    });
+    
+    logger.info('OAuth login successful', {
+      uid: user.uid,
+      email: user.email,
+      provider,
+      action: 'OAUTH_LOGIN',
+    });
+    
+    res.json({
+      message: 'OAuth login successful',
+      user,
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    logger.error('OAuth authentication failed', {
+      error: error.message,
+      provider: req.body.provider,
+      action: 'OAUTH_LOGIN',
+    });
+    
+    res.status(400).json({ error: error.message });
   }
 });
 
