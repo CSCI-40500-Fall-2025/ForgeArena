@@ -57,6 +57,29 @@ service cloud.firestore {
         request.auth.uid == resource.data.userId;
     }
     
+    // Raids collection - party members can read/participate in their raids
+    match /raids/{raidId} {
+      // Raid participants can read the raid
+      allow read: if request.auth != null;
+      
+      // Only authenticated users can create raids (service validates ownership)
+      allow create: if request.auth != null;
+      
+      // Participants can update (for damage logging)
+      allow update: if request.auth != null;
+      
+      // Only admin can delete
+      allow delete: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
+    // Raid bosses collection - read-only for all authenticated users
+    match /raidBosses/{bossId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && 
+        request.auth.token.admin == true;
+    }
+    
     // Contributions collection - users can read all, but only write their own
     match /contributions/{contributionId} {
       allow read: if request.auth != null;

@@ -80,6 +80,7 @@ const avatarRoutes = require('./routes/avatar.routes');
 const eventRoutes = require('./routes/event.routes');
 const clubRoutes = require('./routes/club.routes');
 const partyRoutes = require('./routes/party.routes');
+const raidRoutes = require('./routes/raid.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 
 app.use('/api/auth', authRoutes);
@@ -89,6 +90,7 @@ app.use('/api/avatar', avatarRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
 app.use('/api/parties', partyRoutes);
+app.use('/api/raids', raidRoutes);
 
 // INFO: ML Service initialized
 logger.info('ForgeMaster AI (ML Service) initialized', {
@@ -107,6 +109,12 @@ logger.info('Clubs & Territory System initialized', {
 logger.info('Party System initialized', {
   features: ['create', 'join-via-code', 'leave', 'ownership-transfer', 'kick-members'],
   maxPartySize: 8
+});
+
+// INFO: Raid System initialized
+logger.info('Raid System initialized', {
+  features: ['boss-selection', 'scaled-hp', 'real-time-damage', 'contribution-tracking'],
+  bossCount: 5
 });
 
 // Get user profile (legacy - will be replaced by /api/user/profile)
