@@ -31,6 +31,14 @@ interface Party {
   updatedAt: string;
 }
 
+interface ActiveRaid {
+  id: string;
+  bossName: string;
+  bossColor: string;
+  hpRemaining: number;
+  hpTotal: number;
+}
+
 interface PartyPreview {
   id: string;
   name: string;
@@ -43,6 +51,7 @@ interface PartyPreview {
 const PartyScreen: React.FC = () => {
   const { userProfile } = useAuth();
   const [party, setParty] = useState<Party | null>(null);
+  const [activeRaid, setActiveRaid] = useState<ActiveRaid | null>(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
@@ -102,8 +111,27 @@ const PartyScreen: React.FC = () => {
         
         prevMembersRef.current = response.party.members;
         setParty(response.party);
+        
+        // Also fetch active raid status
+        try {
+          const raidResponse = await apiGet('/api/raids/active');
+          if (raidResponse.raid) {
+            setActiveRaid({
+              id: raidResponse.raid.id,
+              bossName: raidResponse.raid.bossName,
+              bossColor: raidResponse.raid.bossColor,
+              hpRemaining: raidResponse.raid.hpRemaining,
+              hpTotal: raidResponse.raid.hpTotal,
+            });
+          } else {
+            setActiveRaid(null);
+          }
+        } catch (e) {
+          // Ignore raid fetch errors
+        }
       } else {
         setParty(null);
+        setActiveRaid(null);
         prevMembersRef.current = [];
       }
     } catch (error) {
@@ -444,6 +472,33 @@ const PartyScreen: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Active Raid Banner */}
+        {activeRaid && (
+          <div 
+            className="active-raid-banner"
+            style={{ '--raid-color': activeRaid.bossColor } as React.CSSProperties}
+          >
+            <div className="raid-banner-content">
+              <span className="raid-banner-icon">⚔️</span>
+              <div className="raid-banner-info">
+                <span className="raid-banner-title">Active Raid: {activeRaid.bossName}</span>
+                <div className="raid-banner-hp">
+                  <div className="mini-hp-bar">
+                    <div 
+                      className="mini-hp-fill"
+                      style={{ width: `${(activeRaid.hpRemaining / activeRaid.hpTotal) * 100}%` }}
+                    />
+                  </div>
+                  <span className="hp-text-mini">
+                    {Math.round(activeRaid.hpRemaining)} / {activeRaid.hpTotal} HP
+                  </span>
+                </div>
+              </div>
+              <span className="raid-banner-cta">Go to Raid tab →</span>
+            </div>
+          </div>
+        )}
 
         {/* Members List */}
         <div className="members-section">
