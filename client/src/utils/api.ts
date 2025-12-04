@@ -158,10 +158,12 @@ export async function apiDelete(endpoint: string): Promise<any> {
   return response.json();
 }
 
-export default {
+const api = {
   get: apiGet,
   post: apiPost,
   put: apiPut,
   delete: apiDelete,
 };
+
+export default api;
 

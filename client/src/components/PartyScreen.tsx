@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { apiGet, apiPost, apiPut } from '../utils/api';
+import { apiGet, apiPost } from '../utils/api';
 import './PartyScreen.css';
 
 // Types

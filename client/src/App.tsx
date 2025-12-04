@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import UserProfile from './components/UserProfile';
@@ -8,6 +8,7 @@ import AvatarEditor from './components/AvatarEditor';
 import ClubsScreen from './components/ClubsScreen';
 import PartyScreen from './components/PartyScreen';
 import RaidScreen from './components/RaidScreen';
+import { apiGet, apiPost } from './utils/api';
 import './App.css';
 
 interface Avatar {
@@ -68,12 +69,6 @@ interface RaidBoss {
   participants: number;
 }
 
-const API_BASE = process.env.REACT_APP_API_URL 
-  ? `${process.env.REACT_APP_API_URL}/api`
-  : (process.env.NODE_ENV === 'production' 
-      ? '/api'  // Use same domain in production (Heroku)
-      : 'http://localhost:5000/api');  // Use local server in development
-
 // Main App Component (without auth wrapper)
 function MainApp() {
   const { userProfile, updateUserProfile } = useAuth();
@@ -95,56 +90,54 @@ function MainApp() {
       const compatibleUser: User = {
         id: 1, // Keep for compatibility
         username: userProfile.username,
-        gym: userProfile.gym,
-        workoutStreak: userProfile.workoutStreak,
+        gym: userProfile.gym || '',
+        workoutStreak: userProfile.workoutStreak || 0,
         avatar: {
-          level: userProfile.level,
-          xp: userProfile.xp,
-          strength: userProfile.strength,
-          endurance: userProfile.endurance,
-          agility: userProfile.agility,
-          equipment: Object.values(userProfile.equipment)
+          level: userProfile.level || 1,
+          xp: userProfile.xp || 0,
+          strength: userProfile.strength || 10,
+          endurance: userProfile.endurance || 10,
+          agility: userProfile.agility || 10,
+          equipment: userProfile.equipment ? Object.values(userProfile.equipment) : []
         }
       };
       setUser(compatibleUser);
     }
   }, [userProfile]);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const [questsRes, raidRes, leaderRes, achieveRes, duelsRes, activityRes] = await Promise.all([
-        fetch(`${API_BASE}/quests`),
-        fetch(`${API_BASE}/raid`),
-        fetch(`${API_BASE}/leaderboard`),
-        fetch(`${API_BASE}/achievements`),
-        fetch(`${API_BASE}/duels`),
-        fetch(`${API_BASE}/activity`)
+      const [questsData, raidData, leaderData, achieveData, duelsData, activityData] = await Promise.all([
+        apiGet('/api/quests').catch(() => ({ all: [] })),
+        apiGet('/api/raid').catch(() => null),
+        apiGet('/api/leaderboard').catch(() => ({ leaderboard: [] })),
+        apiGet('/api/achievements').catch(() => ({ achievements: [] })),
+        apiGet('/api/duels').catch(() => ({ active: [], pending: [] })),
+        apiGet('/api/activity').catch(() => [])
       ]);
       
-      setQuests(await questsRes.json());
-      setRaidBoss(await raidRes.json());
-      setLeaderboard(await leaderRes.json());
-      setAchievements(await achieveRes.json());
-      setDuels(await duelsRes.json());
-      setActivityFeed(await activityRes.json());
+      // Handle the new response formats
+      setQuests(questsData.all || questsData || []);
+      setRaidBoss(raidData);
+      setLeaderboard(leaderData.leaderboard || leaderData || []);
+      setAchievements(achieveData.achievements || achieveData || []);
+      setDuels([...(duelsData.active || []), ...(duelsData.pending || [])]);
+      setActivityFeed(activityData || []);
     } catch (error) {
       console.error('Failed to fetch data:', error);
-      setMessage('Backend not running! Start server with: cd server && npm run dev');
+      setMessage('Failed to load data. Please try again.');
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (userProfile) {
+      fetchData();
+    }
+  }, [userProfile, fetchData]);
 
   const logWorkout = async () => {
     try {
-      const res = await fetch(`${API_BASE}/workout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(workoutForm)
-      });
-      const data = await res.json();
+      const data = await apiPost('/api/workout', workoutForm);
       setMessage(`${data.message} +${data.xpGained} XP!`);
       
       // Update user profile in Firebase if available
@@ -168,12 +161,7 @@ function MainApp() {
 
   const completeQuest = async (questId: number) => {
     try {
-      const res = await fetch(`${API_BASE}/quests`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ questId })
-      });
-      const data = await res.json();
+      const data = await apiPost(`/api/quests/${questId}/claim`, {});
       setMessage(`${data.message} +${data.xpGained} XP!`);
       
       // Update user profile in Firebase if available
@@ -195,14 +183,9 @@ function MainApp() {
 
   const createDuel = async () => {
     try {
-      const res = await fetch(`${API_BASE}/duels`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(duelForm)
-      });
-      const data = await res.json();
+      const data = await apiPost('/api/duels', duelForm);
       setMessage(data.message);
-      setDuelForm({ opponent: '', challenge: 'Most squats in 24h' });
+      setDuelForm({ opponent: '', challenge: 'squats_24h' });
       fetchData();
     } catch (error) {
       setMessage('Failed to create duel');

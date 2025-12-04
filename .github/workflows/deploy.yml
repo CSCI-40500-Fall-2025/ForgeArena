@@ -69,20 +69,20 @@ jobs:
           echo "Waiting 30 seconds for app to start..."
           sleep 30
           
-          HEALTH_URL="https://${{ secrets.HEROKU_APP_NAME }}-8c99233e662d.herokuapp.com/api/user"
+          HEALTH_URL="https://${{ secrets.HEROKU_APP_NAME }}-8c99233e662d.herokuapp.com/api/health"
           echo "Checking health at: $HEALTH_URL"
           
           # Try health check with retry
           for i in {1..5}; do
             if curl -sSf "$HEALTH_URL" > /dev/null 2>&1; then
-              echo "✅ Health check passed!"
+              echo "Health check passed!"
               exit 0
             fi
             echo "Attempt $i failed, retrying in 10 seconds..."
             sleep 10
           done
           
-          echo "❌ Health check failed after 5 attempts"
+          echo "Health check failed after 5 attempts"
           exit 1
 
       - name: Create GitHub Deployment

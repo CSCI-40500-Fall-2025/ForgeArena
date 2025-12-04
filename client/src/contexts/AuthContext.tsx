@@ -75,7 +75,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userProfile, setUserProfile] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [refreshToken, setRefreshToken] = useState<string | null>(null);
 
   // Get access token
   const getAccessToken = useCallback(() => {
@@ -85,7 +84,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Save tokens to localStorage
   const saveTokens = useCallback((access: string, refresh: string) => {
     setAccessToken(access);
-    setRefreshToken(refresh);
     localStorage.setItem('accessToken', access);
     localStorage.setItem('refreshToken', refresh);
   }, []);
@@ -93,7 +91,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Clear tokens from localStorage
   const clearTokens = useCallback(() => {
     setAccessToken(null);
-    setRefreshToken(null);
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
   }, []);
@@ -164,7 +161,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (storedAccessToken && storedRefreshToken) {
         setAccessToken(storedAccessToken);
-        setRefreshToken(storedRefreshToken);
 
         try {
           // Try to fetch user profile with stored token
