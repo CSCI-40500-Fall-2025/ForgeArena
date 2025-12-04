@@ -314,14 +314,14 @@ const PartyScreen: React.FC = () => {
   const renderNoParty = () => (
     <div className="party-screen no-party">
       <div className="party-hero">
-        <div className="party-hero-icon">👥</div>
+        <div className="party-hero-icon">PARTY</div>
         <h2>Workout Together</h2>
         <p>Create or join a party to work out with friends and track progress together!</p>
       </div>
 
       <div className="party-actions-grid">
         <div className="party-action-card create">
-          <div className="action-icon">🎉</div>
+          <div className="action-icon">+</div>
           <h3>Create Party</h3>
           <p>Start your own workout party and invite friends</p>
           <button onClick={() => setShowCreateForm(true)} disabled={actionLoading}>
@@ -330,7 +330,7 @@ const PartyScreen: React.FC = () => {
         </div>
 
         <div className="party-action-card join">
-          <div className="action-icon">🔗</div>
+          <div className="action-icon">#</div>
           <h3>Join Party</h3>
           <p>Have an invite code? Join an existing party</p>
           <button onClick={() => setShowJoinForm(true)} disabled={actionLoading}>
@@ -441,7 +441,7 @@ const PartyScreen: React.FC = () => {
             <h2>{party.name}</h2>
             <div className="party-meta">
               <span className="member-count">
-                👥 {party.memberCount}/{party.maxMembers} members
+                {party.memberCount}/{party.maxMembers} members
               </span>
               {isOwner && <span className="owner-badge">Owner</span>}
             </div>
@@ -457,7 +457,7 @@ const PartyScreen: React.FC = () => {
                 onClick={copyInviteCode}
                 title="Copy code"
               >
-                📋
+                Copy
               </button>
               {isOwner && (
                 <button 
@@ -466,7 +466,7 @@ const PartyScreen: React.FC = () => {
                   disabled={actionLoading}
                   title="Generate new code"
                 >
-                  🔄
+                  New
                 </button>
               )}
             </div>
@@ -480,7 +480,7 @@ const PartyScreen: React.FC = () => {
             style={{ '--raid-color': activeRaid.bossColor } as React.CSSProperties}
           >
             <div className="raid-banner-content">
-              <span className="raid-banner-icon">⚔️</span>
+              <span className="raid-banner-icon">RAID</span>
               <div className="raid-banner-info">
                 <span className="raid-banner-title">Active Raid: {activeRaid.bossName}</span>
                 <div className="raid-banner-hp">
@@ -525,7 +525,7 @@ const PartyScreen: React.FC = () => {
                 <div className="member-info">
                   <div className="member-name-row">
                     <span className="member-name">{member.username}</span>
-                    {member.role === 'owner' && <span className="role-badge owner">👑 Owner</span>}
+                    {member.role === 'owner' && <span className="role-badge owner">Owner</span>}
                   </div>
                   <span className="member-handle">@{member.handle}</span>
                 </div>
@@ -533,7 +533,7 @@ const PartyScreen: React.FC = () => {
                 <div className="member-stats">
                   <span className="member-level">Lv. {member.level}</span>
                   {member.workoutStreak !== undefined && member.workoutStreak > 0 && (
-                    <span className="member-streak">🔥 {member.workoutStreak}</span>
+                    <span className="member-streak">{member.workoutStreak} day streak</span>
                   )}
                 </div>
                 

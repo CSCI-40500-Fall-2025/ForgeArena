@@ -24,12 +24,12 @@ interface Boss {
 }
 
 interface Contribution {
-  oderId: string;
-  odername: string;
-  oderAvatarUrl: string | null;
-  oderLevel: number;
-  odalDamage: number;
-  odalHits: number;
+  userId: string;
+  username: string;
+  avatarUrl: string | null;
+  level: number;
+  totalDamage: number;
+  totalHits: number;
   rank?: number;
   damagePercentage?: string;
 }
@@ -204,14 +204,14 @@ const RaidScreen: React.FC = () => {
       setActionLoading(true);
       const response = await apiPost(`/api/raids/${raid.id}/workout-damage`, workoutForm);
       
-      showMessage(`💥 ${response.damageDealt} damage! (${workoutForm.exercise} x${workoutForm.reps})`, 'success');
+      showMessage(`${response.damageDealt} damage! (${workoutForm.exercise} x${workoutForm.reps})`, 'success');
       
       // Update local state immediately for responsiveness
       setRaid(response.raid);
       prevHpRef.current = response.raid.hpRemaining;
       
       if (response.isDefeated) {
-        showMessage('🎉 BOSS DEFEATED! Victory!', 'success');
+        showMessage('BOSS DEFEATED! Victory!', 'success');
       }
     } catch (error: any) {
       showMessage(error.message || 'Failed to log damage', 'error');
@@ -261,7 +261,7 @@ const RaidScreen: React.FC = () => {
   const renderNoParty = () => (
     <div className="raid-screen no-party">
       <div className="raid-hero">
-        <div className="raid-hero-icon">⚔️</div>
+        <div className="raid-hero-icon">RAID</div>
         <h2>Join a Party to Raid</h2>
         <p>You need to be in a party to challenge raid bosses. Create or join a party first!</p>
       </div>
@@ -294,7 +294,7 @@ const RaidScreen: React.FC = () => {
                 {boss.difficulty}
               </span>
               <div className="boss-icon">
-                {boss.difficulty === 'legendary' ? '🐉' : boss.difficulty === 'hard' ? '🔥' : '⚔️'}
+                {boss.difficulty === 'legendary' ? 'L' : boss.difficulty === 'hard' ? 'H' : 'N'}
               </div>
             </div>
             
@@ -321,7 +321,7 @@ const RaidScreen: React.FC = () => {
             </div>
             
             {selectedBoss?.id === boss.id && (
-              <div className="selected-indicator">✓ Selected</div>
+              <div className="selected-indicator">Selected</div>
             )}
           </div>
         ))}
@@ -338,7 +338,7 @@ const RaidScreen: React.FC = () => {
             onClick={handleStartRaid}
             disabled={actionLoading}
           >
-            {actionLoading ? 'Starting...' : '⚔️ Start Raid'}
+            {actionLoading ? 'Starting...' : 'Start Raid'}
           </button>
         </div>
       )}
@@ -408,7 +408,7 @@ const RaidScreen: React.FC = () => {
 
         {/* Battle Actions */}
         <div className="battle-actions">
-          <h3>⚔️ Deal Damage</h3>
+          <h3>Deal Damage</h3>
           <form onSubmit={handleLogDamage} className="workout-damage-form">
             <div className="form-row">
               <select 
@@ -432,7 +432,7 @@ const RaidScreen: React.FC = () => {
                 placeholder="Reps"
               />
               <button type="submit" disabled={actionLoading || workoutForm.reps <= 0}>
-                {actionLoading ? '...' : '💥 Attack!'}
+                {actionLoading ? '...' : 'Attack!'}
               </button>
             </div>
           </form>
@@ -440,7 +440,7 @@ const RaidScreen: React.FC = () => {
 
         {/* Contribution Leaderboard */}
         <div className="leaderboard-section">
-          <h3>🏆 Contribution Leaderboard</h3>
+          <h3>Contribution Leaderboard</h3>
           <div className="leaderboard-list">
             {leaderboard.map((entry: any, index: number) => (
               <div 
@@ -513,19 +513,19 @@ const RaidScreen: React.FC = () => {
     return (
       <div className="raid-screen victory">
         <div className="victory-banner">
-          <div className="victory-icon">🎉</div>
+          <div className="victory-icon">VICTORY</div>
           <h2>Victory!</h2>
           <p>{raid.bossName} has been defeated!</p>
         </div>
 
         <div className="victory-stats">
           <div className="stat-card">
-            <span className="stat-icon">⚔️</span>
+            <span className="stat-icon">DMG</span>
             <span className="stat-value">{formatHp(raid.hpTotal)}</span>
             <span className="stat-label">Total Damage</span>
           </div>
           <div className="stat-card">
-            <span className="stat-icon">👥</span>
+            <span className="stat-icon">PTY</span>
             <span className="stat-value">{raid.memberCount}</span>
             <span className="stat-label">Party Members</span>
           </div>
@@ -533,7 +533,7 @@ const RaidScreen: React.FC = () => {
 
         {topContributor && (
           <div className="top-contributor-section">
-            <h3>🏆 Top Contributor</h3>
+            <h3>Top Contributor</h3>
             <div className="top-contributor-card">
               <div className="contributor-avatar large">
                 {topContributor.avatarUrl ? (

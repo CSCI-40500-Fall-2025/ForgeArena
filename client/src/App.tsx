@@ -242,9 +242,9 @@ function MainApp() {
           >
             {tab === 'ai-coach' ? 'AI Coach' : 
              tab === 'avatar' ? 'Avatar & Inventory' : 
-             tab === 'clubs' ? '⚔️ Clubs' :
-             tab === 'party' ? '👥 Party' :
-             tab === 'raid' ? '🐉 Raid' :
+             tab === 'clubs' ? 'Clubs' :
+             tab === 'party' ? 'Party' :
+             tab === 'raid' ? 'Raid' :
              tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
