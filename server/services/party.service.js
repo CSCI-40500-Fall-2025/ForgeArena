@@ -89,6 +89,7 @@ async function createParty(ownerUid, partyData) {
     }
     
     const partyId = `party_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`;
+    const now = new Date().toISOString();
     
     const newParty = {
       id: partyId,
@@ -98,13 +99,13 @@ async function createParty(ownerUid, partyData) {
       ownerUsername: owner.username,
       ownerAvatarUrl: owner.avatarUrl || null,
       members: [{
-        oderId: owner.uid,
-        odername: owner.username,
-        oderHandle: owner.handle,
-        oderAvatarUrl: owner.avatarUrl || null,
-        oderLevel: owner.level || 1,
-        oderRole: 'owner',
-        oderedAt: admin.firestore.FieldValue.serverTimestamp(),
+        userId: ownerUid,
+        username: owner.username,
+        handle: owner.handle,
+        avatarUrl: owner.avatarUrl || null,
+        level: owner.level || 1,
+        role: 'owner',
+        joinedAt: now, // Cannot use serverTimestamp() inside arrays
       }],
       memberCount: 1,
       maxMembers: 8, // Maximum party size
@@ -112,17 +113,6 @@ async function createParty(ownerUid, partyData) {
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     };
-    
-    // Fix the member object keys (typo above - should be userId, etc.)
-    newParty.members = [{
-      userId: ownerUid,
-      username: owner.username,
-      handle: owner.handle,
-      avatarUrl: owner.avatarUrl || null,
-      level: owner.level || 1,
-      role: 'owner',
-      joinedAt: admin.firestore.FieldValue.serverTimestamp(),
-    }];
     
     await partiesRef.doc(partyId).set(newParty);
     
@@ -133,17 +123,8 @@ async function createParty(ownerUid, partyData) {
     
     return {
       ...newParty,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      members: [{
-        userId: ownerUid,
-        username: owner.username,
-        handle: owner.handle,
-        avatarUrl: owner.avatarUrl || null,
-        level: owner.level || 1,
-        role: 'owner',
-        joinedAt: new Date().toISOString(),
-      }],
+      createdAt: now,
+      updatedAt: now,
     };
   } catch (error) {
     logger.error('Error creating party', { error: error.message, ownerUid });
@@ -266,6 +247,7 @@ async function joinParty(userId, inviteCode) {
     
     // Add user to party
     const partiesRef = getPartiesCollection();
+    const now = new Date().toISOString();
     const newMember = {
       userId,
       username: user.username,
@@ -273,9 +255,10 @@ async function joinParty(userId, inviteCode) {
       avatarUrl: user.avatarUrl || null,
       level: user.level || 1,
       role: 'member',
-      joinedAt: admin.firestore.FieldValue.serverTimestamp(),
+      joinedAt: now, // Cannot use serverTimestamp() inside arrays
     };
     
+    // Use arrayUnion to add member
     await partiesRef.doc(party.id).update({
       members: admin.firestore.FieldValue.arrayUnion(newMember),
       memberCount: admin.firestore.FieldValue.increment(1),
