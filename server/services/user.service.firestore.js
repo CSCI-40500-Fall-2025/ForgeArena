@@ -284,6 +284,7 @@ async function updateUser(uid, updates) {
       'strength', 'endurance', 'agility', 'gym',
       'workoutStreak', 'lastWorkout', 'equipment', 'inventory',
       'clubId', 'clubRole', 'weeklyXP',
+      'partyId', 'partyRole',
       'authProvider', 'firebaseUid'
     ];
     

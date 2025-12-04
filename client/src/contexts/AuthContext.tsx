@@ -35,6 +35,9 @@ interface AuthUser {
   clubId?: string;
   clubRole?: 'founder' | 'officer' | 'member';
   weeklyXP?: number;
+  // Party fields
+  partyId?: string;
+  partyRole?: 'owner' | 'member';
   // OAuth fields
   authProvider?: 'email' | 'google' | 'github' | 'apple';
 }
