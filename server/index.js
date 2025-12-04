@@ -79,6 +79,7 @@ const mlRoutes = require('./routes/ml.routes');
 const avatarRoutes = require('./routes/avatar.routes');
 const eventRoutes = require('./routes/event.routes');
 const clubRoutes = require('./routes/club.routes');
+const partyRoutes = require('./routes/party.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 
 app.use('/api/auth', authRoutes);
@@ -87,6 +88,7 @@ app.use('/api/ml', mlRoutes);
 app.use('/api/avatar', avatarRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
+app.use('/api/parties', partyRoutes);
 
 // INFO: ML Service initialized
 logger.info('ForgeMaster AI (ML Service) initialized', {
@@ -99,6 +101,12 @@ logger.info('ForgeMaster AI (ML Service) initialized', {
 logger.info('Clubs & Territory System initialized', {
   features: ['clubs', 'territories', 'battles', 'leaderboard'],
   googlePlacesEnabled: !!process.env.GOOGLE_PLACES_API_KEY
+});
+
+// INFO: Party System initialized
+logger.info('Party System initialized', {
+  features: ['create', 'join-via-code', 'leave', 'ownership-transfer', 'kick-members'],
+  maxPartySize: 8
 });
 
 // Get user profile (legacy - will be replaced by /api/user/profile)

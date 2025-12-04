@@ -6,6 +6,7 @@ import ProfileScreen from './components/ProfileScreen';
 import AICoach from './components/AICoach';
 import AvatarEditor from './components/AvatarEditor';
 import ClubsScreen from './components/ClubsScreen';
+import PartyScreen from './components/PartyScreen';
 import './App.css';
 
 interface Avatar {
@@ -232,7 +233,7 @@ function MainApp() {
       </header>
 
       <nav className="nav-tabs">
-        {['dashboard', 'avatar', 'ai-coach', 'profile', 'achievements', 'duels', 'clubs', 'social'].map(tab => (
+        {['dashboard', 'avatar', 'ai-coach', 'profile', 'achievements', 'duels', 'clubs', 'party', 'social'].map(tab => (
           <button 
             key={tab}
             className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
@@ -241,6 +242,7 @@ function MainApp() {
             {tab === 'ai-coach' ? 'AI Coach' : 
              tab === 'avatar' ? 'Avatar & Inventory' : 
              tab === 'clubs' ? '⚔️ Clubs' :
+             tab === 'party' ? '👥 Party' :
              tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
@@ -382,6 +384,10 @@ function MainApp() {
 
         {activeTab === 'clubs' && (
           <ClubsScreen />
+        )}
+
+        {activeTab === 'party' && (
+          <PartyScreen />
         )}
 
         {activeTab === 'profile' && (
