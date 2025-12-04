@@ -1,4 +1,21 @@
-// Shared mock data for both local and Vercel environments
+/**
+ * @deprecated This mock data is only used for testing purposes.
+ * 
+ * Production data is now stored in Firestore and managed by services:
+ * - User data: server/services/user.service.firestore.js
+ * - Quests: server/services/quest.service.js (generates dynamic quests)
+ * - Achievements: server/services/achievement.service.js
+ * - Duels: server/services/duel.service.js
+ * - Activity: server/services/activity.service.js
+ * - Leaderboards: server/services/leaderboard.service.js
+ * - Raids: server/services/raid.service.js
+ * - Clubs: server/services/club.service.js
+ * - Parties: server/services/party.service.js
+ * 
+ * This file is kept for backward compatibility with tests only.
+ */
+
+// Shared mock data - FOR TESTING ONLY
 let mockUser = {
   id: 1,
   username: 'TestWarrior',

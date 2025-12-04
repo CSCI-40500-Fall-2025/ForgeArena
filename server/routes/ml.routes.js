@@ -16,17 +16,17 @@ const router = express.Router();
 const logger = require('../utils/logger');
 const mlService = require('../services/ml.service');
 const authMiddleware = require('../middleware/auth.middleware');
-
-// Import mock data for fallback
-const { mockUser, mockQuests } = require('../../shared/mockData');
+const questService = require('../services/quest.service');
 
 /**
- * Helper to get user data from request or fallback to mock
+ * Helper to get user data from request
+ * Returns default values for unauthenticated users
  */
 function getUserData(req) {
   if (req.user) {
     return {
       username: req.user.username,
+      uid: req.user.uid,
       avatar: {
         level: req.user.level || 1,
         xp: req.user.xp || 0,
@@ -41,12 +41,20 @@ function getUserData(req) {
     };
   }
   
-  // Fallback to mock user
+  // Default for unauthenticated requests
   return {
-    username: mockUser.username,
-    avatar: mockUser.avatar,
-    workoutStreak: mockUser.workoutStreak,
-    lastWorkout: mockUser.lastWorkout,
+    username: 'Guest',
+    uid: null,
+    avatar: {
+      level: 1,
+      xp: 0,
+      strength: 10,
+      endurance: 10,
+      agility: 10,
+      equipment: {}
+    },
+    workoutStreak: 0,
+    lastWorkout: null,
     recentWorkouts: []
   };
 }
@@ -154,7 +162,21 @@ router.get('/quest-suggestions', authMiddleware.optionalAuth, async (req, res) =
       action: 'ML_QUEST_SUGGESTIONS'
     });
     
-    const suggestions = await mlService.getQuestSuggestions(userData, mockQuests);
+    // Get user's actual quests if authenticated
+    let quests = [];
+    if (userData.uid) {
+      try {
+        quests = await questService.getUserQuests(userData.uid);
+      } catch (e) {
+        // Fall back to quest templates if user quests not available
+        quests = Object.values(questService.QUEST_TEMPLATES.daily || []);
+      }
+    } else {
+      // Use quest templates for unauthenticated users
+      quests = Object.values(questService.QUEST_TEMPLATES.daily || []);
+    }
+    
+    const suggestions = await mlService.getQuestSuggestions(userData, quests);
     
     res.json(suggestions);
   } catch (error) {
@@ -212,7 +234,19 @@ router.get('/coaching-session', authMiddleware.optionalAuth, async (req, res) =>
       action: 'ML_COACHING_SESSION'
     });
     
-    const session = await mlService.getCoachingSession(userData, mockQuests);
+    // Get user's actual quests if authenticated
+    let quests = [];
+    if (userData.uid) {
+      try {
+        quests = await questService.getUserQuests(userData.uid);
+      } catch (e) {
+        quests = Object.values(questService.QUEST_TEMPLATES.daily || []);
+      }
+    } else {
+      quests = Object.values(questService.QUEST_TEMPLATES.daily || []);
+    }
+    
+    const session = await mlService.getCoachingSession(userData, quests);
     
     res.json(session);
   } catch (error) {

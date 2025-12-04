@@ -414,6 +414,284 @@ async function getClubLeaderboard(limit = 20) {
 }
 
 // ============================================================================
+// GYM TERRITORY MANAGEMENT
+// ============================================================================
+
+/**
+ * Get all gym territories (for the gyms list)
+ */
+async function getGymTerritories(options = {}) {
+  try {
+    const gymLocationsRef = getGymLocationsCollection();
+    let query = gymLocationsRef;
+    
+    if (options.limit) {
+      query = query.limit(options.limit);
+    }
+    
+    const snapshot = await query.get();
+    
+    return snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.name,
+        address: data.address,
+        location: data.location,
+        rating: data.rating,
+        controllingClubId: data.controllingClubId || null,
+        controllingClubName: data.controllingClubName || null,
+        controllingClubColor: data.controllingClubColor || null,
+        controlStrength: data.controlStrength || 0,
+        defenders: data.defenders || [],
+        totalBattles: data.totalBattles || 0,
+      };
+    });
+  } catch (error) {
+    logger.error('Error getting gym territories', { error: error.message });
+    // Return empty array instead of throwing to not break the gyms endpoint
+    return [];
+  }
+}
+
+/**
+ * Claim an unclaimed gym territory
+ */
+async function claimGymTerritory(userId, gymId) {
+  try {
+    const user = await userService.findUserByUid(userId);
+    
+    if (!user || !user.clubId) {
+      throw new Error('You must be in a club to claim territory');
+    }
+    
+    const club = await getClubById(user.clubId);
+    if (!club) {
+      throw new Error('Club not found');
+    }
+    
+    const gymLocationsRef = getGymLocationsCollection();
+    const gymDoc = await gymLocationsRef.doc(gymId).get();
+    
+    if (!gymDoc.exists) {
+      throw new Error('Gym territory not found');
+    }
+    
+    const gym = gymDoc.data();
+    
+    if (gym.controllingClubId) {
+      throw new Error('This territory is already claimed');
+    }
+    
+    // Claim the territory
+    await gymLocationsRef.doc(gymId).update({
+      controllingClubId: club.id,
+      controllingClubName: club.name,
+      controllingClubColor: club.color,
+      controlStrength: user.level || 1,
+      defenders: [{
+        userId: user.uid,
+        username: user.username,
+        level: user.level || 1,
+      }],
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    // Update club territories count
+    const clubsRef = getClubsCollection();
+    await clubsRef.doc(club.id).update({
+      territoriesControlled: admin.firestore.FieldValue.increment(1),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    logger.info('Territory claimed', { gymId, clubId: club.id, userId });
+    
+    return { message: `Successfully claimed ${gym.name} for ${club.name}!` };
+  } catch (error) {
+    logger.error('Error claiming territory', { error: error.message, userId, gymId });
+    throw error;
+  }
+}
+
+/**
+ * Challenge a club-controlled gym
+ */
+async function challengeGymTerritory(userId, gymId) {
+  try {
+    const user = await userService.findUserByUid(userId);
+    
+    if (!user || !user.clubId) {
+      throw new Error('You must be in a club to challenge territory');
+    }
+    
+    const attackerClub = await getClubById(user.clubId);
+    if (!attackerClub) {
+      throw new Error('Club not found');
+    }
+    
+    const gymLocationsRef = getGymLocationsCollection();
+    const gymDoc = await gymLocationsRef.doc(gymId).get();
+    
+    if (!gymDoc.exists) {
+      throw new Error('Gym territory not found');
+    }
+    
+    const gym = gymDoc.data();
+    
+    if (!gym.controllingClubId) {
+      throw new Error('This territory is unclaimed - use claim instead');
+    }
+    
+    if (gym.controllingClubId === user.clubId) {
+      throw new Error('Your club already controls this territory');
+    }
+    
+    // Calculate battle (simplified - could be more complex)
+    const attackerPower = user.level || 1;
+    const defenderStrength = gym.controlStrength || 1;
+    
+    // Attacker needs to beat defender strength
+    const attackRoll = attackerPower + Math.floor(Math.random() * 10);
+    const defenseRoll = defenderStrength + Math.floor(Math.random() * 5);
+    
+    const victory = attackRoll > defenseRoll;
+    
+    // Record battle
+    const battleRecord = {
+      gymId,
+      attackerClubId: attackerClub.id,
+      attackerUserId: userId,
+      defenderClubId: gym.controllingClubId,
+      attackerPower,
+      defenderStrength,
+      victory,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    };
+    
+    const battlesRef = getTerritoryBattlesCollection();
+    await battlesRef.add(battleRecord);
+    
+    // Update gym
+    await gymLocationsRef.doc(gymId).update({
+      totalBattles: admin.firestore.FieldValue.increment(1),
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    const clubsRef = getClubsCollection();
+    
+    if (victory) {
+      // Transfer territory to attacker
+      await gymLocationsRef.doc(gymId).update({
+        controllingClubId: attackerClub.id,
+        controllingClubName: attackerClub.name,
+        controllingClubColor: attackerClub.color,
+        controlStrength: attackerPower,
+        defenders: [{
+          userId: user.uid,
+          username: user.username,
+          level: user.level || 1,
+        }],
+      });
+      
+      // Update club stats
+      await clubsRef.doc(attackerClub.id).update({
+        territoriesControlled: admin.firestore.FieldValue.increment(1),
+        wins: admin.firestore.FieldValue.increment(1),
+      });
+      
+      await clubsRef.doc(gym.controllingClubId).update({
+        territoriesControlled: admin.firestore.FieldValue.increment(-1),
+        losses: admin.firestore.FieldValue.increment(1),
+      });
+      
+      logger.info('Territory captured', { gymId, attackerClubId: attackerClub.id, defenderClubId: gym.controllingClubId });
+      
+      return { 
+        message: `Victory! You captured ${gym.name} for ${attackerClub.name}!`,
+        victory: true,
+      };
+    } else {
+      // Defense holds
+      await clubsRef.doc(attackerClub.id).update({
+        losses: admin.firestore.FieldValue.increment(1),
+      });
+      
+      await clubsRef.doc(gym.controllingClubId).update({
+        wins: admin.firestore.FieldValue.increment(1),
+      });
+      
+      logger.info('Territory defense successful', { gymId, attackerClubId: attackerClub.id, defenderClubId: gym.controllingClubId });
+      
+      return {
+        message: `Defeat! ${gym.controllingClubName} successfully defended ${gym.name}!`,
+        victory: false,
+      };
+    }
+  } catch (error) {
+    logger.error('Error challenging territory', { error: error.message, userId, gymId });
+    throw error;
+  }
+}
+
+/**
+ * Add a defender to a gym your club controls
+ */
+async function addGymDefender(userId, gymId) {
+  try {
+    const user = await userService.findUserByUid(userId);
+    
+    if (!user || !user.clubId) {
+      throw new Error('You must be in a club');
+    }
+    
+    const gymLocationsRef = getGymLocationsCollection();
+    const gymDoc = await gymLocationsRef.doc(gymId).get();
+    
+    if (!gymDoc.exists) {
+      throw new Error('Gym territory not found');
+    }
+    
+    const gym = gymDoc.data();
+    
+    if (gym.controllingClubId !== user.clubId) {
+      throw new Error('Your club does not control this territory');
+    }
+    
+    // Check if already defending
+    const alreadyDefending = (gym.defenders || []).some(d => d.userId === userId);
+    if (alreadyDefending) {
+      throw new Error('You are already defending this territory');
+    }
+    
+    // Max 5 defenders
+    if ((gym.defenders || []).length >= 5) {
+      throw new Error('Maximum defenders reached for this territory');
+    }
+    
+    const newDefenders = [...(gym.defenders || []), {
+      userId: user.uid,
+      username: user.username,
+      level: user.level || 1,
+    }];
+    
+    const newStrength = newDefenders.reduce((sum, d) => sum + d.level, 0);
+    
+    await gymLocationsRef.doc(gymId).update({
+      defenders: newDefenders,
+      controlStrength: newStrength,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    logger.info('Defender added', { gymId, userId, newStrength });
+    
+    return { message: `You are now defending ${gym.name}! Territory strength: ${newStrength}` };
+  } catch (error) {
+    logger.error('Error adding defender', { error: error.message, userId, gymId });
+    throw error;
+  }
+}
+
+// ============================================================================
 // EXPORTS
 // ============================================================================
 
@@ -426,5 +704,9 @@ module.exports = {
   updateClub,
   getClubMembers,
   getClubLeaderboard,
+  getGymTerritories,
+  claimGymTerritory,
+  challengeGymTerritory,
+  addGymDefender,
 };
 
