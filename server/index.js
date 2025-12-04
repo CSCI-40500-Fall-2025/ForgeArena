@@ -4,6 +4,13 @@ const path = require('path');
 const logger = require('./utils/logger');
 const userService = require('./services/user.service');
 
+// Import new services
+const questService = require('./services/quest.service');
+const achievementService = require('./services/achievement.service');
+const duelService = require('./services/duel.service');
+const activityService = require('./services/activity.service');
+const leaderboardService = require('./services/leaderboard.service');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -44,28 +51,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Import shared data and logic
-const { 
-  mockUser, 
-  mockQuests, 
-  mockAchievements, 
-  mockDuels, 
-  mockActivityFeed, 
-  mockRaidBoss, 
-  mockGyms 
-} = require('../shared/mockData');
+// Import game logic (updated to work with user data)
+const { processWorkout } = require('../shared/gameLogic');
 
-const { 
-  processWorkout, 
-  getLeaderboard, 
-  getInventory 
-} = require('../shared/gameLogic');
-
-// DEBUG: Data loaded successfully
-logger.debug('Mock data and game logic loaded', {
-  questCount: mockQuests.length,
-  achievementCount: mockAchievements.length,
-  gymCount: mockGyms.length,
+// DEBUG: Services loaded successfully
+logger.debug('Services loaded', {
+  services: ['quest', 'achievement', 'duel', 'activity', 'leaderboard'],
 });
 
 // ============================================================================
@@ -81,6 +72,11 @@ const eventRoutes = require('./routes/event.routes');
 const clubRoutes = require('./routes/club.routes');
 const partyRoutes = require('./routes/party.routes');
 const raidRoutes = require('./routes/raid.routes');
+const questRoutes = require('./routes/quest.routes');
+const achievementRoutes = require('./routes/achievement.routes');
+const duelRoutes = require('./routes/duel.routes');
+const activityRoutes = require('./routes/activity.routes');
+const leaderboardRoutes = require('./routes/leaderboard.routes');
 const authMiddleware = require('./middleware/auth.middleware');
 
 app.use('/api/auth', authRoutes);
@@ -91,6 +87,11 @@ app.use('/api/events', eventRoutes);
 app.use('/api/clubs', clubRoutes);
 app.use('/api/parties', partyRoutes);
 app.use('/api/raids', raidRoutes);
+app.use('/api/quests', questRoutes);
+app.use('/api/achievements', achievementRoutes);
+app.use('/api/duels', duelRoutes);
+app.use('/api/activity', activityRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // INFO: ML Service initialized
 logger.info('ForgeMaster AI (ML Service) initialized', {
@@ -117,52 +118,115 @@ logger.info('Raid System initialized', {
   bossCount: 5
 });
 
-// Get user profile (legacy - will be replaced by /api/user/profile)
-app.get('/api/user', authMiddleware.optionalAuth, (req, res) => {
-  // If authenticated, use their profile
-  if (req.user) {
-    return res.json(req.user);
-  }
-  
-  // Otherwise, use mock user for backwards compatibility
+// ============================================================================
+// User API Routes (Authenticated)
+// ============================================================================
+
+// Get user profile
+app.get('/api/user', authMiddleware.authenticateToken, (req, res) => {
   logger.debug('Fetching user profile', {
-    userId: mockUser.id,
-    username: mockUser.username,
+    userId: req.user.uid,
+    username: req.user.username,
     action: 'USER_PROFILE',
   });
   
-  res.json(mockUser);
+  res.json(req.user);
 });
 
-// Process workout (now requires authentication)
+// Process workout (requires authentication)
 app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
   try {
     const { exercise, reps } = req.body;
+    const user = req.user;
     
-    // DEBUG: Workout submission details
     logger.debug('Processing workout submission', {
-      userId: mockUser.id,
+      userId: user.uid,
       exercise,
       reps,
       action: 'WORKOUT',
     });
     
-    const result = await processWorkout(exercise, reps);
+    // Calculate XP and level changes
+    const result = await processWorkout(user, exercise, reps);
     
-    // INFO: Workout processed successfully
+    // Update user stats in database
+    const oldLevel = user.level;
+    const newXP = (user.xp || 0) + result.xpGained;
+    const xpPerLevel = 100;
+    const newLevel = Math.floor(newXP / xpPerLevel) + 1;
+    const leveledUp = newLevel > oldLevel;
+    
+    // Update user profile
+    await userService.updateUser(user.uid, {
+      xp: newXP,
+      level: newLevel,
+      totalWorkouts: (user.totalWorkouts || 0) + 1,
+      lifetimeReps: (user.lifetimeReps || 0) + reps,
+      weeklyXP: (user.weeklyXP || 0) + result.xpGained,
+      workoutStreak: calculateStreak(user),
+      lastWorkout: new Date().toISOString(),
+    });
+    
+    // Get updated user stats for achievements
+    const userStats = {
+      totalWorkouts: (user.totalWorkouts || 0) + 1,
+      lifetimeReps: (user.lifetimeReps || 0) + reps,
+      workoutStreak: calculateStreak(user),
+      level: newLevel,
+    };
+    
+    // Process for quests, achievements, and duels
+    const [questUpdates, newAchievements, duelUpdates] = await Promise.all([
+      questService.processWorkoutForQuests(user.uid, { exercise, reps }),
+      achievementService.processWorkoutForAchievements(user.uid, userStats),
+      duelService.processWorkoutForDuels(user.uid, { exercise, reps }),
+    ]);
+    
+    // Log activity
+    await activityService.logWorkoutActivity(user.uid, user.username, exercise, reps);
+    
+    // Log level up if occurred
+    if (leveledUp) {
+      await activityService.logLevelUpActivity(user.uid, user.username, newLevel);
+      logger.info('User leveled up!', {
+        userId: user.uid,
+        oldLevel,
+        newLevel,
+        totalXp: newXP,
+        action: 'LEVEL_UP',
+      });
+    }
+    
+    // Log streak milestone if applicable
+    const streak = calculateStreak(user);
+    if ([3, 7, 14, 30, 60, 100].includes(streak)) {
+      await activityService.logStreakMilestoneActivity(user.uid, user.username, streak);
+    }
+    
     logger.info('Workout completed', {
-      userId: mockUser.id,
+      userId: user.uid,
       exercise,
       reps,
-      xpEarned: result.xpEarned || 0,
+      xpEarned: result.xpGained,
+      newLevel,
+      leveledUp,
+      questsUpdated: questUpdates.length,
+      achievementsUnlocked: newAchievements.length,
       action: 'WORKOUT',
     });
     
-    res.json(result);
+    res.json({
+      ...result,
+      newLevel,
+      leveledUp,
+      xpGained: result.xpGained,
+      questUpdates,
+      newAchievements,
+      duelUpdates,
+    });
   } catch (error) {
-    // ERROR: Workout processing failed
     logger.error('Workout processing failed', {
-      userId: mockUser.id,
+      userId: req.user?.uid,
       exercise: req.body.exercise,
       reps: req.body.reps,
       error: error.message,
@@ -174,377 +238,133 @@ app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
   }
 });
 
-// Get all quests
-app.get('/api/quests', (req, res) => {
-  logger.debug('Fetching quests list', {
-    userId: mockUser.id,
-    totalQuests: mockQuests.length,
-    action: 'QUEST',
-  });
+// Helper function to calculate workout streak
+function calculateStreak(user) {
+  if (!user.lastWorkout) return 1;
   
-  res.json(mockQuests);
-});
-
-// Complete a quest
-app.post('/api/quest/:id/complete', (req, res) => {
-  const questId = req.params.id;
-  const quest = mockQuests.find(q => q.id == questId);
-  const itemService = require('./services/item.service');
+  const lastWorkout = new Date(user.lastWorkout);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
   
-  if (quest) {
-    // DEBUG: Quest completion validation
-    logger.debug('Processing quest completion', {
-      userId: mockUser.id,
-      questId,
-      questName: quest.name,
-      xpReward: quest.xpReward,
-      action: 'QUEST',
-    });
-    
-    // Check if already completed
-    if (quest.completed) {
-      logger.warn('Quest already completed', {
-        userId: mockUser.id,
-        questId,
-        questName: quest.name,
-        action: 'QUEST',
-      });
-      return res.status(400).json({ message: 'Quest already completed' });
-    }
-    
-    const oldLevel = mockUser.avatar.level;
-    const oldXp = mockUser.avatar.xp;
-    
-    quest.completed = true;
-    mockUser.avatar.xp += quest.xpReward;
-    
-    // Calculate if leveled up (simplified)
-    const newLevel = Math.floor(mockUser.avatar.xp / 100) + 1;
-    const leveledUp = newLevel > oldLevel;
-    
-    if (leveledUp) {
-      mockUser.avatar.level = newLevel;
-      
-      // INFO: Level up event
-      logger.info('User leveled up!', {
-        userId: mockUser.id,
-        questId,
-        oldLevel,
-        newLevel,
-        totalXp: mockUser.avatar.xp,
-        action: 'LEVEL_UP',
-      });
-    }
-    
-    // Award item rewards based on quest difficulty
-    const questDifficulty = quest.xpReward >= 300 ? 'legendary' : 
-                           quest.xpReward >= 150 ? 'hard' : 
-                           quest.xpReward >= 100 ? 'normal' : 'easy';
-    const itemReward = itemService.awardQuestItems('default_user', questDifficulty);
-    
-    // INFO: Quest completed
-    logger.info('Quest completed successfully', {
-      userId: mockUser.id,
-      questId,
-      questName: quest.name,
-      xpGained: quest.xpReward,
-      oldXp,
-      newXp: mockUser.avatar.xp,
-      leveledUp,
-      itemsAwarded: itemReward.items.length,
-      action: 'QUEST',
-    });
-    
-    res.json({ 
-      message: 'Quest completed!', 
-      xpGained: quest.xpReward,
-      leveledUp,
-      newLevel: mockUser.avatar.level,
-      itemReward: itemReward.items
-    });
-  } else {
-    // WARN: Quest not found
-    logger.warn('Quest not found', {
-      userId: mockUser.id,
-      requestedQuestId: questId,
-      action: 'QUEST',
-    });
-    
-    res.status(404).json({ message: 'Quest not found' });
+  // Check if last workout was today (continuing streak)
+  if (lastWorkout.toDateString() === today.toDateString()) {
+    return user.workoutStreak || 1;
   }
-});
-
-// Get raid boss
-app.get('/api/raid', (req, res) => {
-  logger.debug('Fetching raid boss data', {
-    userId: mockUser.id,
-    bossName: mockRaidBoss.name,
-    bossHealth: mockRaidBoss.health,
-    action: 'RAID',
-  });
   
-  res.json(mockRaidBoss);
-});
+  // Check if last workout was yesterday (streak continues)
+  if (lastWorkout.toDateString() === yesterday.toDateString()) {
+    return (user.workoutStreak || 0) + 1;
+  }
+  
+  // Streak broken
+  return 1;
+}
 
-// Get leaderboard
-app.get('/api/leaderboard', async (req, res) => {
+// Note: Quest, Achievement, Duel, Activity, and Leaderboard routes are now 
+// handled by their dedicated route files imported above.
+
+// ============================================================================
+// Legacy Raid Boss Route (for backward compatibility)
+// ============================================================================
+
+// Get current raid boss (uses the new raid system)
+app.get('/api/raid', authMiddleware.optionalAuth, async (req, res) => {
   try {
-    logger.debug('Fetching leaderboard', {
-      userId: mockUser.id,
-      gym: mockUser.gym,
-      action: 'LEADERBOARD',
+    const raidService = require('./services/raid.service');
+    const bosses = raidService.getAvailableBosses(1);
+    
+    // Return the first boss as "current" for backward compatibility
+    const currentBoss = bosses[0];
+    
+    res.json({
+      name: currentBoss.name,
+      description: currentBoss.flavorText,
+      totalHP: currentBoss.scaledHp,
+      currentHP: currentBoss.scaledHp, // Start at full
+      participants: 0,
+      difficulty: currentBoss.difficulty,
     });
-    
-    const leaderboard = await getLeaderboard();
-    
-    // Find user's rank
-    const userRank = leaderboard.findIndex(u => u.id === mockUser.id) + 1;
-    
-    logger.info('Leaderboard retrieved', {
-      userId: mockUser.id,
-      userRank,
-      totalUsers: leaderboard.length,
-      action: 'LEADERBOARD',
-    });
-    
-    res.json(leaderboard);
   } catch (error) {
-    // ERROR: Leaderboard fetch failed
-    logger.error('Failed to fetch leaderboard', {
-      userId: mockUser.id,
-      error: error.message,
-      stack: error.stack,
-      action: 'LEADERBOARD',
-    });
-    
+    logger.error('Failed to fetch raid boss', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
 
+// ============================================================================
+// Inventory Routes
+// ============================================================================
+
 // Get inventory
-app.get('/api/inventory', async (req, res) => {
+app.get('/api/inventory', authMiddleware.authenticateToken, async (req, res) => {
   try {
+    const user = req.user;
+    const itemService = require('./services/item.service');
+    const inventory = itemService.getUserInventory(user.uid);
+    
     logger.debug('Fetching user inventory', {
-      userId: mockUser.id,
-      inventorySize: mockUser.avatar.inventory.length,
+      userId: user.uid,
+      itemCount: inventory.length,
       action: 'INVENTORY',
     });
     
-    const inventory = await getInventory();
     res.json(inventory);
   } catch (error) {
-    // ERROR: Inventory fetch failed
-    logger.error('Failed to fetch inventory', {
-      userId: mockUser.id,
-      error: error.message,
-      action: 'INVENTORY',
-    });
-    
+    logger.error('Failed to fetch inventory', { error: error.message });
     res.status(500).json({ error: error.message });
   }
 });
 
 // Equip item
-app.post('/api/equip/:itemId', (req, res) => {
-  const itemId = req.params.itemId;
-  const { mockEquipment } = require('../shared/mockData');
-  const item = mockEquipment[itemId];
-  
-  // DEBUG: Equipment attempt
-  logger.debug('Processing equipment request', {
-    userId: mockUser.id,
-    itemId,
-    action: 'EQUIPMENT',
-  });
-  
-  if (!item || !mockUser.avatar.inventory.includes(itemId)) {
-    // WARN: Invalid equipment attempt
-    logger.warn('Item not found in inventory', {
-      userId: mockUser.id,
-      requestedItemId: itemId,
-      hasItem: !!item,
-      inInventory: mockUser.avatar.inventory.includes(itemId),
+app.post('/api/equip/:itemId', authMiddleware.authenticateToken, async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const user = req.user;
+    const itemService = require('./services/item.service');
+    
+    logger.debug('Processing equipment request', {
+      userId: user.uid,
+      itemId,
       action: 'EQUIPMENT',
     });
     
-    return res.status(400).json({ message: 'Item not found in inventory' });
-  }
-
-  // Unequip current item of same type
-  const currentEquipped = mockUser.avatar.equipment[item.type];
-  if (currentEquipped) {
-    mockUser.avatar.inventory.push(currentEquipped);
-  }
-
-  // Equip new item
-  mockUser.avatar.equipment[item.type] = itemId;
-  mockUser.avatar.inventory = mockUser.avatar.inventory.filter(id => id !== itemId);
-
-  // Apply stat bonuses
-  Object.keys(item.stats).forEach(stat => {
-    mockUser.avatar[stat] += item.stats[stat];
-  });
-
-  // INFO: Item equipped successfully
-  logger.info('Item equipped', {
-    userId: mockUser.id,
-    itemId,
-    itemName: item.name,
-    itemType: item.type,
-    statBoosts: item.stats,
-    unequippedItem: currentEquipped,
-    action: 'EQUIPMENT',
-  });
-
-  res.json({ 
-    message: `Equipped ${item.name}!`, 
-    equipment: mockUser.avatar.equipment 
-  });
-});
-
-// Get achievements
-app.get('/api/achievements', (req, res) => {
-  logger.debug('Fetching achievements', {
-    userId: mockUser.id,
-    totalAchievements: mockAchievements.length,
-    action: 'ACHIEVEMENT',
-  });
-  
-  res.json(mockAchievements);
-});
-
-// Get duels
-app.get('/api/duels', (req, res) => {
-  logger.debug('Fetching duels list', {
-    userId: mockUser.id,
-    activeDuels: mockDuels.length,
-    action: 'DUEL',
-  });
-  
-  res.json(mockDuels);
-});
-
-// Create duel
-app.post('/api/duel/create', (req, res) => {
-  const { opponent, challenge } = req.body;
-  
-  // DEBUG: Duel creation
-  logger.debug('Creating duel challenge', {
-    userId: mockUser.id,
-    challenger: mockUser.username,
-    opponent,
-    challenge,
-    action: 'DUEL',
-  });
-  
-  if (!opponent || !challenge) {
-    logger.warn('Invalid duel parameters', {
-      userId: mockUser.id,
-      opponent,
-      challenge,
-      action: 'DUEL',
-    });
-    return res.status(400).json({ message: 'Opponent and challenge are required' });
-  }
-  
-  const newDuel = {
-    id: mockDuels.length + 1,
-    challenger: mockUser.username,
-    opponent,
-    status: 'pending',
-    challenge,
-    deadline: new Date(Date.now() + 24*60*60*1000)
-  };
-  mockDuels.push(newDuel);
-  
-  // INFO: Duel created
-  logger.info('Duel challenge created', {
-    userId: mockUser.id,
-    duelId: newDuel.id,
-    challenger: mockUser.username,
-    opponent,
-    challenge,
-    deadline: newDuel.deadline,
-    action: 'DUEL',
-  });
-  
-  res.json({ 
-    message: `Duel challenge sent to ${opponent}!`, 
-    duel: newDuel 
-  });
-});
-
-// Get activity feed
-app.get('/api/activity', (req, res) => {
-  logger.debug('Fetching activity feed', {
-    userId: mockUser.id,
-    activityCount: mockActivityFeed.length,
-    action: 'ACTIVITY',
-  });
-  
-  res.json(mockActivityFeed);
-});
-
-// Get gyms list
-app.get('/api/gyms', (req, res) => {
-  logger.debug('Fetching gyms list', {
-    userId: mockUser.id,
-    currentGym: mockUser.gym,
-    availableGyms: mockGyms.length,
-    action: 'GYM',
-  });
-  
-  res.json(mockGyms);
-});
-
-// Join gym
-app.post('/api/gym/join/:gymId', (req, res) => {
-  const gymId = req.params.gymId;
-  
-  const gymNames = {
-    1: 'PowerHouse Fitness',
-    2: 'Iron Paradise', 
-    3: 'Flex Zone',
-    4: 'Beast Mode Gym'
-  };
-  
-  const gymName = gymNames[gymId];
-  
-  // DEBUG: Gym join attempt
-  logger.debug('Processing gym join request', {
-    userId: mockUser.id,
-    requestedGymId: gymId,
-    currentGym: mockUser.gym,
-    action: 'GYM',
-  });
-  
-  if (gymName) {
-    const oldGym = mockUser.gym;
-    mockUser.gym = gymName;
+    const result = itemService.equipItem(user.uid, itemId);
     
-    // INFO: Gym joined successfully
-    logger.info('User joined gym', {
-      userId: mockUser.id,
-      username: mockUser.username,
-      oldGym,
-      newGym: gymName,
-      gymId,
-      action: 'GYM',
+    // Update user's equipment in database
+    await userService.updateUser(user.uid, {
+      equipment: result.equipment,
     });
     
-    res.json({ 
-      message: `Joined ${gymName}!`, 
-      gym: gymName 
-    });
-  } else {
-    // WARN: Invalid gym ID
-    logger.warn('Gym not found', {
-      userId: mockUser.id,
-      requestedGymId: gymId,
-      action: 'GYM',
+    logger.info('Item equipped', {
+      userId: user.uid,
+      itemId,
+      action: 'EQUIPMENT',
     });
     
-    res.status(404).json({ message: 'Gym not found' });
+    res.json({
+      message: `Equipped ${result.item.name}!`,
+      equipment: result.equipment,
+    });
+  } catch (error) {
+    logger.error('Failed to equip item', { error: error.message });
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// ============================================================================
+// Gyms Routes (for club territories)
+// ============================================================================
+
+// Get gyms list (uses club system)
+app.get('/api/gyms', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    // Return a list of gym territories
+    const clubService = require('./services/club.service');
+    const gyms = await clubService.getGymTerritories();
+    res.json(gyms);
+  } catch (error) {
+    logger.error('Failed to fetch gyms', { error: error.message });
+    res.status(500).json({ error: error.message });
   }
 });
 

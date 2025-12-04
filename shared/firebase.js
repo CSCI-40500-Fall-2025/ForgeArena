@@ -1,224 +1,185 @@
-// Firebase integration with fallback to mock data
-import { initializeApp } from 'firebase/app';
-import { getFirestore, doc, getDoc, updateDoc, collection, query, orderBy, getDocs, where } from 'firebase/firestore';
+// Firebase integration - Server-side Firestore operations
+// This file is used by the API routes for Firestore data access
+// Note: Client-side Firebase is handled in client/src/firebaseClient.ts
 
-let db = null;
+// For server-side usage, we use firebase-admin
+// This module can be imported in API routes that need direct Firestore access
 
-const initFirebase = () => {
-  if (!db && process.env.FIREBASE_PROJECT_ID) {
-    try {
-      const firebaseConfig = {
-        apiKey: process.env.FIREBASE_API_KEY,
-        authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.FIREBASE_APP_ID
-      };
-      
-      const app = initializeApp(firebaseConfig);
-      db = getFirestore(app);
-      console.log('Firebase initialized successfully');
-    } catch (error) {
-      console.log('Firebase initialization failed:', error.message);
-      db = null;
+/**
+ * Server-side Firebase operations
+ * Most operations are now handled by the service layer:
+ * - server/services/user.service.firestore.js
+ * - server/services/quest.service.js
+ * - server/services/achievement.service.js
+ * - server/services/duel.service.js
+ * - server/services/activity.service.js
+ * - server/services/leaderboard.service.js
+ * - server/services/raid.service.js
+ * - server/services/club.service.js
+ * - server/services/party.service.js
+ */
+
+let adminDb = null;
+
+/**
+ * Get Firestore Admin instance (for server-side use)
+ */
+const getFirestoreAdmin = () => {
+  if (adminDb) return adminDb;
+  
+  try {
+    const admin = require('firebase-admin');
+    
+    if (admin.apps.length) {
+      adminDb = admin.firestore();
+      return adminDb;
     }
-  }
-  return db;
-};
-
-// Get user data
-const getUser = async () => {
-  const firestore = initFirebase();
-  if (firestore) {
-    try {
-      const userDoc = doc(firestore, 'users', 'TestWarrior');
-      const docSnap = await getDoc(userDoc);
-      
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return {
-          id: data.id,
-          username: data.username,
-          gym: data.gym,
-          workoutStreak: data.workoutStreak,
-          lastWorkout: data.lastWorkout,
-          avatar: {
-            level: data.level,
-            xp: data.xp,
-            strength: data.strength,
-            endurance: data.endurance,
-            agility: data.agility,
-            equipment: data.equipment,
-            inventory: data.inventory
-          }
-        };
-      } else {
-        throw new Error('User not found');
-      }
-    } catch (error) {
-      console.log('Database error, using fallback:', error.message);
-    }
+  } catch (error) {
+    console.error('Firebase Admin not available:', error.message);
   }
   
-  // Fallback to mock data
-  const { mockUser } = require('./mockData');
-  return mockUser;
+  return null;
 };
 
-// Update user data
-const updateUser = async (userUpdates) => {
-  const firestore = initFirebase();
-  if (firestore) {
-    try {
-      const userDoc = doc(firestore, 'users', 'TestWarrior');
-      await updateDoc(userDoc, {
-        gym: userUpdates.gym,
-        workoutStreak: userUpdates.workoutStreak,
-        lastWorkout: userUpdates.lastWorkout,
-        level: userUpdates.avatar?.level,
-        xp: userUpdates.avatar?.xp,
-        strength: userUpdates.avatar?.strength,
-        endurance: userUpdates.avatar?.endurance,
-        agility: userUpdates.avatar?.agility,
-        equipment: userUpdates.avatar?.equipment,
-        inventory: userUpdates.avatar?.inventory
-      });
-      
-      console.log('User updated in database');
-      return userUpdates;
-    } catch (error) {
-      console.log('Database update error:', error.message);
-    }
+/**
+ * Get user data from Firestore
+ * @deprecated Use userService.findUserByUid instead
+ */
+const getUser = async (userId) => {
+  const db = getFirestoreAdmin();
+  if (!db) {
+    throw new Error('Firestore not initialized');
   }
   
-  // Fallback: update mock data
-  const { mockUser } = require('./mockData');
-  Object.assign(mockUser, userUpdates);
-  return mockUser;
+  const userDoc = await db.collection('users').doc(userId).get();
+  
+  if (!userDoc.exists) {
+    throw new Error('User not found');
+  }
+  
+  return { id: userDoc.id, ...userDoc.data() };
 };
 
-// Get raid boss
+/**
+ * Update user data in Firestore
+ * @deprecated Use userService.updateUser instead
+ */
+const updateUser = async (userId, updates) => {
+  const db = getFirestoreAdmin();
+  if (!db) {
+    throw new Error('Firestore not initialized');
+  }
+  
+  const admin = require('firebase-admin');
+  
+  await db.collection('users').doc(userId).update({
+    ...updates,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  
+  return getUser(userId);
+};
+
+/**
+ * Get raid boss data
+ * @deprecated Use raidService instead
+ */
 const getRaidBoss = async () => {
-  const firestore = initFirebase();
-  if (firestore) {
-    try {
-      const raidDoc = doc(firestore, 'raidBoss', 'current');
-      const docSnap = await getDoc(raidDoc);
-      
-      if (docSnap.exists()) {
-        const data = docSnap.data();
-        return {
-          name: data.name,
-          description: data.description,
-          totalHP: data.totalHP,
-          currentHP: data.currentHP,
-          participants: data.participants
-        };
-      } else {
-        throw new Error('Raid boss not found');
-      }
-    } catch (error) {
-      console.log('Database error, using fallback:', error.message);
-    }
+  const db = getFirestoreAdmin();
+  if (!db) {
+    throw new Error('Firestore not initialized');
   }
   
-  const { mockRaidBoss } = require('./mockData');
-  return mockRaidBoss;
+  const raidDoc = await db.collection('raidBosses').doc('current').get();
+  
+  if (!raidDoc.exists) {
+    // Return default boss
+    return {
+      name: 'Iron Golem',
+      description: 'A hulking construct of twisted metal. Defeat it with your workouts!',
+      totalHP: 10000,
+      currentHP: 10000,
+      participants: 0,
+    };
+  }
+  
+  return raidDoc.data();
 };
 
-// Update raid boss
+/**
+ * Update raid boss
+ * @deprecated Use raidService instead
+ */
 const updateRaidBoss = async (updates) => {
-  const firestore = initFirebase();
-  if (firestore) {
-    try {
-      const raidDoc = doc(firestore, 'raidBoss', 'current');
-      await updateDoc(raidDoc, {
-        currentHP: updates.currentHP,
-        participants: updates.participants
-      });
-      
-      console.log('Raid boss updated in database');
-      return updates;
-    } catch (error) {
-      console.log('Database update error:', error.message);
-    }
+  const db = getFirestoreAdmin();
+  if (!db) {
+    throw new Error('Firestore not initialized');
   }
   
-  // Fallback: update mock data
-  const { mockRaidBoss } = require('./mockData');
-  if (updates.currentHP !== undefined) mockRaidBoss.currentHP = updates.currentHP;
-  if (updates.participants !== undefined) mockRaidBoss.participants = updates.participants;
-  return mockRaidBoss;
+  const admin = require('firebase-admin');
+  
+  await db.collection('raidBosses').doc('current').update({
+    ...updates,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  
+  return getRaidBoss();
 };
 
-// Get quests
-const getQuests = async () => {
-  const firestore = initFirebase();
-  if (firestore) {
-    try {
-      const questsRef = collection(firestore, 'quests');
-      const q = query(questsRef, orderBy('id'));
-      const querySnapshot = await getDocs(q);
-      
-      const quests = [];
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-        quests.push({
-          id: data.id,
-          title: data.title,
-          description: data.description,
-          completed: data.completed,
-          progress: data.progress,
-          xpReward: data.xpReward,
-          reward: data.reward
-        });
-      });
-      
-      return quests;
-    } catch (error) {
-      console.log('Database error, using fallback:', error.message);
-    }
+/**
+ * Get quests for a user
+ * @deprecated Use questService instead
+ */
+const getQuests = async (userId) => {
+  const db = getFirestoreAdmin();
+  if (!db) {
+    throw new Error('Firestore not initialized');
   }
   
-  const { mockQuests } = require('./mockData');
-  return mockQuests;
+  const questsRef = db.collection('users').doc(userId).collection('quests');
+  const snapshot = await questsRef.get();
+  
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-// Update quest
-const updateQuest = async (questId, updates) => {
-  const firestore = initFirebase();
-  if (firestore) {
-    try {
-      const questsRef = collection(firestore, 'quests');
-      const q = query(questsRef, where('id', '==', questId));
-      const querySnapshot = await getDocs(q);
-      
-      if (!querySnapshot.empty) {
-        const questDoc = querySnapshot.docs[0];
-        await updateDoc(questDoc.ref, updates);
-        console.log('Quest updated in database');
-        return { id: questId, ...updates };
-      }
-    } catch (error) {
-      console.log('Database update error:', error.message);
-    }
+/**
+ * Update quest
+ * @deprecated Use questService instead
+ */
+const updateQuest = async (userId, questId, updates) => {
+  const db = getFirestoreAdmin();
+  if (!db) {
+    throw new Error('Firestore not initialized');
   }
   
-  // Fallback: update mock data
-  const { mockQuests } = require('./mockData');
-  const quest = mockQuests.find(q => q.id == questId);
-  if (quest) {
-    Object.assign(quest, updates);
-  }
-  return quest;
+  const admin = require('firebase-admin');
+  
+  await db.collection('users').doc(userId).collection('quests').doc(questId).update({
+    ...updates,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
 };
 
-module.exports = {
+// Export for CommonJS (Node.js server)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    getFirestoreAdmin,
+    getUser,
+    updateUser,
+    getRaidBoss,
+    updateRaidBoss,
+    getQuests,
+    updateQuest,
+  };
+}
+
+// Export for ES modules (if needed)
+export {
+  getFirestoreAdmin,
   getUser,
   updateUser,
   getRaidBoss,
   updateRaidBoss,
   getQuests,
-  updateQuest
+  updateQuest,
 };
