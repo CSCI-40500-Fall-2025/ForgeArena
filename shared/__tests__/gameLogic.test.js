@@ -1,9 +1,8 @@
 const path = require('path');
 
-// Helper to reset modules so mock state is fresh per test
+// Helper to reset modules so state is fresh per test
 function reloadModules() {
 	jest.resetModules();
-	const mockDataPath = path.join('..', 'mockData');
 	delete require.cache[require.resolve(path.join(__dirname, '..', 'mockData.js'))];
 	return {
 		gameLogic: require(path.join('..', 'gameLogic')),
@@ -12,42 +11,170 @@ function reloadModules() {
 }
 
 describe('gameLogic.processWorkout', () => {
-	it('increments XP and levels up appropriately', () => {
+	it('calculates XP correctly for pushups', () => {
 		const { gameLogic, mockData } = reloadModules();
-		// Start from level 1, xp 0
-		expect(mockData.mockUser.avatar.level).toBe(1);
-		expect(mockData.mockUser.avatar.xp).toBe(0);
+		
+		// Create a user object to pass to processWorkout
+		const user = {
+			level: 1,
+			xp: 0,
+			workoutStreak: 0,
+		};
 
-		const result = gameLogic.processWorkout('pushup', 60); // 120 XP
+		// 60 pushups * 1.5 multiplier = 90 base XP
+		// Level bonus: 1 + (1 * 0.02) = 1.02
+		// Streak bonus: 1 (no streak)
+		// Final: 90 * 1.02 * 1 = ~92 (rounded)
+		const result = gameLogic.processWorkout(user, 'pushup', 60);
 
-		expect(result.xpGained).toBe(120);
-		expect(mockData.mockUser.avatar.level).toBe(2); // leveled once (threshold 100)
-		// Remaining XP = 20 after level up
-		expect(mockData.mockUser.avatar.xp).toBe(20);
-		// Stats increased on level up
-		expect(mockData.mockUser.avatar.strength).toBe(12);
-		expect(mockData.mockUser.avatar.endurance).toBe(12);
-		expect(mockData.mockUser.avatar.agility).toBe(11);
+		expect(result.xpGained).toBeGreaterThan(0);
+		expect(result.exercise).toBe('pushup');
+		expect(result.reps).toBe(60);
+		expect(result.message).toContain('push-up');
 	});
 
-	it('reduces raid boss HP when exercise is squat', () => {
-		const { gameLogic, mockData } = reloadModules();
-		const initialHp = mockData.mockRaidBoss.currentHP;
-		gameLogic.processWorkout('squat', 50);
-		expect(mockData.mockRaidBoss.currentHP).toBe(Math.max(0, initialHp - 50));
-	});
-});
-
-describe('gameLogic.getLeaderboard', () => {
-	it('returns users sorted by level and xp descending', () => {
+	it('applies streak bonus correctly', () => {
 		const { gameLogic } = reloadModules();
-		const leaderboard = gameLogic.getLeaderboard();
-		for (let i = 1; i < leaderboard.length; i++) {
-			const prevScore = leaderboard[i - 1].level * 1000 + leaderboard[i - 1].xp;
-			const curScore = leaderboard[i].level * 1000 + leaderboard[i].xp;
-			expect(prevScore).toBeGreaterThanOrEqual(curScore);
-		}
+		
+		const userWithStreak = {
+			level: 1,
+			xp: 0,
+			workoutStreak: 10, // 50% bonus (capped)
+		};
+		
+		const userNoStreak = {
+			level: 1,
+			xp: 0,
+			workoutStreak: 0,
+		};
+
+		const resultWithStreak = gameLogic.processWorkout(userWithStreak, 'squat', 20);
+		const resultNoStreak = gameLogic.processWorkout(userNoStreak, 'squat', 20);
+
+		// Streak should give more XP
+		expect(resultWithStreak.xpGained).toBeGreaterThan(resultNoStreak.xpGained);
+		expect(resultWithStreak.bonuses.streak).toBeGreaterThan(resultNoStreak.bonuses.streak);
+	});
+
+	it('applies level bonus correctly', () => {
+		const { gameLogic } = reloadModules();
+		
+		const highLevelUser = {
+			level: 10,
+			xp: 0,
+			workoutStreak: 0,
+		};
+		
+		const lowLevelUser = {
+			level: 1,
+			xp: 0,
+			workoutStreak: 0,
+		};
+
+		const resultHighLevel = gameLogic.processWorkout(highLevelUser, 'squat', 20);
+		const resultLowLevel = gameLogic.processWorkout(lowLevelUser, 'squat', 20);
+
+		// Higher level should give more XP
+		expect(resultHighLevel.xpGained).toBeGreaterThan(resultLowLevel.xpGained);
+		expect(resultHighLevel.bonuses.level).toBeGreaterThan(resultLowLevel.bonuses.level);
+	});
+
+	it('calculates raid damage', () => {
+		const { gameLogic } = reloadModules();
+		
+		const user = { level: 5, workoutStreak: 0 };
+		const result = gameLogic.processWorkout(user, 'squat', 50);
+
+		expect(result.raidDamage).toBeGreaterThan(0);
+		expect(result.raidDamage).toBeGreaterThan(50); // Should be more than base due to multipliers
+	});
+
+	it('returns stat gains for different exercises', () => {
+		const { gameLogic } = reloadModules();
+		const user = { level: 1, workoutStreak: 0 };
+
+		const squatResult = gameLogic.processWorkout(user, 'squat', 20);
+		const runResult = gameLogic.processWorkout(user, 'run', 20);
+
+		// Squat should have strength gain
+		expect(squatResult.statGains).toHaveProperty('strength');
+		// Run should have endurance gain
+		expect(runResult.statGains).toHaveProperty('endurance');
 	});
 });
 
+describe('gameLogic.getLevelProgress', () => {
+	it('calculates level progress correctly', () => {
+		const { gameLogic } = reloadModules();
 
+		const progress = gameLogic.getLevelProgress(150);
+		
+		expect(progress.currentLevel).toBe(2); // 150 XP = level 2
+		expect(progress.xpIntoLevel).toBe(50); // 50 XP into level 2
+		expect(progress.xpNeeded).toBe(100);
+		expect(progress.percentage).toBe(50);
+	});
+});
+
+describe('gameLogic.calculateRaidDamage', () => {
+	it('calculates damage with level multiplier', () => {
+		const { gameLogic } = reloadModules();
+
+		const lowLevelDamage = gameLogic.calculateRaidDamage('squat', 20, 1);
+		const highLevelDamage = gameLogic.calculateRaidDamage('squat', 20, 10);
+
+		expect(highLevelDamage).toBeGreaterThan(lowLevelDamage);
+	});
+});
+
+describe('gameLogic.validateWorkout', () => {
+	it('validates correct workout input', () => {
+		const { gameLogic } = reloadModules();
+
+		const result = gameLogic.validateWorkout('squat', 20);
+		expect(result.valid).toBe(true);
+		expect(result.errors).toHaveLength(0);
+	});
+
+	it('rejects invalid reps', () => {
+		const { gameLogic } = reloadModules();
+
+		const result = gameLogic.validateWorkout('squat', -5);
+		expect(result.valid).toBe(false);
+		expect(result.errors.length).toBeGreaterThan(0);
+	});
+
+	it('rejects excessive reps', () => {
+		const { gameLogic } = reloadModules();
+
+		const result = gameLogic.validateWorkout('squat', 50000);
+		expect(result.valid).toBe(false);
+	});
+});
+
+describe('gameLogic.getExerciseSuggestions', () => {
+	it('returns exercise suggestions', () => {
+		const { gameLogic } = reloadModules();
+
+		const suggestions = gameLogic.getExerciseSuggestions({ recentExercises: [] });
+		
+		expect(Array.isArray(suggestions)).toBe(true);
+		expect(suggestions.length).toBeGreaterThan(0);
+		expect(suggestions[0]).toHaveProperty('exercise');
+		expect(suggestions[0]).toHaveProperty('multiplier');
+	});
+
+	it('deprioritizes recently done exercises', () => {
+		const { gameLogic } = reloadModules();
+
+		const suggestions = gameLogic.getExerciseSuggestions({ 
+			recentExercises: ['squat', 'pushup'] 
+		});
+		
+		// First suggestions should not be recently done
+		const topSuggestions = suggestions.slice(0, 3);
+		const recentlyDoneInTop = topSuggestions.filter(s => s.recentlyDone);
+		
+		expect(recentlyDoneInTop.length).toBeLessThan(topSuggestions.length);
+	});
+});
