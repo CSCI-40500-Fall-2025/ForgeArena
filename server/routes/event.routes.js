@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const eventService = require('../services/event.service');
+const eventService = require('../services/shared/event.service');
 
 /**
  * GET /api/events

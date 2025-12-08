@@ -4,9 +4,9 @@
 
 const express = require('express');
 const router = express.Router();
-const questService = require('../services/quest.service');
-const userService = require('../services/user.service');
-const activityService = require('../services/activity.service');
+const questService = require('../services/gameplay/quest.service');
+const userService = require('../services/user/user.service');
+const activityService = require('../services/shared/activity.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 

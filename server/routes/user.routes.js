@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const userService = require('../services/user.service');
+const userService = require('../services/user/user.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const authUtils = require('../utils/auth.utils');
 const logger = require('../utils/logger');

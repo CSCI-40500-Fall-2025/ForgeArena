@@ -4,8 +4,8 @@
 
 const express = require('express');
 const router = express.Router();
-const duelService = require('../services/duel.service');
-const activityService = require('../services/activity.service');
+const duelService = require('../services/gameplay/duel.service');
+const activityService = require('../services/shared/activity.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 

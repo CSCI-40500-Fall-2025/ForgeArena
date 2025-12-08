@@ -14,9 +14,8 @@
 const express = require('express');
 const router = express.Router();
 const logger = require('../utils/logger');
-const mlService = require('../services/ml.service');
 const authMiddleware = require('../middleware/auth.middleware');
-const questService = require('../services/quest.service');
+const questService = require('../services/gameplay/quest.service');
 
 /**
  * Helper to get user data from request

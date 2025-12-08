@@ -1,3 +1,5 @@
+const { getInventory } = require('../../shared/game/gameLogic');
+
 module.exports = function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -10,8 +12,7 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    const { getLeaderboard } = require('../shared/gameLogic');
-    res.status(200).json(getLeaderboard());
+    res.status(200).json(getInventory());
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

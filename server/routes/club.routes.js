@@ -4,9 +4,9 @@
 
 const express = require('express');
 const router = express.Router();
-const clubService = require('../services/club.service');
-const gymLocationService = require('../services/gymLocation.service');
-const googlePlacesService = require('../services/googlePlaces.service');
+const clubService = require('../services/social/club.service');
+const gymLocationService = require('../services/location/gymLocation.service');
+const googlePlacesService = require('../services/location/googlePlaces.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 

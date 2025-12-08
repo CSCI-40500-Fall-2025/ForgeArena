@@ -1,4 +1,4 @@
-const { getQuests, updateQuest, getUser, updateUser } = require('../shared/firebase');
+const { getQuests, updateQuest, getUser, updateUser } = require('../../shared/database/firebase');
 
 module.exports = async function handler(req, res) {
   // Enable CORS

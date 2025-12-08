@@ -5,7 +5,7 @@
 const express = require('express');
 const router = express.Router();
 
-const itemService = require('../services/item.service');
+const itemService = require('../services/shared/item.service');
 const { RARITY, SLOT, SLOT_DISPLAY_NAMES } = require('../../shared/itemSystem');
 
 // ============================================

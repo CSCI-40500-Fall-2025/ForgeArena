@@ -1,4 +1,4 @@
-const { mockDuels } = require('../shared/mockData');
+const { mockGyms, mockUser } = require('../../shared/database/mockData');
 
 module.exports = function handler(req, res) {
   // Enable CORS
@@ -12,20 +12,18 @@ module.exports = function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    res.status(200).json(mockDuels);
+    res.status(200).json(mockGyms);
   } else if (req.method === 'POST') {
-    // Handle duel creation
-    const { opponent, challenge } = req.body;
-    const newDuel = {
-      id: mockDuels.length + 1,
-      challenger: 'TestWarrior',
-      opponent,
-      status: 'pending',
-      challenge,
-      deadline: new Date(Date.now() + 24*60*60*1000)
-    };
-    mockDuels.push(newDuel);
-    res.status(200).json({ message: `Challenge sent to ${opponent}!` });
+    // Handle gym joining - expect { gymId } in body
+    const { gymId } = req.body;
+    const gym = mockGyms.find(g => g.id == gymId);
+    
+    if (gym) {
+      mockUser.gym = gym.name;
+      res.status(200).json({ message: `Successfully joined ${gym.name}!` });
+    } else {
+      res.status(404).json({ message: 'Gym not found' });
+    }
   } else {
     res.status(405).json({ message: 'Method not allowed' });
   }

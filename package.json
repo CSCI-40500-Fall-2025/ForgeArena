@@ -13,7 +13,7 @@
     "vercel-build": "npm run install-deps && npm run build",
     "heroku-postbuild": "npm run install-deps && npm run build",
     "start": "node server/index.js",
-    "test:shared": "jest --config jest.config.cjs --ci --coverage",
+    "test:shared": "jest --config config/jest.config.cjs --ci --coverage",
     "test:client": "cd client && npm test -- --watchAll=false",
     "test": "npm run test:shared && npm run test:client"
   },

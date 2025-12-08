@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const admin = require('firebase-admin');
 const authUtils = require('../utils/auth.utils');
-const userService = require('../services/user.service');
+const userService = require('../services/user/user.service');
 const logger = require('../utils/logger');
 
 /**

@@ -3,10 +3,10 @@ const path = require('path');
 // Helper to reset modules so state is fresh per test
 function reloadModules() {
 	jest.resetModules();
-	delete require.cache[require.resolve(path.join(__dirname, '..', 'mockData.js'))];
+	delete require.cache[require.resolve(path.join(__dirname, '..', 'database', 'mockData.js'))];
 	return {
-		gameLogic: require(path.join('..', 'gameLogic')),
-		mockData: require(path.join('..', 'mockData')),
+		gameLogic: require(path.join('..', 'game', 'gameLogic')),
+		mockData: require(path.join('..', 'database', 'mockData')),
 	};
 }
 

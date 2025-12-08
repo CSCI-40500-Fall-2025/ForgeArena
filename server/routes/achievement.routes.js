@@ -4,7 +4,7 @@
 
 const express = require('express');
 const router = express.Router();
-const achievementService = require('../services/achievement.service');
+const achievementService = require('../services/gameplay/achievement.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 

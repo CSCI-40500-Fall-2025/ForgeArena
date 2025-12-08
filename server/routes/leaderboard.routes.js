@@ -4,7 +4,7 @@
 
 const express = require('express');
 const router = express.Router();
-const leaderboardService = require('../services/leaderboard.service');
+const leaderboardService = require('../services/social/leaderboard.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 

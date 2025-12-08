@@ -2,14 +2,14 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const logger = require('./utils/logger');
-const userService = require('./services/user.service');
+const userService = require('./services/user/user.service');
 
 // Import new services
-const questService = require('./services/quest.service');
-const achievementService = require('./services/achievement.service');
-const duelService = require('./services/duel.service');
-const activityService = require('./services/activity.service');
-const leaderboardService = require('./services/leaderboard.service');
+const questService = require('./services/gameplay/quest.service');
+const achievementService = require('./services/gameplay/achievement.service');
+const duelService = require('./services/gameplay/duel.service');
+const activityService = require('./services/shared/activity.service');
+const leaderboardService = require('./services/social/leaderboard.service');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -52,7 +52,7 @@ app.use((req, res, next) => {
 });
 
 // Import game logic (updated to work with user data)
-const { processWorkout } = require('../shared/gameLogic');
+const { processWorkout } = require('../shared/game/gameLogic');
 
 // DEBUG: Services loaded successfully
 logger.debug('Services loaded', {

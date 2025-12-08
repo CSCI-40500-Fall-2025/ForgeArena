@@ -4,7 +4,7 @@
 
 const express = require('express');
 const router = express.Router();
-const partyService = require('../services/party.service');
+const partyService = require('../services/social/party.service');
 const authMiddleware = require('../middleware/auth.middleware');
 const logger = require('../utils/logger');
 
