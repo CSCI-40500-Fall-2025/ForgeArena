@@ -69,7 +69,7 @@ jobs:
           echo "Waiting 30 seconds for app to start..."
           sleep 30
           
-          HEALTH_URL="https://${{ secrets.HEROKU_APP_NAME }}.herokuapp.com/api/health"
+          HEALTH_URL="https://${{ secrets.HEROKU_APP_NAME }}-8c99233e662d.herokuapp.com/api/health"
           echo "Checking health at: $HEALTH_URL"
           
           # Try health check with retry
