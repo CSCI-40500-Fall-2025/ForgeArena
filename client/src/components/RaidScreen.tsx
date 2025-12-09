@@ -144,12 +144,12 @@ const RaidScreen: React.FC = () => {
     } catch (error) {
       console.error('Error fetching bosses:', error);
     }
-  }, [party?.memberCount]);
+  }, [party]);
 
   // Initial fetch
   useEffect(() => {
     fetchRaidStatus();
-  }, []);
+  }, [fetchRaidStatus]);
 
   // Fetch bosses when party is available
   useEffect(() => {
@@ -171,7 +171,7 @@ const RaidScreen: React.FC = () => {
         clearInterval(pollingIntervalRef.current);
       }
     };
-  }, [raid?.id, raid?.status, fetchRaidStatus]);
+  }, [raid, fetchRaidStatus]);
 
   // Start raid handler
   const handleStartRaid = async () => {

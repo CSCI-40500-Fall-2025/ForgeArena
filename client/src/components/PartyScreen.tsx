@@ -145,7 +145,7 @@ const PartyScreen: React.FC = () => {
   // Initial fetch
   useEffect(() => {
     fetchParty();
-  }, []);
+  }, [fetchParty]);
 
   // Setup polling for real-time updates when in a party
   useEffect(() => {
@@ -161,7 +161,7 @@ const PartyScreen: React.FC = () => {
         clearInterval(pollingIntervalRef.current);
       }
     };
-  }, [party?.id, fetchParty]);
+  }, [party, fetchParty]);
 
   // Create party handler
   const handleCreateParty = async (e: React.FormEvent) => {
@@ -188,35 +188,35 @@ const PartyScreen: React.FC = () => {
   };
 
   // Preview party by invite code
-  const handlePreviewParty = async () => {
-    if (!inviteCode.trim()) {
+  const handlePreviewParty = useCallback(async (code: string) => {
+    if (!code.trim()) {
       setPartyPreview(null);
       return;
     }
     
     try {
       setPreviewLoading(true);
-      const response = await apiGet(`/api/parties/preview/${inviteCode.trim().toUpperCase()}`);
+      const response = await apiGet(`/api/parties/preview/${code.trim().toUpperCase()}`);
       setPartyPreview(response);
     } catch (error: any) {
       setPartyPreview(null);
     } finally {
       setPreviewLoading(false);
     }
-  };
+  }, []);
 
   // Debounced preview
   useEffect(() => {
     const timer = setTimeout(() => {
       if (inviteCode.length >= 4) {
-        handlePreviewParty();
+        handlePreviewParty(inviteCode);
       } else {
         setPartyPreview(null);
       }
     }, 500);
     
     return () => clearTimeout(timer);
-  }, [inviteCode]);
+  }, [inviteCode, handlePreviewParty]);
 
   // Join party handler
   const handleJoinParty = async (e: React.FormEvent) => {

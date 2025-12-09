@@ -196,3 +196,4 @@ router.get('/rank/:type', authMiddleware.authenticateToken, async (req, res) => 
 module.exports = router;
 
 
+
