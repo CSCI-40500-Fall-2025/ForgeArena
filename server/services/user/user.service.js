@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 
 // Determine which user service to use based on environment
 const USE_FIRESTORE = process.env.USE_FIRESTORE === 'true';

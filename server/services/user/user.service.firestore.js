@@ -1,6 +1,6 @@
 const admin = require('firebase-admin');
-const authUtils = require('../utils/auth.utils');
-const logger = require('../utils/logger');
+const authUtils = require('../../utils/auth.utils');
+const logger = require('../../utils/logger');
 const path = require('path');
 const fs = require('fs');
 
@@ -17,7 +17,7 @@ function initFirestore() {
     if (!admin.apps.length) {
       // Option 1: Use service account from file (local development)
       if (process.env.NODE_ENV === 'development') {
-        const serviceAccountPath = path.join(__dirname, '../serviceAccount.json');
+        const serviceAccountPath = path.join(__dirname, '../../serviceAccount.json');
         if (fs.existsSync(serviceAccountPath)) {
           const serviceAccount = require(serviceAccountPath);
           admin.initializeApp({

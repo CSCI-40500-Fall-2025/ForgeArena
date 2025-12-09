@@ -2,7 +2,7 @@
  * Google Places API Service - Fetches real gym locations
  */
 
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 
 const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 const PLACES_API_BASE = 'https://maps.googleapis.com/maps/api/place';

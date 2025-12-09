@@ -16,7 +16,7 @@ const {
   RARITY,
   SLOT,
   SLOT_DISPLAY_NAMES
-} = require('../../shared/itemSystem');
+} = require('../../../shared/game/itemSystem');
 
 // In-memory storage (replace with database in production)
 const userInventories = new Map();

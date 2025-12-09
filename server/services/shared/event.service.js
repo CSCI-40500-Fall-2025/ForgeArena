@@ -3,7 +3,7 @@
 // ============================================
 
 const itemService = require('./item.service');
-const { generateItem, RARITY, SLOT } = require('../../shared/itemSystem');
+const { generateItem, RARITY, SLOT } = require('../../../shared/game/itemSystem');
 
 // ============================================
 // EVENT DEFINITIONS

@@ -4,8 +4,8 @@
  */
 
 const admin = require('firebase-admin');
-const logger = require('../utils/logger');
-const partyService = require('./party.service');
+const logger = require('../../utils/logger');
+const partyService = require('../social/party.service');
 
 let db = null;
 

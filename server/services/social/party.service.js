@@ -4,11 +4,11 @@
  */
 
 const admin = require('firebase-admin');
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 const crypto = require('crypto');
 
 // Get Firestore instance from user service
-const userService = require('./user.service.firestore');
+const userService = require('../user/user.service.firestore');
 
 let db = null;
 
