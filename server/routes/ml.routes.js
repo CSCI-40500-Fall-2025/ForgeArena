@@ -8,6 +8,12 @@
  * - Quest suggestions
  * - Workout pattern analysis
  * 
+ * ENHANCED with Multi-Agent AI System:
+ * - Training Strategist Agent: Creates personalized workout plans
+ * - Motivation Coach Agent: Generates contextual motivational content
+ * - Progress Analyst Agent: Evaluates user progress and trends
+ * - Goal Coordinator Agent: Orchestrates agents and automates actions
+ * 
  * All features work 100% FREE without any API keys!
  */
 
@@ -17,6 +23,12 @@ const logger = require('../utils/logger');
 const authMiddleware = require('../middleware/auth.middleware');
 const questService = require('../services/gameplay/quest.service');
 const mlService = require('../services/shared/ml.service');
+
+// Import enhanced ML services
+const { agentManager } = require('../services/shared/agents.service');
+const { actionExecutor } = require('../services/shared/action-executor.service');
+const { mlAssessmentService } = require('../services/shared/ml-assessment.service');
+const { mlDataCollector } = require('../services/shared/ml-data-collector.service');
 
 /**
  * Helper to get user data from request
@@ -365,7 +377,7 @@ router.get('/status', (req, res) => {
   res.json({
     success: true,
     service: 'ForgeMaster AI',
-    version: '1.0.0',
+    version: '2.0.0',
     status: 'operational',
     capabilities: {
       workoutRecommendations: true,
@@ -373,19 +385,487 @@ router.get('/status', (req, res) => {
       motivationalCoaching: true,
       questSuggestions: true,
       patternAnalysis: true,
-      coachingSessions: true
+      coachingSessions: true,
+      // Enhanced capabilities (v2.0)
+      multiAgentSystem: true,
+      automatedActions: true,
+      mlAssessment: true,
+      dataCollection: true
     },
-    engine: hasGeminiKey ? 'gemini_enhanced' : 'rule_based_ai',
-    description: hasGeminiKey 
-      ? 'Enhanced AI with Google Gemini integration (FREE tier: 15 req/min, 1M tokens/month)'
-      : 'Intelligent rule-based AI system (100% free, no API key needed)',
+    engine: hasGeminiKey ? 'gemini_enhanced' : 'multi_agent_ai',
+    description: 'Enhanced Multi-Agent AI system (100% free, no API key needed)',
     freeToUse: true,
     apiInfo: {
-      provider: hasGeminiKey ? 'Google Gemini' : 'Local Processing',
-      freeTier: hasGeminiKey ? '15 requests/minute, 1,500 requests/day, 1M tokens/month' : 'Unlimited',
+      provider: 'Local Multi-Agent System',
+      freeTier: 'Unlimited',
       cost: '$0 (completely free)'
+    },
+    agents: agentManager.getStatus()
+  });
+});
+
+// =============================================================================
+// ENHANCED ML ENDPOINTS - Multi-Agent System
+// =============================================================================
+
+/**
+ * GET /api/ml/agents/analyze
+ * Get comprehensive AI agent analysis
+ * All agents work together to analyze user data and provide insights
+ */
+router.get('/agents/analyze', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    const userData = getUserData(req);
+    const takeActions = req.query.takeActions === 'true';
+    
+    logger.info('Agent analysis requested', {
+      userId: userData.username,
+      takeActions,
+      action: 'ML_AGENT_ANALYSIS'
+    });
+
+    // Collect ML interaction
+    mlDataCollector.collectMLInteraction(userData.uid, 'agent_analysis', {
+      endpoint: '/agents/analyze',
+      data: { takeActions }
+    });
+
+    const startTime = Date.now();
+    const analysis = await agentManager.runFullAnalysis(
+      userData,
+      userData.recentWorkouts || [],
+      takeActions
+    );
+    const duration = Date.now() - startTime;
+
+    // Collect agent execution data
+    mlDataCollector.collectAgentExecution('GoalCoordinator', {
+      userId: userData.uid,
+      executionTime: duration,
+      success: true,
+      actionsGenerated: analysis.automatedActions?.count || 0
+    });
+
+    // Execute automated actions if enabled and user is authenticated
+    if (takeActions && userData.uid && analysis.automatedActions?.actions?.length > 0) {
+      const actionResults = await actionExecutor.executeActions(analysis.automatedActions.actions);
+      analysis.actionResults = actionResults;
+      
+      logger.info('Automated actions executed', {
+        userId: userData.uid,
+        actionsExecuted: actionResults.successful,
+        actionsFailed: actionResults.failed
+      });
+    }
+
+    res.json({
+      success: true,
+      source: 'multi_agent_system',
+      generatedAt: new Date().toISOString(),
+      executionTime: duration,
+      ...analysis
+    });
+  } catch (error) {
+    logger.error('Failed to run agent analysis', {
+      error: error.message,
+      action: 'ML_AGENT_ANALYSIS'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to run agent analysis',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/ml/agents/strategy
+ * Get training strategy from the Training Strategist Agent
+ */
+router.get('/agents/strategy', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    const userData = getUserData(req);
+    
+    logger.info('Strategy agent requested', {
+      userId: userData.username,
+      action: 'ML_AGENT_STRATEGY'
+    });
+
+    mlDataCollector.collectMLInteraction(userData.uid, 'strategy_agent', {
+      endpoint: '/agents/strategy'
+    });
+
+    const strategy = await agentManager.runStrategyOnly(
+      userData,
+      userData.recentWorkouts || []
+    );
+
+    res.json({
+      success: true,
+      source: 'training_strategist_agent',
+      generatedAt: new Date().toISOString(),
+      ...strategy
+    });
+  } catch (error) {
+    logger.error('Failed to get strategy', {
+      error: error.message,
+      action: 'ML_AGENT_STRATEGY'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get training strategy',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/ml/agents/motivation
+ * Get personalized motivation from the Motivation Coach Agent
+ */
+router.get('/agents/motivation', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    const userData = getUserData(req);
+    const context = req.query.context || 'dailyStart';
+    
+    logger.info('Motivation agent requested', {
+      userId: userData.username,
+      context,
+      action: 'ML_AGENT_MOTIVATION'
+    });
+
+    mlDataCollector.collectMLInteraction(userData.uid, 'motivation_agent', {
+      endpoint: '/agents/motivation',
+      data: { context }
+    });
+
+    const motivation = await agentManager.runMotivationOnly(userData, context);
+
+    res.json({
+      success: true,
+      source: 'motivation_coach_agent',
+      generatedAt: new Date().toISOString(),
+      ...motivation
+    });
+  } catch (error) {
+    logger.error('Failed to get motivation', {
+      error: error.message,
+      action: 'ML_AGENT_MOTIVATION'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get motivation',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/ml/agents/progress
+ * Get progress analysis from the Progress Analyst Agent
+ */
+router.get('/agents/progress', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    const userData = getUserData(req);
+    
+    logger.info('Progress agent requested', {
+      userId: userData.username,
+      action: 'ML_AGENT_PROGRESS'
+    });
+
+    mlDataCollector.collectMLInteraction(userData.uid, 'progress_agent', {
+      endpoint: '/agents/progress'
+    });
+
+    const progress = await agentManager.runProgressOnly(
+      userData,
+      userData.recentWorkouts || []
+    );
+
+    res.json({
+      success: true,
+      source: 'progress_analyst_agent',
+      generatedAt: new Date().toISOString(),
+      ...progress
+    });
+  } catch (error) {
+    logger.error('Failed to get progress analysis', {
+      error: error.message,
+      action: 'ML_AGENT_PROGRESS'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get progress analysis',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/ml/agents/execute-actions
+ * Execute automated actions on behalf of the user
+ * This endpoint takes action by modifying user data in the database
+ */
+router.post('/agents/execute-actions', authMiddleware.authenticateToken, async (req, res) => {
+  try {
+    const userData = getUserData(req);
+    const { actions } = req.body;
+    
+    if (!actions || !Array.isArray(actions)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Actions array is required'
+      });
+    }
+    
+    logger.info('Executing automated actions', {
+      userId: userData.uid,
+      actionCount: actions.length,
+      action: 'ML_EXECUTE_ACTIONS'
+    });
+
+    // Add userId to all actions
+    const actionsWithUser = actions.map(action => ({
+      ...action,
+      userId: userData.uid
+    }));
+
+    const results = await actionExecutor.executeActions(actionsWithUser);
+
+    // Collect data for ML improvement
+    actionsWithUser.forEach(action => {
+      mlDataCollector.collectEngagementSignal(userData.uid, 'action_execution', {
+        actionType: action.type,
+        automated: action.automated
+      });
+    });
+
+    res.json({
+      success: true,
+      source: 'action_executor',
+      executedAt: new Date().toISOString(),
+      results
+    });
+  } catch (error) {
+    logger.error('Failed to execute actions', {
+      error: error.message,
+      action: 'ML_EXECUTE_ACTIONS'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to execute actions',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/ml/agents/status
+ * Get status of all AI agents
+ */
+router.get('/agents/status', (req, res) => {
+  const status = agentManager.getStatus();
+  const executorStats = actionExecutor.getExecutionStats();
+
+  res.json({
+    success: true,
+    agentSystem: status,
+    actionExecutor: executorStats,
+    dataCollector: mlDataCollector.getStatus()
+  });
+});
+
+// =============================================================================
+// ML ASSESSMENT ENDPOINTS
+// =============================================================================
+
+/**
+ * GET /api/ml/assessment/run
+ * Run automated ML assessment against production data
+ */
+router.get('/assessment/run', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    logger.info('ML assessment requested', {
+      action: 'ML_ASSESSMENT_RUN'
+    });
+
+    // Get production data from collector
+    const productionData = await mlDataCollector.getProductionDataWithUsers();
+    
+    // Add agent stats
+    productionData.agentStats = agentManager.getStatus().agents;
+
+    // Run assessment
+    const assessment = await mlAssessmentService.runFullAssessment(productionData);
+
+    res.json({
+      success: true,
+      assessment,
+      dataQuality: assessment.dataQuality,
+      note: 'Assessment uses live production data collected automatically'
+    });
+  } catch (error) {
+    logger.error('Failed to run ML assessment', {
+      error: error.message,
+      action: 'ML_ASSESSMENT_RUN'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to run assessment',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/ml/assessment/history
+ * Get history of ML assessments
+ */
+router.get('/assessment/history', (req, res) => {
+  const limit = parseInt(req.query.limit) || 10;
+  const history = mlAssessmentService.getAssessmentHistory(limit);
+  const trends = mlAssessmentService.getAssessmentTrends();
+
+  res.json({
+    success: true,
+    history,
+    trends,
+    count: history.length
+  });
+});
+
+/**
+ * GET /api/ml/assessment/benchmarks
+ * Get current ML performance benchmarks
+ */
+router.get('/assessment/benchmarks', (req, res) => {
+  res.json({
+    success: true,
+    benchmarks: mlAssessmentService.benchmarks,
+    description: {
+      recommendationRelevance: 'Target relevance of workout recommendations to user needs',
+      predictionAccuracy: 'Target accuracy of level-up and progress predictions',
+      userEngagement: 'Target user engagement rate with ML features',
+      actionEffectiveness: 'Target effectiveness of automated actions',
+      agentCoordination: 'Target quality of inter-agent coordination'
     }
   });
+});
+
+// =============================================================================
+// DATA COLLECTION ENDPOINTS
+// =============================================================================
+
+/**
+ * GET /api/ml/data/status
+ * Get data collection status and statistics
+ */
+router.get('/data/status', (req, res) => {
+  const status = mlDataCollector.getStatus();
+  
+  res.json({
+    success: true,
+    ...status
+  });
+});
+
+/**
+ * GET /api/ml/data/analytics
+ * Get analytics from collected production data
+ */
+router.get('/data/analytics', (req, res) => {
+  const workoutAnalytics = mlDataCollector.getWorkoutAnalytics();
+  const interactionAnalytics = mlDataCollector.getMLInteractionAnalytics();
+  const predictionAnalytics = mlDataCollector.getPredictionAnalytics();
+
+  res.json({
+    success: true,
+    workoutAnalytics,
+    interactionAnalytics,
+    predictionAnalytics,
+    collectionStats: mlDataCollector.getCollectionStats()
+  });
+});
+
+/**
+ * POST /api/ml/data/collect-workout
+ * Collect workout data for ML improvement
+ * Called automatically when users complete workouts
+ */
+router.post('/data/collect-workout', authMiddleware.optionalAuth, (req, res) => {
+  try {
+    const userData = getUserData(req);
+    const { exercise, reps, xpGained } = req.body;
+    
+    if (!exercise || !reps) {
+      return res.status(400).json({
+        success: false,
+        error: 'Exercise and reps are required'
+      });
+    }
+
+    const record = mlDataCollector.collectWorkoutData(userData.uid || 'anonymous', {
+      exercise,
+      reps,
+      xpGained
+    });
+
+    res.json({
+      success: true,
+      message: 'Workout data collected for ML improvement',
+      record
+    });
+  } catch (error) {
+    logger.error('Failed to collect workout data', {
+      error: error.message,
+      action: 'ML_DATA_COLLECT_WORKOUT'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to collect workout data',
+      message: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/ml/data/collect-prediction-outcome
+ * Record the actual outcome of a prediction for accuracy tracking
+ */
+router.post('/data/collect-prediction-outcome', authMiddleware.optionalAuth, (req, res) => {
+  try {
+    const userData = getUserData(req);
+    const { prediction, actualOutcome } = req.body;
+    
+    if (!prediction || !actualOutcome) {
+      return res.status(400).json({
+        success: false,
+        error: 'Prediction and actual outcome are required'
+      });
+    }
+
+    const record = mlDataCollector.collectPredictionOutcome(
+      userData.uid || 'anonymous',
+      prediction,
+      actualOutcome
+    );
+
+    res.json({
+      success: true,
+      message: 'Prediction outcome collected',
+      record
+    });
+  } catch (error) {
+    logger.error('Failed to collect prediction outcome', {
+      error: error.message,
+      action: 'ML_DATA_COLLECT_PREDICTION'
+    });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to collect prediction outcome',
+      message: error.message
+    });
+  }
 });
 
 module.exports = router;
