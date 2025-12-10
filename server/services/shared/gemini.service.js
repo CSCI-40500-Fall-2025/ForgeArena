@@ -12,16 +12,22 @@
 
 const logger = require('../../utils/logger');
 
-let GoogleGenerativeAI;
+let GoogleGenerativeAI = null;
 let genAI = null;
 let model = null;
+let sdkAvailable = false;
 
 // Try to load the Gemini SDK
 try {
   const geminiModule = require('@google/generative-ai');
   GoogleGenerativeAI = geminiModule.GoogleGenerativeAI;
+  sdkAvailable = true;
+  logger.info('Gemini SDK loaded successfully');
 } catch (error) {
-  logger.warn('Gemini SDK not installed. Run: npm install @google/generative-ai');
+  logger.warn('Gemini SDK not available - using rule-based AI only', { 
+    error: error.message 
+  });
+  sdkAvailable = false;
 }
 
 /**
@@ -70,7 +76,7 @@ function initGemini() {
  * Check if Gemini is available
  */
 function isGeminiAvailable() {
-  return !!process.env.GEMINI_API_KEY && !!GoogleGenerativeAI;
+  return sdkAvailable && !!process.env.GEMINI_API_KEY && !!GoogleGenerativeAI;
 }
 
 /**
