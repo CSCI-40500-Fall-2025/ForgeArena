@@ -7,7 +7,10 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "init-db": "node scripts/initDb.js",
-    "init-auth-db": "node scripts/init-auth-db.js"
+    "init-auth-db": "node scripts/init-auth-db.js",
+    "test": "jest --config jest.config.js --coverage --verbose",
+    "test:watch": "jest --config jest.config.js --watch",
+    "test:ci": "jest --config jest.config.js --ci --coverage --maxWorkers=2"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
@@ -22,6 +25,8 @@
     "winston-sumologic-transport": "^5.4.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
   }
 }

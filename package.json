@@ -13,8 +13,10 @@
     "heroku-postbuild": "npm run install-deps && npm run build",
     "start": "node server/index.js",
     "test:shared": "jest --config config/jest.config.cjs --ci --coverage",
+    "test:server": "cd server && npm test",
     "test:client": "cd client && npm test -- --watchAll=false",
-    "test": "npm run test:shared && npm run test:client"
+    "test": "npm run test:shared && npm run test:server && npm run test:client",
+    "test:ci": "npm run test:shared && npm run test:server"
   },
   "keywords": [
     "fitness",
