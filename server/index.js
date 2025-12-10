@@ -174,8 +174,22 @@ app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
     
     // Basic validation (tests expect error status when missing fields)
     if (!exercise || reps === undefined || reps === null) {
-      return res.status(500).json({ error: 'Exercise and reps are required' });
+      return res.status(400).json({ error: 'Exercise and reps are required' });
     }
+    
+    // Helper to keep non-critical services from breaking workout logging
+    const safeCall = async (label, fn, fallback = []) => {
+      try {
+        return await fn();
+      } catch (err) {
+        logger.warn(`${label} skipped`, {
+          error: err.message,
+          userId: user.uid,
+          action: 'WORKOUT',
+        });
+        return fallback;
+      }
+    };
     
     logger.debug('Processing workout submission', {
       userId: user.uid,
@@ -215,17 +229,17 @@ app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
     
     // Process for quests, achievements, and duels
     const [questUpdates, newAchievements, duelUpdates] = await Promise.all([
-      questService.processWorkoutForQuests(user.uid, { exercise, reps }),
-      achievementService.processWorkoutForAchievements(user.uid, userStats),
-      duelService.processWorkoutForDuels(user.uid, { exercise, reps }),
+      safeCall('Quest processing', () => questService.processWorkoutForQuests(user.uid, { exercise, reps })),
+      safeCall('Achievement processing', () => achievementService.processWorkoutForAchievements(user.uid, userStats)),
+      safeCall('Duel processing', () => duelService.processWorkoutForDuels(user.uid, { exercise, reps })),
     ]);
     
     // Log activity
-    await activityService.logWorkoutActivity(user.uid, user.username, exercise, reps);
+    await safeCall('Activity log (workout)', () => activityService.logWorkoutActivity(user.uid, user.username, exercise, reps), null);
     
     // Log level up if occurred
     if (leveledUp) {
-      await activityService.logLevelUpActivity(user.uid, user.username, newLevel);
+      await safeCall('Activity log (level up)', () => activityService.logLevelUpActivity(user.uid, user.username, newLevel), null);
       logger.info('User leveled up!', {
         userId: user.uid,
         oldLevel,
@@ -238,7 +252,7 @@ app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
     // Log streak milestone if applicable
     const streak = calculateStreak(user);
     if ([3, 7, 14, 30, 60, 100].includes(streak)) {
-      await activityService.logStreakMilestoneActivity(user.uid, user.username, streak);
+      await safeCall('Activity log (streak milestone)', () => activityService.logStreakMilestoneActivity(user.uid, user.username, streak), null);
     }
     
     logger.info('Workout completed', {
