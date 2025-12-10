@@ -223,7 +223,7 @@ const path = require('path');
   };
   
   // Log initialization
-  logger.info('🔧 ForgeArena Logger Initialized', {
+  logger.info('ForgeArena Logger Initialized', {
     environment: process.env.NODE_ENV || 'development',
     logLevel: level(),
     isCI: process.env.CI === 'true',
@@ -233,7 +233,7 @@ const path = require('path');
   // Send a test log to verify Sumo Logic is working
   if (process.env.NODE_ENV === 'production' && process.env.SUMO_LOGIC_URL && process.env.CI !== 'true') {
     setTimeout(() => {
-      logger.info('🧪 Test log - Sumo Logic integration check', {
+      logger.info('Test log - Sumo Logic integration check', {
         timestamp: new Date().toISOString(),
         testMessage: 'If you see this in Sumo Logic, the integration is working!',
       });

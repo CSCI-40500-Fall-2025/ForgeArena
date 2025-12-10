@@ -30,6 +30,9 @@ const { actionExecutor } = require('../services/shared/action-executor.service')
 const { mlAssessmentService } = require('../services/shared/ml-assessment.service');
 const { mlDataCollector } = require('../services/shared/ml-data-collector.service');
 
+// Import user service for production data access
+const userService = require('../services/user/user.service');
+
 /**
  * Helper to get user data from request
  * Returns default values for unauthenticated users
@@ -374,10 +377,12 @@ router.post('/analyze-workout', authMiddleware.optionalAuth, async (req, res) =>
 router.get('/status', (req, res) => {
   const hasGeminiKey = !!process.env.GEMINI_API_KEY;
   
+  const agentStatus = agentManager.getStatus();
+  
   res.json({
     success: true,
     service: 'ForgeMaster AI',
-    version: '2.0.0',
+    version: '2.1.0',
     status: 'operational',
     capabilities: {
       workoutRecommendations: true,
@@ -390,17 +395,22 @@ router.get('/status', (req, res) => {
       multiAgentSystem: true,
       automatedActions: true,
       mlAssessment: true,
-      dataCollection: true
+      dataCollection: true,
+      // Gemini Integration (v2.1)
+      geminiAI: hasGeminiKey
     },
     engine: hasGeminiKey ? 'gemini_enhanced' : 'multi_agent_ai',
-    description: 'Enhanced Multi-Agent AI system (100% free, no API key needed)',
+    description: hasGeminiKey 
+      ? 'Multi-Agent AI with Google Gemini (FREE: 15 req/min, 1,500/day)'
+      : 'Multi-Agent AI system (100% free, rule-based)',
     freeToUse: true,
     apiInfo: {
-      provider: 'Local Multi-Agent System',
-      freeTier: 'Unlimited',
+      provider: hasGeminiKey ? 'Google Gemini + Local Agents' : 'Local Multi-Agent System',
+      freeTier: hasGeminiKey ? '15 requests/min, 1,500 requests/day' : 'Unlimited',
       cost: '$0 (completely free)'
     },
-    agents: agentManager.getStatus()
+    agents: agentStatus,
+    gemini: agentStatus.gemini
   });
 });
 
@@ -681,32 +691,103 @@ router.get('/agents/status', (req, res) => {
 
 /**
  * GET /api/ml/assessment/run
- * Run automated ML assessment against production data
+ * Run automated ML assessment against REAL production data from Firebase
+ * This assessment is completely automated and uses live data
  */
 router.get('/assessment/run', authMiddleware.optionalAuth, async (req, res) => {
   try {
-    logger.info('ML assessment requested', {
+    logger.info('ML assessment requested - fetching production data', {
       action: 'ML_ASSESSMENT_RUN'
     });
 
-    // Get production data from collector
-    const productionData = await mlDataCollector.getProductionDataWithUsers();
+    // =====================================================================
+    // STEP 1: Fetch REAL production data from Firebase
+    // =====================================================================
     
-    // Add agent stats
-    productionData.agentStats = agentManager.getStatus().agents;
+    // Get all users from production Firebase database
+    let productionUsers = [];
+    try {
+      productionUsers = await userService.getAllUsers(100); // Get up to 100 users
+      logger.info('Fetched production users from Firebase', { count: productionUsers.length });
+    } catch (dbError) {
+      logger.warn('Could not fetch users from Firebase, using collected data', { error: dbError.message });
+    }
 
-    // Run assessment
+    // Get active users (users who worked out in last 7 days)
+    let activeUsers = [];
+    try {
+      activeUsers = await userService.getActiveUsers(7);
+      logger.info('Fetched active users from Firebase', { count: activeUsers.length });
+    } catch (dbError) {
+      logger.warn('Could not fetch active users', { error: dbError.message });
+    }
+
+    // =====================================================================
+    // STEP 2: Combine with collected runtime data
+    // =====================================================================
+    
+    // Get collected workout and ML interaction data
+    const collectedData = mlDataCollector.getProductionData();
+    
+    // Merge production data
+    const productionData = {
+      // Real users from Firebase (production database)
+      users: productionUsers.length > 0 ? productionUsers : collectedData.users || [],
+      activeUsers: activeUsers,
+      
+      // Collected runtime data
+      workouts: collectedData.workouts || [],
+      mlInteractions: collectedData.mlInteractions || [],
+      predictions: collectedData.predictions || [],
+      automatedActions: collectedData.agentExecutions || [],
+      engagementSignals: collectedData.engagementSignals || [],
+      
+      // Agent execution stats
+      agentStats: agentManager.getStatus().agents,
+      
+      // Metadata
+      dataSource: {
+        usersFrom: productionUsers.length > 0 ? 'firebase_production' : 'runtime_collection',
+        workoutsFrom: 'runtime_collection',
+        collectedAt: new Date().toISOString()
+      }
+    };
+
+    logger.info('Production data assembled for assessment', {
+      userCount: productionData.users.length,
+      activeUserCount: productionData.activeUsers.length,
+      workoutCount: productionData.workouts.length,
+      interactionCount: productionData.mlInteractions.length,
+      dataSource: productionData.dataSource.usersFrom
+    });
+
+    // =====================================================================
+    // STEP 3: Run automated ML assessment
+    // =====================================================================
+    
     const assessment = await mlAssessmentService.runFullAssessment(productionData);
 
+    // =====================================================================
+    // STEP 4: Return comprehensive assessment results
+    // =====================================================================
+    
     res.json({
       success: true,
       assessment,
+      productionDataSummary: {
+        totalUsers: productionData.users.length,
+        activeUsers: productionData.activeUsers.length,
+        workoutsCollected: productionData.workouts.length,
+        mlInteractions: productionData.mlInteractions.length,
+        dataSource: productionData.dataSource
+      },
       dataQuality: assessment.dataQuality,
-      note: 'Assessment uses live production data collected automatically'
+      note: 'Assessment uses REAL production data from Firebase database'
     });
   } catch (error) {
     logger.error('Failed to run ML assessment', {
       error: error.message,
+      stack: error.stack,
       action: 'ML_ASSESSMENT_RUN'
     });
     res.status(500).json({
