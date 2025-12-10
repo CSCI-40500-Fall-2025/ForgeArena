@@ -10,11 +10,8 @@
 .profile-container {
   max-width: 800px;
   margin: 0 auto;
-  padding: var(--space-8);
-  background: var(--surface-card);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-lg);
-  border: 1px solid var(--border-subtle);
+  padding: var(--space-5);
+  background: transparent;
   animation: fadeInUp var(--transition-slow) ease-out;
 }
 
@@ -23,31 +20,19 @@
    ============================================ */
 
 .profile-header {
-  text-align: center;
-  margin-bottom: var(--space-8);
-  padding-bottom: var(--space-6);
-  border-bottom: 2px solid var(--border-subtle);
+  text-align: left;
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
   position: relative;
-}
-
-.profile-header::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--color-primary-500), var(--color-accent-500));
-  border-radius: var(--radius-full);
 }
 
 .profile-header h2 {
   color: var(--text-primary);
-  margin: 0 0 var(--space-2) 0;
-  font-size: var(--font-size-3xl);
-  font-weight: var(--font-weight-extrabold);
-  letter-spacing: var(--letter-spacing-tight);
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: -0.02em;
 }
 
 .profile-header p {
@@ -141,7 +126,7 @@
 .profile-content {
   display: flex;
   flex-direction: column;
-  gap: var(--space-10);
+  gap: var(--space-6);
 }
 
 /* ============================================
@@ -149,14 +134,18 @@
    ============================================ */
 
 .avatar-section {
-  text-align: center;
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
 }
 
 .avatar-section h3 {
   color: var(--text-primary);
-  margin: 0 0 var(--space-6) 0;
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
 }
 
 .avatar-container {
@@ -167,20 +156,20 @@
 
 .avatar-display {
   position: relative;
-  width: 140px;
-  height: 140px;
+  width: 120px;
+  height: 120px;
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all var(--transition-base);
   overflow: hidden;
-  border: 4px solid var(--border-default);
-  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--border-default);
+  box-shadow: var(--shadow-sm);
 }
 
 .avatar-display:hover {
-  transform: scale(1.05);
-  border-color: var(--color-primary-500);
-  box-shadow: var(--shadow-xl), var(--shadow-glow-primary);
+  transform: scale(1.02);
+  border-color: var(--color-primary-400);
+  box-shadow: var(--shadow-md);
 }
 
 .avatar-image {
@@ -193,12 +182,12 @@
 .avatar-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--color-primary-500), var(--color-accent-500));
+  background: var(--color-primary-500);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-inverse);
-  font-size: var(--font-size-5xl);
+  font-size: var(--font-size-4xl);
   font-weight: var(--font-weight-bold);
 }
 
@@ -238,12 +227,19 @@
    HANDLE SECTION
    ============================================ */
 
+.handle-section {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
 .handle-section h3 {
   color: var(--text-primary);
-  margin: 0 0 var(--space-6) 0;
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  text-align: center;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
 }
 
 .handle-container {
@@ -254,12 +250,12 @@
 .handle-display {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-5);
+  padding: var(--space-4);
   background: var(--color-neutral-50);
-  border-radius: var(--radius-xl);
-  border: 2px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
   transition: all var(--transition-base);
 }
 
@@ -268,18 +264,14 @@
 }
 
 .current-handle {
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
   color: var(--text-primary);
   font-family: var(--font-family-mono);
-  background: linear-gradient(135deg, var(--color-primary-600), var(--color-accent-600));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .btn-edit {
-  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  background: var(--color-primary-500);
   color: var(--text-inverse);
   border: none;
   padding: var(--space-2) var(--space-4);
@@ -288,11 +280,13 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-edit:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md), var(--shadow-glow-primary);
+  background: var(--color-primary-600);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .btn-edit:disabled {
@@ -309,8 +303,8 @@
 .handle-input-group {
   display: flex;
   align-items: center;
-  border: 2px solid var(--border-default);
-  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   transition: all var(--transition-fast);
   background: var(--surface-card);
@@ -318,7 +312,7 @@
 
 .handle-input-group:focus-within {
   border-color: var(--color-primary-500);
-  box-shadow: 0 0 0 4px rgba(0, 189, 183, 0.15);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
 }
 
 .handle-prefix {
@@ -352,7 +346,7 @@
 }
 
 .btn-save {
-  background: linear-gradient(135deg, var(--color-success), var(--color-success-dark));
+  background: var(--color-success);
   color: var(--text-inverse);
   border: none;
   padding: var(--space-3) var(--space-6);
@@ -361,11 +355,13 @@
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-semibold);
   transition: all var(--transition-base);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-save:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md), 0 0 20px rgba(34, 197, 94, 0.3);
+  background: var(--color-success-dark);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .btn-save:disabled {
@@ -402,12 +398,19 @@
    STATS SECTION
    ============================================ */
 
+.stats-section {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
 .stats-section h3 {
   color: var(--text-primary);
-  margin: 0 0 var(--space-6) 0;
-  font-size: var(--font-size-xl);
-  font-weight: var(--font-weight-bold);
-  text-align: center;
+  margin: 0 0 var(--space-4) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-align: left;
 }
 
 .stats-grid {
@@ -445,12 +448,8 @@
 
 .stat-value {
   color: var(--text-primary);
-  font-size: var(--font-size-2xl);
+  font-size: var(--font-size-xl);
   font-weight: var(--font-weight-bold);
-  background: linear-gradient(135deg, var(--color-primary-600), var(--color-accent-600));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Stat icons - using text labels */
@@ -465,25 +464,25 @@
 
 @media (max-width: 768px) {
   .profile-container {
-    margin: var(--space-4);
-    padding: var(--space-6);
+    margin: 0;
+    padding: var(--space-4);
   }
 
   .profile-header h2 {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
   }
 
   .avatar-display {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
 
   .avatar-placeholder {
-    font-size: var(--font-size-4xl);
+    font-size: var(--font-size-3xl);
   }
 
   .current-handle {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
   }
 
   .stats-grid {
@@ -497,6 +496,12 @@
   .btn-save,
   .btn-cancel {
     width: 100%;
+  }
+
+  .avatar-section,
+  .handle-section,
+  .stats-section {
+    padding: var(--space-4);
   }
 }
 
