@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 
 const itemService = require('../services/shared/item.service');
-const { RARITY, SLOT, SLOT_DISPLAY_NAMES } = require('../../shared/itemSystem');
+const { RARITY, SLOT, SLOT_DISPLAY_NAMES } = require('../../shared/game/itemSystem');
 
 // ============================================
 // INVENTORY ENDPOINTS
@@ -90,7 +90,7 @@ router.get('/equipment', (req, res) => {
   try {
     const userId = req.user?.id || 'default_user';
     const equipment = itemService.getUserEquipment(userId);
-    const { stats, xpBonus } = require('../../shared/itemSystem').calculateEquipmentStats(equipment);
+    const { stats, xpBonus } = require('../../shared/game/itemSystem').calculateEquipmentStats(equipment);
     
     res.json({
       success: true,
@@ -300,7 +300,7 @@ router.get('/slots', (req, res) => {
  * Get all rarity tiers
  */
 router.get('/rarities', (req, res) => {
-  const { RARITY_COLORS, RARITY_STAT_MULTIPLIERS } = require('../../shared/itemSystem');
+  const { RARITY_COLORS, RARITY_STAT_MULTIPLIERS } = require('../../shared/game/itemSystem');
   
   const rarities = Object.entries(RARITY).map(([key, value]) => ({
     id: value,
