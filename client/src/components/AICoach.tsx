@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { apiGet } from '../utils/api';
 import './AICoach.css';
-
-const API_BASE = process.env.REACT_APP_API_URL 
-  ? `${process.env.REACT_APP_API_URL}/api`
-  : (process.env.NODE_ENV === 'production' 
-      ? '/api'
-      : 'http://localhost:5000/api');
 
 interface WorkoutRecommendation {
   exercise: string;
@@ -92,23 +87,19 @@ const AICoach: React.FC = () => {
     setError(null);
     
     try {
-      const [recsRes, predsRes, motivRes, questRes, patternsRes] = await Promise.all([
-        fetch(`${API_BASE}/ml/recommendations`),
-        fetch(`${API_BASE}/ml/predictions`),
-        fetch(`${API_BASE}/ml/motivation`),
-        fetch(`${API_BASE}/ml/quest-suggestions`),
-        fetch(`${API_BASE}/ml/patterns`)
+      const [recs, preds, motiv, quest, patternsData] = await Promise.all([
+        apiGet('/api/ml/recommendations'),
+        apiGet('/api/ml/predictions'),
+        apiGet('/api/ml/motivation'),
+        apiGet('/api/ml/quest-suggestions'),
+        apiGet('/api/ml/patterns')
       ]);
 
-      if (!recsRes.ok || !predsRes.ok || !motivRes.ok) {
-        throw new Error('Failed to fetch AI coaching data');
-      }
-
-      setRecommendations(await recsRes.json());
-      setPredictions(await predsRes.json());
-      setMotivation(await motivRes.json());
-      setQuestSuggestions(await questRes.json());
-      setPatterns(await patternsRes.json());
+      setRecommendations(recs);
+      setPredictions(preds);
+      setMotivation(motiv);
+      setQuestSuggestions(quest);
+      setPatterns(patternsData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load AI Coach');
     } finally {
