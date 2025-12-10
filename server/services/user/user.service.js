@@ -1,13 +1,10 @@
 const logger = require('../../utils/logger');
 
 // Determine which user service to use based on environment
-const USE_FIRESTORE = process.env.USE_FIRESTORE === 'true';
+// Default to Firestore in production, allow override with USE_FIRESTORE=false for local dev
+const USE_FIRESTORE = process.env.USE_FIRESTORE !== 'false';
 
 logger.info(`Using ${USE_FIRESTORE ? 'Firestore' : 'Local JSON'} user service`);
 
-// Export the appropriate service
-if (USE_FIRESTORE) {
-  module.exports = require('./user.service.firestore');
-} else {
-  module.exports = require('./user.service.json');
-}
+// Export Firestore service (JSON service has been deprecated)
+module.exports = require('./user.service.firestore');
