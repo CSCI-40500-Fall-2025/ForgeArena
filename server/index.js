@@ -24,14 +24,32 @@ logger.info('Initializing ForgeArena server...', {
   nodeVersion: process.version,
 });
 
-// Initialize user database
-userService.initUsersDb().catch(err => {
-  logger.error('Failed to initialize users database', { error: err.message });
-});
+// Initialize user database - MUST complete before accepting requests
+let dbInitialized = false;
+userService.initUsersDb()
+  .then(() => {
+    dbInitialized = true;
+    logger.info('Database initialization complete - ready to accept requests');
+  })
+  .catch(err => {
+    logger.error('Failed to initialize users database', { error: err.message });
+    process.exit(1); // Exit if DB init fails
+  });
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Database readiness check middleware
+app.use((req, res, next) => {
+  if (!dbInitialized && !req.path.includes('/health')) {
+    return res.status(503).json({ 
+      error: 'Service temporarily unavailable', 
+      message: 'Database is initializing, please try again in a moment' 
+    });
+  }
+  next();
+});
 
 // HTTP request logging middleware
 app.use((req, res, next) => {
