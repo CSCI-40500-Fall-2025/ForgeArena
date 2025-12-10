@@ -1,10 +1,10 @@
 # API Testing & CI/CD Documentation
 
-## 📋 Overview
+## Overview
 
 Comprehensive test suite for ForgeArena APIs with automated CI/CD pipeline using GitHub Actions.
 
-## 🧪 Test Structure
+## Test Structure
 
 ```
 project-project-4/
@@ -26,9 +26,14 @@ project-project-4/
 └── package.json                  # Root test scripts
 ```
 
-## 🚀 Running Tests
+## Running Tests
 
 ### Local Development
+
+```bash
+# From repo root: install server dev deps (includes supertest)
+npm run install-deps
+```
 
 ```bash
 # Run all tests
@@ -36,6 +41,9 @@ npm test
 
 # Run only server API tests
 npm run test:server
+
+# Windows PowerShell tip: if execution policy blocks npm, use
+# npm.cmd run test:server
 
 # Run only shared game logic tests
 npm run test:shared
@@ -57,45 +65,45 @@ cd server && npm test
 npm run test:ci
 ```
 
-## 📊 Test Coverage
+## Test Coverage
 
 Current test coverage includes:
 
-### **API Endpoints (Integration Tests)**
-- ✅ Health check (`/api/health`)
-- ✅ User profile (`/api/user`)
-- ✅ Workout logging (`POST /api/workout`)
-- ✅ Achievements (`/api/achievements/*`)
-- ✅ Quests (`/api/quests/*`)
-- ✅ Duels (`/api/duels/*`)
-- ✅ Activity feed (`/api/activity/*`)
-- ✅ Leaderboard (`/api/leaderboard/*`)
-- ✅ Inventory (`/api/inventory`)
-- ✅ Raids (`/api/raid`)
-- ✅ Gyms (`/api/gyms`)
+### API Endpoints (Integration Tests)
+- Health check (`/api/health`)
+- User profile (`/api/user`)
+- Workout logging (`POST /api/workout`)
+- Achievements (`/api/achievements/*`)
+- Quests (`/api/quests/*`)
+- Duels (`/api/duels/*`)
+- Activity feed (`/api/activity/*`)
+- Leaderboard (`/api/leaderboard/*`)
+- Inventory (`/api/inventory`)
+- Raids (`/api/raid`)
+- Gyms (`/api/gyms`)
 
-### **Route-Specific Tests**
-- ✅ Achievement routes (4 endpoints)
-- ✅ Quest routes (4 endpoints)
-- ✅ Duel routes (5 endpoints)
-- ✅ Activity routes (3 endpoints)
-- ✅ Leaderboard routes (2 endpoints)
+### Route-Specific Tests
+- Achievement routes (4 endpoints)
+- Quest routes (4 endpoints)
+- Duel routes (5 endpoints)
+- Activity routes (3 endpoints)
+- Leaderboard routes (2 endpoints)
 
-### **Service Layer Tests**
-- ✅ Achievement service
-- ✅ Quest service
-- ✅ Duel service
-- ✅ Raid service
-- ✅ Activity service
-- ✅ Item service
+### Service Layer Tests
+- Achievement service
+- Quest service
+- Duel service
+- Raid service
+- Activity service
+- Item service
 
-### **Game Logic Tests**
-- ✅ Workout processing
-- ✅ XP calculation
-- ✅ Level progression
-- ✅ Item generation
+### Game Logic Tests
+- Workout processing
+- XP calculation
+- Level progression
+- Item generation
 
-## 🔧 Configuration
+## Configuration
 
 ### Jest Configuration (`server/jest.config.js`)
 
@@ -123,7 +131,7 @@ Required environment variables (automatically set in `setup.js`):
 - `FIREBASE_PRIVATE_KEY=test-key`
 - `FIREBASE_CLIENT_EMAIL=test@test.com`
 
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 ### GitHub Actions Workflow
 
@@ -132,9 +140,9 @@ The pipeline runs on every push and pull request to `main` and `develop` branche
 #### **Jobs:**
 
 1. **Test** 
-   - Runs on Node 16.x and 18.x
+   - Runs on Node 20.x
    - Executes all test suites
-   - Uploads coverage reports to Codecov
+   - Uploads coverage reports (coverage files available in workflow artifacts)
 
 2. **Lint**
    - Code quality checks
@@ -165,7 +173,7 @@ The pipeline runs on every push and pull request to `main` and `develop` branche
    - Push the `.github/workflows/ci-cd.yml` file
    - Actions will run automatically on push/PR
 
-## 📝 Writing New Tests
+## Writing New Tests
 
 ### API Integration Test Example
 
@@ -195,7 +203,7 @@ describe('MyService', () => {
 });
 ```
 
-## 🎯 Test Best Practices
+## Test Best Practices
 
 1. **Use Mocks for External Dependencies**
    - Firebase Admin SDK is mocked
@@ -221,7 +229,7 @@ describe('MyService', () => {
    - Verify response structure
    - Check status codes
 
-## 📈 Coverage Goals
+## Coverage Goals
 
 - **Overall coverage target:** 70%
 - **Critical paths:** 90%+
@@ -230,7 +238,7 @@ describe('MyService', () => {
   - XP/Level calculations
   - Achievement unlocking
 
-## 🐛 Debugging Tests
+## Debugging Tests
 
 ### Run specific test file:
 ```bash
@@ -257,20 +265,20 @@ Add to `.vscode/launch.json`:
 }
 ```
 
-## 🔒 Security Testing
+## Security Testing
 
 The pipeline includes:
 - npm audit for dependency vulnerabilities
 - No secrets in code (uses environment variables)
 - Automated security scanning on every PR
 
-## 📊 Monitoring & Reports
+## Monitoring & Reports
 
 - **Code Coverage:** Uploaded to Codecov after each CI run
 - **Test Results:** Available in GitHub Actions tab
 - **Build Artifacts:** Client build available for 7 days
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Tests failing locally but passing in CI:
 - Check Node.js version (use 16.x)
@@ -286,13 +294,13 @@ The pipeline includes:
 - Check for unresolved promises
 - Verify all async operations complete
 
-## 📚 Additional Resources
+## Additional Resources
 
 - [Jest Documentation](https://jestjs.io/docs/getting-started)
 - [Supertest Documentation](https://github.com/visionmedia/supertest)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 
-## 🎉 Contributing
+## Contributing
 
 When adding new features:
 1. Write tests first (TDD approach)
@@ -303,6 +311,6 @@ When adding new features:
 
 ---
 
-**Last Updated:** December 2024  
+**Last Updated:** December 2025  
 **Maintained By:** ForgeArena Team
 

@@ -58,6 +58,12 @@ Our software focuses on building a strong fitness community and keeping members 
 
 ### Running Tests
 
+- Run server API tests (Express/Jest):
+  ```bash
+  npm run test:server
+  ```
+  *Windows PowerShell:* if execution policy blocks `npm`, use `npm.cmd run test:server`.
+
 - Run shared logic tests (Jest):
   ```bash
   npm run test:shared
