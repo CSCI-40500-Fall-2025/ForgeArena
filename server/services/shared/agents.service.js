@@ -15,9 +15,14 @@
  * - Make automated decisions (set goals, adjust difficulty)
  * - Generate personalized content
  * - Take action on behalf of users (update database)
+ * 
+ * ENHANCED WITH GOOGLE GEMINI (FREE TIER):
+ * - 15 requests/minute, 1,500 requests/day
+ * - Falls back to rule-based if API unavailable
  */
 
 const logger = require('../../utils/logger');
+const geminiService = require('./gemini.service');
 
 // =============================================================================
 // Agent Base Class
@@ -163,8 +168,19 @@ class TrainingStrategistAgent extends Agent {
       stats, level, workoutFrequency, muscleGroupBalance
     );
 
+    // Try to get Gemini-enhanced insight
+    let geminiInsight = null;
+    if (geminiService.isGeminiAvailable()) {
+      try {
+        geminiInsight = await geminiService.generateStrategyInsight(userData, weeklyPlan);
+      } catch (error) {
+        this.log('Gemini strategy insight failed, using rule-based', { error: error.message });
+      }
+    }
+
     return {
       agent: this.name,
+      aiEnhanced: !!geminiInsight,
       analysis: {
         currentStats: stats,
         weakestStat,
@@ -179,6 +195,7 @@ class TrainingStrategistAgent extends Agent {
       weeklyPlan,
       repRanges,
       strategyRecommendations,
+      geminiInsight,
       generatedAt: new Date().toISOString()
     };
   }
@@ -479,6 +496,19 @@ class MotivationCoachAgent extends Agent {
       .replace('{username}', username)
       .replace('{milestone}', milestone || 'achievement');
 
+    // Try to get Gemini-enhanced motivation
+    let geminiMotivation = null;
+    if (geminiService.isGeminiAvailable()) {
+      try {
+        geminiMotivation = await geminiService.generateMotivation(userData, category);
+        if (geminiMotivation) {
+          personalizedMessage = geminiMotivation;
+        }
+      } catch (error) {
+        this.log('Gemini motivation failed, using rule-based', { error: error.message });
+      }
+    }
+
     // Generate additional encouragement based on user data
     const additionalEncouragement = this.generateAdditionalEncouragement(userData);
 
@@ -487,6 +517,7 @@ class MotivationCoachAgent extends Agent {
 
     return {
       agent: this.name,
+      aiEnhanced: !!geminiMotivation,
       primaryMessage: personalizedMessage,
       tone: selected.tone,
       additionalEncouragement,
@@ -606,8 +637,22 @@ class ProgressAnalystAgent extends Agent {
     const areasForImprovement = this.identifyAreasForImprovement(userData, trends);
     const progressScore = this.calculateProgressScore(progressMetrics, trends);
 
+    // Try to get Gemini-enhanced analysis
+    let geminiAnalysis = null;
+    if (geminiService.isGeminiAvailable()) {
+      try {
+        geminiAnalysis = await geminiService.generateProgressAnalysis(userData, {
+          ...progressMetrics,
+          trend: trends.overallTrend
+        });
+      } catch (error) {
+        this.log('Gemini progress analysis failed, using rule-based', { error: error.message });
+      }
+    }
+
     return {
       agent: this.name,
+      aiEnhanced: !!geminiAnalysis,
       progressMetrics,
       trends,
       projections,
@@ -615,6 +660,7 @@ class ProgressAnalystAgent extends Agent {
       areasForImprovement,
       progressScore,
       summary: this.generateSummary(progressMetrics, trends, projections),
+      geminiAnalysis,
       generatedAt: new Date().toISOString()
     };
   }
@@ -1173,7 +1219,8 @@ class AgentManager {
     return {
       initialized: this.initialized,
       agents: this.coordinator.getAllAgentStats(),
-      status: 'operational'
+      status: 'operational',
+      gemini: geminiService.getStatus()
     };
   }
 }

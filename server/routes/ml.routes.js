@@ -377,10 +377,12 @@ router.post('/analyze-workout', authMiddleware.optionalAuth, async (req, res) =>
 router.get('/status', (req, res) => {
   const hasGeminiKey = !!process.env.GEMINI_API_KEY;
   
+  const agentStatus = agentManager.getStatus();
+  
   res.json({
     success: true,
     service: 'ForgeMaster AI',
-    version: '2.0.0',
+    version: '2.1.0',
     status: 'operational',
     capabilities: {
       workoutRecommendations: true,
@@ -393,17 +395,22 @@ router.get('/status', (req, res) => {
       multiAgentSystem: true,
       automatedActions: true,
       mlAssessment: true,
-      dataCollection: true
+      dataCollection: true,
+      // Gemini Integration (v2.1)
+      geminiAI: hasGeminiKey
     },
     engine: hasGeminiKey ? 'gemini_enhanced' : 'multi_agent_ai',
-    description: 'Enhanced Multi-Agent AI system (100% free, no API key needed)',
+    description: hasGeminiKey 
+      ? 'Multi-Agent AI with Google Gemini (FREE: 15 req/min, 1,500/day)'
+      : 'Multi-Agent AI system (100% free, rule-based)',
     freeToUse: true,
     apiInfo: {
-      provider: 'Local Multi-Agent System',
-      freeTier: 'Unlimited',
+      provider: hasGeminiKey ? 'Google Gemini + Local Agents' : 'Local Multi-Agent System',
+      freeTier: hasGeminiKey ? '15 requests/min, 1,500 requests/day' : 'Unlimited',
       cost: '$0 (completely free)'
     },
-    agents: agentManager.getStatus()
+    agents: agentStatus,
+    gemini: agentStatus.gemini
   });
 });
 

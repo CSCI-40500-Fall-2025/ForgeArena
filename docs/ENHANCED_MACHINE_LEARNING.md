@@ -9,10 +9,11 @@ This document describes the enhanced Machine Learning (ML) component for ForgeAr
 1. [Task Number](#1-task-number)
 2. [Description of Enhanced Learning Component](#2-description-of-enhanced-learning-component)
 3. [How It Differs from Previous Deliverable](#3-how-it-differs-from-previous-deliverable)
-4. [Integration and Challenges](#4-integration-and-challenges)
-5. [Automated Quantifiable Assessment](#5-automated-quantifiable-assessment)
-6. [Preliminary Results](#6-preliminary-results)
-7. [Code References](#7-code-references)
+4. [Google Gemini Integration](#4-google-gemini-integration)
+5. [Integration and Challenges](#5-integration-and-challenges)
+6. [Automated Quantifiable Assessment](#6-automated-quantifiable-assessment)
+7. [Preliminary Results](#7-preliminary-results)
+8. [Code References](#8-code-references)
 
 ---
 
@@ -20,12 +21,13 @@ This document describes the enhanced Machine Learning (ML) component for ForgeAr
 
 **Primary Task: Option 5 - Integrate Agents**
 
-We implemented a multi-agent AI system where **four specialized agents work together** to solve complex fitness coaching problems.
+We implemented a multi-agent AI system where **four specialized agents work together** to solve complex fitness coaching problems. The system is enhanced with **Google Gemini AI** for natural language generation.
 
 **Additional Tasks Incorporated:**
 - **Option 1:** Taking action on behalf of users (automated goal setting, quest creation, difficulty adjustment - changes saved to database)
 - **Option 2:** Quantifiable automated assessment that runs on production data from Firebase
 - **Option 3:** Automated collection of live production data for ML improvement
+- **Gemini AI Integration:** Enhanced natural language generation using Google's free tier
 
 ---
 
@@ -184,9 +186,64 @@ The enhanced ML component uses a **Multi-Agent Architecture** where specialized 
 
 ---
 
-## 4. Integration and Challenges
+## 4. Google Gemini Integration
 
-### 4.1 Files Created/Modified
+### 4.1 Overview
+
+The multi-agent system is enhanced with **Google Gemini AI** (model: `gemini-1.5-flash`) for natural language generation. This provides more personalized, contextual responses while remaining **100% FREE**.
+
+### 4.2 Free Tier Limits
+
+| Resource | Limit |
+|----------|-------|
+| Requests per minute | 15 |
+| Requests per day | 1,500 |
+| Tokens per month | 1,000,000 |
+| Cost | **$0** |
+
+### 4.3 How Gemini Enhances Each Agent
+
+| Agent | Without Gemini | With Gemini |
+|-------|---------------|-------------|
+| **Training Strategist** | Rule-based strategy recommendations | Natural language strategic insights |
+| **Motivation Coach** | Template-based messages | Personalized, context-aware motivation |
+| **Progress Analyst** | Calculated metrics only | AI-generated progress analysis |
+
+### 4.4 Graceful Fallback
+
+The system operates in two modes:
+
+1. **Gemini Enhanced Mode** (when `GEMINI_API_KEY` is set):
+   - Uses Gemini for natural language generation
+   - Falls back to rule-based if API fails or rate-limited
+   - Responses marked with `aiEnhanced: true`
+
+2. **Rule-Based Mode** (default):
+   - Uses deterministic rule-based logic
+   - No external API calls
+   - Unlimited usage
+
+### 4.5 Key Code Files
+
+| File | Purpose |
+|------|---------|
+| `server/services/shared/gemini.service.js` | Gemini API integration |
+| `server/services/shared/agents.service.js` | Agent integration with Gemini |
+
+### 4.6 Setting Up Gemini (Optional)
+
+1. Go to [Google AI Studio](https://aistudio.google.com/apikey)
+2. Create a free API key
+3. Set environment variable: `GEMINI_API_KEY=your_key_here`
+4. Restart the server
+
+**Note:** Gemini integration is OPTIONAL. The system works fully without it using rule-based AI.
+
+---
+
+## 5. Integration and Challenges
+
+### 5.1 Files Created/Modified
 
 **New Files:**
 | File | Purpose | Lines |
@@ -205,7 +262,7 @@ The enhanced ML component uses a **Multi-Agent Architecture** where specialized 
 | `client/src/components/AICoach.tsx` | Added Agents and Assessment tabs |
 | `client/src/components/AICoach.css` | Added styles for new components |
 
-### 4.2 API Endpoints Added
+### 5.2 API Endpoints Added
 
 **Agent Endpoints:**
 ```
@@ -231,7 +288,7 @@ GET  /api/ml/data/analytics          - Production data analytics
 POST /api/ml/data/collect-workout    - Manual workout collection
 ```
 
-### 4.3 Challenges and Solutions
+### 5.3 Challenges and Solutions
 
 #### Challenge 1: Agent Coordination
 **Problem:** Ensuring all agents work together without conflicts or redundant recommendations.
@@ -272,16 +329,16 @@ POST /api/ml/data/collect-workout    - Manual workout collection
 
 ---
 
-## 5. Automated Quantifiable Assessment
+## 6. Automated Quantifiable Assessment
 
-### 5.1 Overview
+### 6.1 Overview
 
 The ML Assessment provides **completely automated, quantifiable** evaluation of ML performance. It:
 - Runs against the **deployed software product**
 - Uses **real data from the production Firebase database**
 - Requires **no manual intervention**
 
-### 5.2 Assessment Metrics
+### 6.2 Assessment Metrics
 
 | Metric | Description | Benchmark | Weight |
 |--------|-------------|-----------|--------|
@@ -291,7 +348,7 @@ The ML Assessment provides **completely automated, quantifiable** evaluation of 
 | **Action Effectiveness** | Do automated actions lead to follow-up workouts? | 50% | 15% |
 | **Agent Coordination** | How well do agents produce consistent, balanced advice? | 75% | 15% |
 
-### 5.3 How Each Metric Is Calculated
+### 6.3 How Each Metric Is Calculated
 
 **Recommendation Relevance:**
 ```javascript
@@ -320,7 +377,7 @@ const variance = stats.reduce((sum, stat) => sum + Math.pow(stat - avg, 2), 0) /
 isBalanced = variance < 100;
 ```
 
-### 5.4 API Response Format
+### 6.4 API Response Format
 
 ```
 GET /api/ml/assessment/run
@@ -362,9 +419,9 @@ GET /api/ml/assessment/run
 
 ---
 
-## 6. Preliminary Results
+## 7. Preliminary Results
 
-### 6.1 Test Assessment Results
+### 7.1 Test Assessment Results
 
 The following results were obtained by running the automated assessment against the production Firebase database:
 
@@ -388,7 +445,7 @@ The following results were obtained by running the automated assessment against 
 
 **Overall Score:** 72/100 (Grade: B)
 
-### 6.2 Agent Execution Performance
+### 7.2 Agent Execution Performance
 
 **Execution Time Benchmarks:**
 
@@ -399,7 +456,7 @@ The following results were obtained by running the automated assessment against 
 | Motivation Agent Only | 8ms | 20ms |
 | Progress Agent Only | 15ms | 40ms |
 
-### 6.3 Interpretation of Results
+### 7.3 Interpretation of Results
 
 1. **Recommendation Relevance (75%):** The system successfully identifies user weaknesses and recommends appropriate exercises. 75% of users who followed recommendations improved their weak stats.
 
@@ -413,9 +470,9 @@ The following results were obtained by running the automated assessment against 
 
 ---
 
-## 7. Code References
+## 8. Code References
 
-### 7.1 Key Files
+### 8.1 Key Files
 
 | File | Description |
 |------|-------------|
@@ -426,7 +483,7 @@ The following results were obtained by running the automated assessment against 
 | [`server/routes/ml.routes.js`](../server/routes/ml.routes.js) | API endpoints |
 | [`client/src/components/AICoach.tsx`](../client/src/components/AICoach.tsx) | Frontend UI |
 
-### 7.2 Key Functions
+### 8.2 Key Functions
 
 **Agent Execution:**
 ```javascript

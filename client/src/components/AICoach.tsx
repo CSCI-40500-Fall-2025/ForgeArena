@@ -358,7 +358,12 @@ const AICoach: React.FC = () => {
         <div className="ai-info">
           <h2>ForgeMaster AI</h2>
           <p className="ai-subtitle">Your Personal Fitness Coach</p>
-          <span className="ai-badge">Multi-Agent System v2.0</span>
+          <div className="ai-badges">
+            <span className="ai-badge">Multi-Agent System v2.1</span>
+            {agentAnalysis?.orchestration?.strategy?.aiEnhanced && (
+              <span className="ai-badge gemini-badge">Gemini Enhanced</span>
+            )}
+          </div>
         </div>
         <button onClick={fetchMLData} className="refresh-btn" title="Refresh recommendations">
           Refresh

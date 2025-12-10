@@ -95,6 +95,13 @@
   font-size: var(--font-size-sm);
 }
 
+.ai-badges {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: var(--space-1);
+}
+
 .ai-badge {
   display: inline-block;
   padding: var(--space-1) var(--space-3);
@@ -106,6 +113,18 @@
   text-transform: uppercase;
   letter-spacing: var(--letter-spacing-wider);
   font-weight: var(--font-weight-semibold);
+}
+
+.ai-badge.gemini-badge {
+  background: linear-gradient(135deg, #4285f4, #ea4335, #fbbc04, #34a853);
+  border: none;
+  color: white;
+  animation: geminiShimmer 3s ease-in-out infinite;
+}
+
+@keyframes geminiShimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
 }
 
 .refresh-btn {
