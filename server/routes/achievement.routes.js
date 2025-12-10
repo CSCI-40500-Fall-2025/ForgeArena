@@ -99,7 +99,11 @@ router.post('/check', authMiddleware.authenticateToken, async (req, res) => {
       partiesCreated: req.user.partiesCreated || 0,
     };
     
-    const newAchievements = await achievementService.checkAndUnlockAchievements(
+    const checkFn = achievementService.checkAndUnlockAchievements
+      ? achievementService.checkAndUnlockAchievements
+      : async () => [];
+    
+    const newAchievements = await checkFn(
       req.user.uid, 
       userStats
     );

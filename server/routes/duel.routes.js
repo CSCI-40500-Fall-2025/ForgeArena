@@ -17,6 +17,19 @@ router.get('/challenges', authMiddleware.authenticateToken, (req, res) => {
 });
 
 /**
+ * GET /api/duels/active - Get active/pending duels for user
+ */
+router.get('/active', authMiddleware.authenticateToken, async (req, res) => {
+  try {
+    const duels = await duelService.getUserActiveDuels(req.user.uid);
+    res.json(duels);
+  } catch (error) {
+    logger.error('Failed to fetch active duels', { error: error.message, userId: req.user?.uid });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * GET /api/duels - Get user's duels
  */
 router.get('/', authMiddleware.authenticateToken, async (req, res) => {
@@ -76,7 +89,8 @@ router.get('/stats', authMiddleware.authenticateToken, async (req, res) => {
  */
 router.post('/', authMiddleware.authenticateToken, async (req, res) => {
   try {
-    const { opponent, challenge } = req.body;
+    const opponent = req.body.opponent || req.body.opponentUsername;
+    const challenge = req.body.challenge || req.body.challengeType;
     const user = req.user;
     
     if (!opponent || !challenge) {
@@ -86,7 +100,9 @@ router.post('/', authMiddleware.authenticateToken, async (req, res) => {
     const duel = await duelService.createDuel(user.uid, user.username, opponent, challenge);
     
     // Log activity
-    await activityService.logDuelChallengeActivity(user.uid, user.username, opponent);
+    if (typeof activityService.logDuelChallengeActivity === 'function') {
+      await activityService.logDuelChallengeActivity(user.uid, user.username, opponent);
+    }
     
     logger.info('Duel created', {
       userId: user.uid,
@@ -95,7 +111,7 @@ router.post('/', authMiddleware.authenticateToken, async (req, res) => {
       challenge,
     });
     
-    res.json({
+    res.status(201).json({
       message: `Duel challenge sent to ${opponent}!`,
       duel,
     });

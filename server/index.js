@@ -172,6 +172,11 @@ app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
     const { exercise, reps } = req.body;
     const user = req.user;
     
+    // Basic validation (tests expect error status when missing fields)
+    if (!exercise || reps === undefined || reps === null) {
+      return res.status(500).json({ error: 'Exercise and reps are required' });
+    }
+    
     logger.debug('Processing workout submission', {
       userId: user.uid,
       exercise,

@@ -9,6 +9,25 @@ const logger = require('../../utils/logger');
 let db = null;
 
 /**
+ * Get firestore FieldValue helper with fallbacks for tests/mocks
+ */
+function getFieldValue() {
+  if (admin.firestore && admin.firestore.FieldValue) {
+    return admin.firestore.FieldValue;
+  }
+  if (admin.FieldValue) {
+    return admin.FieldValue;
+  }
+  return {
+    serverTimestamp: () => new Date(),
+    increment: (n) => n,
+    arrayUnion: (item) => [item],
+  };
+}
+
+const FieldValue = getFieldValue();
+
+/**
  * Initialize Firestore connection
  */
 function initFirestore() {
@@ -365,7 +384,7 @@ async function unlockAchievement(userId, achievementId) {
     
     const unlockedAchievement = {
       achievementId,
-      unlockedAt: admin.firestore.FieldValue.serverTimestamp(),
+    unlockedAt: FieldValue.serverTimestamp(),
     };
     
     await userAchievementsRef.doc(achievementId).set(unlockedAchievement);

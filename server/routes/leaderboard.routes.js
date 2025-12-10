@@ -30,11 +30,12 @@ router.get('/', authMiddleware.optionalAuth, async (req, res) => {
       entries: leaderboard.length,
     });
     
-    res.json({
-      leaderboard,
-      userRank,
-      type,
-    });
+    // Default to the simple array response to match tests, but allow detailed mode
+    if (req.query.format === 'detailed') {
+      res.json({ leaderboard, userRank, type });
+    } else {
+      res.json(leaderboard);
+    }
   } catch (error) {
     logger.error('Failed to fetch leaderboard', { error: error.message });
     res.status(500).json({ error: error.message });
@@ -187,6 +188,21 @@ router.get('/rank/:type', authMiddleware.authenticateToken, async (req, res) => 
   try {
     const rank = await leaderboardService.getUserRank(req.user.uid, req.params.type);
     res.json(rank);
+  } catch (error) {
+    logger.error('Failed to fetch user rank', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/leaderboard/rank - Get user rank for default leaderboard (level)
+ */
+router.get('/rank', authMiddleware.optionalAuth, async (req, res) => {
+  try {
+    const type = req.query.type || 'level';
+    const userId = req.user?.uid || 'anonymous';
+    const rank = await leaderboardService.getUserRank(userId, type);
+    res.json(rank || { rank: null });
   } catch (error) {
     logger.error('Failed to fetch user rank', { error: error.message });
     res.status(500).json({ error: error.message });

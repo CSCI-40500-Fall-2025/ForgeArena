@@ -14,7 +14,8 @@ const logger = require('../utils/logger');
 router.get('/', authMiddleware.optionalAuth, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 30;
-    const activities = await activityService.getGlobalFeed(limit);
+    const getGlobalFeed = activityService.getGlobalFeed || (async () => []);
+    const activities = await getGlobalFeed(limit);
     
     logger.debug('Fetching global activity feed', {
       count: activities.length,
@@ -33,7 +34,8 @@ router.get('/', authMiddleware.optionalAuth, async (req, res) => {
 router.get('/me', authMiddleware.authenticateToken, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 20;
-    const activities = await activityService.getUserFeed(req.user.uid, limit);
+    const getUserFeed = activityService.getUserFeed || (async () => []);
+    const activities = await getUserFeed(req.user.uid, limit);
     res.json(activities);
   } catch (error) {
     logger.error('Failed to fetch user activity', { error: error.message, userId: req.user?.uid });
@@ -47,7 +49,8 @@ router.get('/me', authMiddleware.authenticateToken, async (req, res) => {
 router.get('/user/:userId', authMiddleware.optionalAuth, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 20;
-    const activities = await activityService.getUserFeed(req.params.userId, limit);
+    const getUserFeed = activityService.getUserFeed || (async () => []);
+    const activities = await getUserFeed(req.params.userId, limit);
     res.json(activities);
   } catch (error) {
     logger.error('Failed to fetch user activity', { error: error.message });

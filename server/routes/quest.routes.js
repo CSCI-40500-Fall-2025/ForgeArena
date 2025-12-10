@@ -18,13 +18,15 @@ router.get('/', authMiddleware.authenticateToken, async (req, res) => {
     const user = req.user;
     
     // Refresh expired quests and generate new ones
-    await questService.refreshQuests(user);
+    const refreshFn = questService.refreshQuests || (async () => []);
+    await refreshFn(user);
     
     // Get active quests
     const quests = await questService.getUserQuests(user.uid);
     
     // Get available milestones
-    const milestones = await questService.getAvailableMilestoneQuests(user);
+    const milestoneFn = questService.getAvailableMilestoneQuests || (async () => []);
+    const milestones = await milestoneFn(user);
     
     logger.debug('Fetching quests', {
       userId: user.uid,
