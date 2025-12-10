@@ -26,8 +26,8 @@
   "author": "ForgeArena Team",
   "license": "MIT",
   "engines": {
-    "node": "16.x",
-    "npm": "8.x"
+    "node": ">=16.x",
+    "npm": ">=8.x"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
