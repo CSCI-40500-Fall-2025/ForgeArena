@@ -358,6 +358,107 @@ async function initUsersDb() {
   logger.info('Firestore user service initialized');
 }
 
+/**
+ * Get all users (for ML assessment - production data)
+ * Returns sanitized user data without passwords
+ */
+async function getAllUsers(limit = 100) {
+  try {
+    const usersRef = getUsersCollection();
+    const snapshot = await usersRef
+      .orderBy('updatedAt', 'desc')
+      .limit(limit)
+      .get();
+    
+    if (snapshot.empty) {
+      return [];
+    }
+    
+    const users = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      // Return sanitized user data (no passwords)
+      users.push({
+        uid: doc.id,
+        username: data.username,
+        level: data.level || 1,
+        xp: data.xp || 0,
+        strength: data.strength || 10,
+        endurance: data.endurance || 10,
+        agility: data.agility || 10,
+        workoutStreak: data.workoutStreak || 0,
+        lastWorkout: data.lastWorkout,
+        totalWorkouts: data.totalWorkouts || 0,
+        lifetimeReps: data.lifetimeReps || 0,
+        weeklyXP: data.weeklyXP || 0,
+        createdAt: data.createdAt?.toDate?.()?.toISOString() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.()?.toISOString() || data.updatedAt,
+      });
+    });
+    
+    logger.debug('Retrieved users for ML assessment', { count: users.length });
+    return users;
+  } catch (error) {
+    logger.error('Error getting all users', { error: error.message });
+    return [];
+  }
+}
+
+/**
+ * Get user count (for ML metrics)
+ */
+async function getUserCount() {
+  try {
+    const usersRef = getUsersCollection();
+    const snapshot = await usersRef.count().get();
+    return snapshot.data().count;
+  } catch (error) {
+    logger.error('Error getting user count', { error: error.message });
+    return 0;
+  }
+}
+
+/**
+ * Get active users (users with workouts in last 7 days)
+ */
+async function getActiveUsers(days = 7) {
+  try {
+    const usersRef = getUsersCollection();
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    const snapshot = await usersRef
+      .where('lastWorkout', '>=', cutoffDate.toISOString())
+      .get();
+    
+    if (snapshot.empty) {
+      return [];
+    }
+    
+    const users = [];
+    snapshot.forEach(doc => {
+      const data = doc.data();
+      users.push({
+        uid: doc.id,
+        username: data.username,
+        level: data.level || 1,
+        xp: data.xp || 0,
+        strength: data.strength || 10,
+        endurance: data.endurance || 10,
+        agility: data.agility || 10,
+        workoutStreak: data.workoutStreak || 0,
+        lastWorkout: data.lastWorkout,
+        totalWorkouts: data.totalWorkouts || 0,
+      });
+    });
+    
+    return users;
+  } catch (error) {
+    logger.error('Error getting active users', { error: error.message });
+    return [];
+  }
+}
+
 module.exports = {
   initUsersDb,
   findUserByEmail,
@@ -368,5 +469,8 @@ module.exports = {
   createOAuthUser,
   updateUser,
   verifyCredentials,
+  getAllUsers,
+  getUserCount,
+  getActiveUsers,
 };
 

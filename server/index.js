@@ -11,6 +11,9 @@ const duelService = require('./services/gameplay/duel.service');
 const activityService = require('./services/shared/activity.service');
 const leaderboardService = require('./services/social/leaderboard.service');
 
+// Import ML data collector for production data collection
+const { mlDataCollector } = require('./services/shared/ml-data-collector.service');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -225,6 +228,23 @@ app.post('/api/workout', authMiddleware.authenticateToken, async (req, res) => {
       questsUpdated: questUpdates.length,
       achievementsUnlocked: newAchievements.length,
       action: 'WORKOUT',
+    });
+    
+    // Collect workout data for ML assessment (production data collection)
+    mlDataCollector.collectWorkoutData(user.uid, {
+      exercise,
+      reps,
+      xpGained: result.xpGained,
+      leveledUp,
+      streak: streak
+    });
+    
+    // Collect engagement signal for ML improvement
+    mlDataCollector.collectEngagementSignal(user.uid, 'workout_completed', {
+      exercise,
+      reps,
+      leveledUp,
+      streak
     });
     
     res.json({

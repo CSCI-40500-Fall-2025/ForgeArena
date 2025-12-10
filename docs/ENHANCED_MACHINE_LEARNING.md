@@ -287,12 +287,114 @@ Users and administrators can:
 
 ---
 
+---
+
+## Automated Quantifiable ML Assessment
+
+### Overview
+
+The ML Assessment system provides **completely automated, quantifiable** evaluation of the ML component's performance. It runs against the **deployed software product** and uses **real data from the production environment**.
+
+### How It Works
+
+1. **Production Data Retrieval**
+   - Fetches real user data directly from Firebase (production database)
+   - Retrieves active users (users with workouts in the last 7 days)
+   - Collects runtime workout data, ML interactions, and engagement signals
+
+2. **Five Quantifiable Metrics**
+
+   | Metric | Description | Target Benchmark |
+   |--------|-------------|-----------------|
+   | **Recommendation Relevance** | How relevant are workout recommendations to user's weak stats | 70% |
+   | **Prediction Accuracy** | How accurate are level-up and progress predictions | 65% |
+   | **User Engagement** | Percentage of users actively using ML features | 60% |
+   | **Action Effectiveness** | Success rate of automated actions | 50% |
+   | **Agent Coordination** | Quality of multi-agent collaboration | 75% |
+
+3. **Scoring System**
+   - Each metric is scored 0-100%
+   - Overall score is weighted average
+   - Letter grade assigned (A+ to F)
+   - Compared against benchmarks (PASS/NEEDS_IMPROVEMENT)
+
+### API Endpoint
+
+```
+GET /api/ml/assessment/run
+```
+
+**Response Example:**
+```json
+{
+  "success": true,
+  "assessment": {
+    "id": "assessment_1702234567890",
+    "timestamp": "2024-12-10T12:00:00.000Z",
+    "overallScore": 72,
+    "grade": "B",
+    "metrics": {
+      "recommendationRelevance": { "score": 75, "details": {...} },
+      "predictionAccuracy": { "score": 68, "details": {...} },
+      "userEngagement": { "score": 70, "details": {...} },
+      "actionEffectiveness": { "score": 65, "details": {...} },
+      "agentCoordination": { "score": 82, "details": {...} }
+    },
+    "benchmarkComparison": {
+      "recommendationRelevance": { "score": 75, "benchmark": 70, "meetsBenchmark": true, "status": "PASS" },
+      ...
+    },
+    "recommendations": [
+      { "metric": "actionEffectiveness", "priority": "medium", "suggestion": "..." }
+    ]
+  },
+  "productionDataSummary": {
+    "totalUsers": 45,
+    "activeUsers": 12,
+    "workoutsCollected": 234,
+    "mlInteractions": 156,
+    "dataSource": { "usersFrom": "firebase_production" }
+  },
+  "note": "Assessment uses REAL production data from Firebase database"
+}
+```
+
+### Data Collection Integration
+
+The system automatically collects production data through:
+
+1. **Workout Logging Hook** - Every workout logged in production automatically feeds the ML data collector
+2. **ML Interaction Tracking** - All ML endpoint calls are tracked
+3. **Engagement Signals** - User behaviors that indicate engagement
+4. **Prediction Outcomes** - When predictions can be verified, outcomes are recorded
+
+### Running the Assessment
+
+The assessment can be triggered:
+- **On-demand**: Via the frontend Assessment tab or API call
+- **Programmatically**: By calling the `/api/ml/assessment/run` endpoint
+- **Monitoring**: Results are stored in history for trend analysis
+
+### Assessment History & Trends
+
+```
+GET /api/ml/assessment/history?limit=10
+```
+
+Returns historical assessments and trend analysis:
+- Score trends (improving/stable/declining)
+- Average scores over time
+- Score range (min/max)
+
+---
+
 ## Cost
 
 **Total Cost: $0 (100% Free)**
 
 All components use:
 - Local rule-based AI (no external API calls)
+- Firebase Firestore (free tier: 50K reads/day, 20K writes/day)
 - In-memory data storage with local file persistence
 - Existing application logging infrastructure
 - No paid cloud services required
