@@ -10,7 +10,6 @@
     "client": "cd client && npm start",
     "install-deps": "npm install && cd server && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
-    "vercel-build": "npm run install-deps && npm run build",
     "heroku-postbuild": "npm run install-deps && npm run build",
     "start": "node server/index.js",
     "test:shared": "jest --config config/jest.config.cjs --ci --coverage",
@@ -33,7 +32,6 @@
     "jest": "^29.7.0"
   },
   "dependencies": {
-    "vercel": "^47.0.7",
     "winston-cloudwatch": "^6.3.0"
   }
 }

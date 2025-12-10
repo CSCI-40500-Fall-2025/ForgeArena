@@ -303,7 +303,7 @@ function calculateStreak(user) {
 // Get current raid boss (uses the new raid system)
 app.get('/api/raid', authMiddleware.optionalAuth, async (req, res) => {
   try {
-    const raidService = require('./services/raid.service');
+    const raidService = require('./services/gameplay/raid.service');
     const bosses = raidService.getAvailableBosses(1);
     
     // Return the first boss as "current" for backward compatibility
@@ -331,7 +331,7 @@ app.get('/api/raid', authMiddleware.optionalAuth, async (req, res) => {
 app.get('/api/inventory', authMiddleware.authenticateToken, async (req, res) => {
   try {
     const user = req.user;
-    const itemService = require('./services/item.service');
+    const itemService = require('./services/shared/item.service');
     const inventory = itemService.getUserInventory(user.uid);
     
     logger.debug('Fetching user inventory', {
@@ -352,7 +352,7 @@ app.post('/api/equip/:itemId', authMiddleware.authenticateToken, async (req, res
   try {
     const { itemId } = req.params;
     const user = req.user;
-    const itemService = require('./services/item.service');
+    const itemService = require('./services/shared/item.service');
     
     logger.debug('Processing equipment request', {
       userId: user.uid,
@@ -391,7 +391,7 @@ app.post('/api/equip/:itemId', authMiddleware.authenticateToken, async (req, res
 app.get('/api/gyms', authMiddleware.optionalAuth, async (req, res) => {
   try {
     // Return a list of gym territories
-    const clubService = require('./services/club.service');
+    const clubService = require('./services/social/club.service');
     const gyms = await clubService.getGymTerritories();
     res.json(gyms);
   } catch (error) {
