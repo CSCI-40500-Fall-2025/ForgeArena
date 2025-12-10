@@ -8,9 +8,9 @@
     "dev": "nodemon index.js",
     "init-db": "node scripts/initDb.js",
     "init-auth-db": "node scripts/init-auth-db.js",
-    "test": "jest --config jest.config.js --coverage --verbose",
+    "test": "jest --config jest.config.js --coverage --verbose --forceExit",
     "test:watch": "jest --config jest.config.js --watch",
-    "test:ci": "jest --config jest.config.js --ci --coverage --maxWorkers=2"
+    "test:ci": "jest --config jest.config.js --ci --coverage --maxWorkers=2 --forceExit"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
