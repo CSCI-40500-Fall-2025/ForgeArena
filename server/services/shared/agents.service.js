@@ -415,7 +415,7 @@ class MotivationCoachAgent extends Agent {
         { message: "Small steps daily lead to giant leaps monthly.", tone: 'supportive' }
       ],
       streakCelebration: [
-        { message: "🔥 {streak} days strong! You're building something incredible!", tone: 'celebratory' },
+        { message: "{streak} days strong! You're building something incredible!", tone: 'celebratory' },
         { message: "Streak day {streak}! Your consistency is your superpower!", tone: 'celebratory' },
         { message: "{streak} days in a row! Most people quit by now. You're not most people.", tone: 'challenging' }
       ],
@@ -425,7 +425,7 @@ class MotivationCoachAgent extends Agent {
         { message: "Every champion has fallen. What makes them champions is getting back up.", tone: 'inspirational' }
       ],
       levelUp: [
-        { message: "LEVEL UP! 🎉 Level {level} unlocked! Your dedication is legendary!", tone: 'celebratory' },
+        { message: "LEVEL UP! Level {level} unlocked! Your dedication is legendary!", tone: 'celebratory' },
         { message: "New level achieved! You're not the same person who started this journey.", tone: 'reflective' },
         { message: "Level {level} warrior! The forge is making you stronger!", tone: 'energetic' }
       ],
@@ -440,7 +440,7 @@ class MotivationCoachAgent extends Agent {
         { message: "Today we rest. Tomorrow we conquer. It's all part of the plan.", tone: 'strategic' }
       ],
       milestone: [
-        { message: "🏆 You just hit {milestone}! This is what dedication looks like!", tone: 'celebratory' },
+        { message: "You just hit {milestone}! This is what dedication looks like!", tone: 'celebratory' },
         { message: "Milestone unlocked: {milestone}! Remember how far you've come!", tone: 'reflective' },
         { message: "{milestone} achieved! Screenshot this moment - it's history!", tone: 'celebratory' }
       ]
@@ -509,7 +509,7 @@ class MotivationCoachAgent extends Agent {
 
     // Streak-based encouragement
     if (streak >= 30) {
-      encouragements.push("🔥 30+ day streak! You're in the top 1% of dedicated athletes!");
+      encouragements.push("30+ day streak! You're in the top 1% of dedicated athletes!");
     } else if (streak >= 14) {
       encouragements.push("Two weeks strong! You're building an unbreakable habit!");
     } else if (streak >= 7) {

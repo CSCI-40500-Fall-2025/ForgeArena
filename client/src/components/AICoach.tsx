@@ -396,13 +396,13 @@ const AICoach: React.FC = () => {
           className={`ai-nav-tab ${activeSection === 'agents' ? 'active' : ''}`}
           onClick={() => setActiveSection('agents')}
         >
-          🤖 Agents
+          Agents
         </button>
         <button 
           className={`ai-nav-tab ${activeSection === 'assessment' ? 'active' : ''}`}
           onClick={() => setActiveSection('assessment')}
         >
-          📊 Assessment
+          Assessment
         </button>
       </div>
 
@@ -659,7 +659,7 @@ const AICoach: React.FC = () => {
               className="agent-refresh-btn"
               disabled={agentLoading}
             >
-              {agentLoading ? 'Analyzing...' : '🤖 Run Agent Analysis'}
+              {agentLoading ? 'Analyzing...' : 'Run Agent Analysis'}
             </button>
           </div>
 
@@ -707,14 +707,14 @@ const AICoach: React.FC = () => {
 
               {/* Key Insight */}
               <div className="key-insight-card">
-                <span className="insight-icon">💡</span>
+                <span className="insight-icon">TIP</span>
                 <p>{agentAnalysis.synthesis.keyInsight}</p>
               </div>
 
               {/* Agent Motivation */}
               <div className="agent-motivation-card">
                 <div className="motivation-header">
-                  <span className="agent-badge">🎯 Motivation Coach</span>
+                  <span className="agent-badge">Motivation Coach</span>
                   <span className="tone-badge">{agentAnalysis.motivation.tone}</span>
                 </div>
                 <p className="motivation-text">{agentAnalysis.motivation.primaryMessage}</p>
@@ -731,7 +731,7 @@ const AICoach: React.FC = () => {
               {/* Weekly Training Plan */}
               <div className="weekly-plan-card">
                 <div className="plan-header">
-                  <span className="agent-badge">📋 Training Strategist</span>
+                  <span className="agent-badge">Training Strategist</span>
                   <span className="focus-badge">{agentAnalysis.strategy.trainingFocus.primary} focus</span>
                 </div>
                 <p className="plan-reason">{agentAnalysis.strategy.trainingFocus.reason}</p>
@@ -758,7 +758,7 @@ const AICoach: React.FC = () => {
               {/* Progress Analysis */}
               <div className="progress-analysis-card">
                 <div className="analysis-header">
-                  <span className="agent-badge">📈 Progress Analyst</span>
+                  <span className="agent-badge">Progress Analyst</span>
                   <span className="score-badge">Score: {agentAnalysis.progress.progressScore}/100</span>
                 </div>
                 <div className="progress-metrics">
@@ -776,15 +776,15 @@ const AICoach: React.FC = () => {
                   </div>
                 </div>
                 <div className={`trend-indicator ${agentAnalysis.progress.trends.overallTrend}`}>
-                  Trend: {agentAnalysis.progress.trends.overallTrend === 'improving' ? '📈 Improving' :
-                          agentAnalysis.progress.trends.overallTrend === 'declining' ? '📉 Declining' : '➡️ Stable'}
+                  Trend: {agentAnalysis.progress.trends.overallTrend === 'improving' ? 'Improving' :
+                          agentAnalysis.progress.trends.overallTrend === 'declining' ? 'Declining' : 'Stable'}
                 </div>
               </div>
 
               {/* Unified Recommendations */}
               {agentAnalysis.synthesis.unifiedRecommendations.length > 0 && (
                 <div className="unified-recommendations-card">
-                  <h4>🎯 Priority Actions</h4>
+                  <h4>Priority Actions</h4>
                   <div className="recommendations-list">
                     {agentAnalysis.synthesis.unifiedRecommendations.slice(0, 3).map((rec, i) => (
                       <div key={i} className="recommendation-item">
@@ -805,7 +805,7 @@ const AICoach: React.FC = () => {
               {/* Automated Actions Status */}
               {agentAnalysis.automatedActions && agentAnalysis.automatedActions.enabled && (
                 <div className="automated-actions-card">
-                  <h4>🤖 Automated Actions</h4>
+                  <h4>Automated Actions</h4>
                   <p className="actions-count">{agentAnalysis.automatedActions.count} actions generated</p>
                   {agentAnalysis.actionResults && (
                     <div className="action-results">
@@ -820,32 +820,32 @@ const AICoach: React.FC = () => {
             </>
           ) : (
             <div className="agent-intro">
-              <h3>🤖 Multi-Agent AI System</h3>
+              <h3>Multi-Agent AI System</h3>
               <p>Our advanced AI uses multiple specialized agents that work together:</p>
               <div className="agent-list">
                 <div className="agent-item">
-                  <span className="agent-emoji">📋</span>
+                  <span className="agent-emoji">S</span>
                   <div>
                     <strong>Training Strategist</strong>
                     <p>Creates personalized weekly workout plans</p>
                   </div>
                 </div>
                 <div className="agent-item">
-                  <span className="agent-emoji">💪</span>
+                  <span className="agent-emoji">M</span>
                   <div>
                     <strong>Motivation Coach</strong>
                     <p>Generates contextual encouragement</p>
                   </div>
                 </div>
                 <div className="agent-item">
-                  <span className="agent-emoji">📈</span>
+                  <span className="agent-emoji">P</span>
                   <div>
                     <strong>Progress Analyst</strong>
                     <p>Evaluates trends and identifies improvements</p>
                   </div>
                 </div>
                 <div className="agent-item">
-                  <span className="agent-emoji">🎯</span>
+                  <span className="agent-emoji">G</span>
                   <div>
                     <strong>Goal Coordinator</strong>
                     <p>Orchestrates agents and automates actions</p>
@@ -864,7 +864,7 @@ const AICoach: React.FC = () => {
       {activeSection === 'assessment' && (
         <div className="ai-section assessment-section">
           <div className="assessment-header">
-            <h3>📊 ML Performance Assessment</h3>
+            <h3>ML Performance Assessment</h3>
             <p>Automated evaluation of AI system performance using production data</p>
             <button onClick={fetchMLAssessment} className="run-assessment-btn">
               Run Assessment
@@ -952,8 +952,8 @@ const AICoach: React.FC = () => {
           )}
 
           <div className="assessment-footer">
-            <p>💡 All assessments are automated and run against real production data</p>
-            <p>🆓 100% Free - No external API costs</p>
+            <p>All assessments are automated and run against real production data</p>
+            <p>100% Free - No external API costs</p>
           </div>
         </div>
       )}

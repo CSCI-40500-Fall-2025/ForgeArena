@@ -16,22 +16,22 @@ const EXERCISES = {
 // Motivational messages by context
 const MOTIVATIONS = {
   daily: [
-    { message: "Every rep brings you closer to your goals!", emoji: "💪", actionPrompt: "Start your workout now" },
-    { message: "Champions are made in the gym!", emoji: "🏆", actionPrompt: "Begin today's training" },
-    { message: "Your future self will thank you!", emoji: "⭐", actionPrompt: "Let's get moving" },
-    { message: "Consistency beats intensity. Show up today!", emoji: "🔥", actionPrompt: "Start a quick session" }
+    { message: "Every rep brings you closer to your goals!", emoji: "", actionPrompt: "Start your workout now" },
+    { message: "Champions are made in the gym!", emoji: "", actionPrompt: "Begin today's training" },
+    { message: "Your future self will thank you!", emoji: "", actionPrompt: "Let's get moving" },
+    { message: "Consistency beats intensity. Show up today!", emoji: "", actionPrompt: "Start a quick session" }
   ],
   streak_broken: [
-    { message: "Setbacks are setups for comebacks!", emoji: "💫", actionPrompt: "Rebuild your streak today" },
-    { message: "Every champion has fallen. What matters is getting back up!", emoji: "🦾", actionPrompt: "Start fresh now" }
+    { message: "Setbacks are setups for comebacks!", emoji: "", actionPrompt: "Rebuild your streak today" },
+    { message: "Every champion has fallen. What matters is getting back up!", emoji: "", actionPrompt: "Start fresh now" }
   ],
   level_up: [
-    { message: "LEVEL UP! You're getting stronger every day!", emoji: "🎉", actionPrompt: "Keep the momentum going" },
-    { message: "New level unlocked! Your dedication is paying off!", emoji: "⬆️", actionPrompt: "Push even harder" }
+    { message: "LEVEL UP! You're getting stronger every day!", emoji: "", actionPrompt: "Keep the momentum going" },
+    { message: "New level unlocked! Your dedication is paying off!", emoji: "", actionPrompt: "Push even harder" }
   ],
   new_user: [
-    { message: "Welcome to ForgeArena! Your fitness journey begins now!", emoji: "🚀", actionPrompt: "Complete your first workout" },
-    { message: "Every master was once a beginner. Let's start!", emoji: "🌟", actionPrompt: "Try a beginner workout" }
+    { message: "Welcome to ForgeArena! Your fitness journey begins now!", emoji: "", actionPrompt: "Complete your first workout" },
+    { message: "Every master was once a beginner. Let's start!", emoji: "", actionPrompt: "Try a beginner workout" }
   ]
 };
 
