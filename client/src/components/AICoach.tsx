@@ -83,6 +83,7 @@ interface AgentAnalysis {
   };
   strategy: {
     agent: string;
+    aiEnhanced?: boolean;
     trainingFocus: {
       primary: string;
       reason: string;
@@ -112,9 +113,11 @@ interface AgentAnalysis {
       message: string;
       action: string;
     }>;
+    geminiInsight?: string;
   };
   motivation: {
     agent: string;
+    aiEnhanced?: boolean;
     primaryMessage: string;
     tone: string;
     additionalEncouragement: string[];
@@ -122,6 +125,7 @@ interface AgentAnalysis {
   };
   progress: {
     agent: string;
+    aiEnhanced?: boolean;
     progressMetrics: {
       currentLevel: number;
       workoutsThisWeek: number;
@@ -139,6 +143,7 @@ interface AgentAnalysis {
       suggestion: string;
       actionable: string;
     }>;
+    geminiAnalysis?: string;
   };
   synthesis: {
     healthScore: {
@@ -360,7 +365,9 @@ const AICoach: React.FC = () => {
           <p className="ai-subtitle">Your Personal Fitness Coach</p>
           <div className="ai-badges">
             <span className="ai-badge">Multi-Agent System v2.1</span>
-            {agentAnalysis?.orchestration?.strategy?.aiEnhanced && (
+            {(agentAnalysis?.strategy?.aiEnhanced || 
+              agentAnalysis?.motivation?.aiEnhanced || 
+              agentAnalysis?.progress?.aiEnhanced) && (
               <span className="ai-badge gemini-badge">Gemini Enhanced</span>
             )}
           </div>
