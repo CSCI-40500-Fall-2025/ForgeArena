@@ -19,12 +19,32 @@ jest.mock('firebase-admin', () => ({
         }),
         set: jest.fn().mockResolvedValue({}),
         update: jest.fn().mockResolvedValue({}),
+        collection: jest.fn(() => ({
+          doc: jest.fn(() => ({
+            get: jest.fn().mockResolvedValue({
+              exists: false,
+              data: () => ({}),
+            }),
+            set: jest.fn().mockResolvedValue({}),
+            update: jest.fn().mockResolvedValue({}),
+          })),
+          where: jest.fn(() => ({
+            get: jest.fn().mockResolvedValue({ empty: true, docs: [] }),
+          })),
+          get: jest.fn().mockResolvedValue({ docs: [] }),
+        })),
       })),
       where: jest.fn(() => ({
         limit: jest.fn(() => ({
           get: jest.fn().mockResolvedValue({ empty: false, docs: [] }),
         })),
         get: jest.fn().mockResolvedValue({ empty: false, docs: [] }),
+        orderBy: jest.fn(() => ({
+          limit: jest.fn(() => ({
+            get: jest.fn().mockResolvedValue({ docs: [] }),
+          })),
+          get: jest.fn().mockResolvedValue({ docs: [] }),
+        })),
       })),
       get: jest.fn().mockResolvedValue({ docs: [] }),
     })),

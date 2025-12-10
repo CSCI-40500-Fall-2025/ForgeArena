@@ -48,6 +48,13 @@ describe('Achievement Routes', () => {
           unlockedAt: '2024-01-01T00:00:00Z',
         },
       ]),
+      getUnlockedAchievements: jest.fn().mockResolvedValue([
+        {
+          id: 'first_workout',
+          name: 'First Blood',
+          unlocked: true,
+        },
+      ]),
       getAchievementStats: jest.fn().mockResolvedValue({
         total: 20,
         unlocked: 5,
@@ -192,6 +199,7 @@ describe('Duel Routes', () => {
       ]),
       getUserActiveDuels: jest.fn().mockResolvedValue([]),
       getPendingInvitations: jest.fn().mockResolvedValue([]),
+      getUserDuels: jest.fn().mockResolvedValue([]),
       createDuel: jest.fn().mockResolvedValue({
         id: 'duel-123',
         status: 'pending',
