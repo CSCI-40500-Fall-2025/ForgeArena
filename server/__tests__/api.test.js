@@ -157,7 +157,7 @@ describe('ForgeArena API Tests', () => {
         .send({
           reps: 20,
         })
-        .expect(500);
+        .expect(400);
       
       expect(response.body).toHaveProperty('error');
     });
@@ -168,7 +168,7 @@ describe('ForgeArena API Tests', () => {
         .send({
           exercise: 'pushup',
         })
-        .expect(500);
+        .expect(400);
       
       expect(response.body).toHaveProperty('error');
     });
