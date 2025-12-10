@@ -262,19 +262,6 @@ async function startRaid(userId, partyId, bossId) {
     const contributions = {};
     party.members.forEach(member => {
       contributions[member.userId] = {
-        oderId: member.userId,
-        odername: member.username,
-        oderAvatarUrl: member.avatarUrl,
-        oderLevel: member.level,
-        odalDamage: 0,
-        odalHits: 0,
-      };
-    });
-    
-    // Fix the contribution object keys (typo above)
-    const fixedContributions = {};
-    party.members.forEach(member => {
-      fixedContributions[member.userId] = {
         userId: member.userId,
         username: member.username,
         avatarUrl: member.avatarUrl,
@@ -296,7 +283,7 @@ async function startRaid(userId, partyId, bossId) {
       hpTotal,
       hpRemaining: hpTotal,
       memberCount,
-      contributions: fixedContributions,
+      contributions: contributions,
       rewards: boss.rewards,
       status: 'active',
       startedBy: userId,
@@ -384,7 +371,7 @@ async function logDamage(userId, raidId, damage, source = 'workout') {
     
     logger.info('Damage logged', { 
       raidId, 
-      oderId: userId, 
+      userId: userId, 
       damage, 
       newHpRemaining, 
       isDefeated 
@@ -464,7 +451,7 @@ async function abandonRaid(userId, raidId) {
       updatedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
     
-    logger.info('Raid abandoned', { raidId, oderId: userId });
+    logger.info('Raid abandoned', { raidId, userId: userId });
     
     return { message: 'Raid abandoned' };
   } catch (error) {
