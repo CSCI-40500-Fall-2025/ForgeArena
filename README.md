@@ -249,7 +249,7 @@ Unlike existing apps that focus on either solo avatar growth or passive global l
 
 ---
 
-## ✨ Core Features
+##  Core Features
 
 - **Avatar-Based Progression:** Your avatar grows, levels up, and earns gear.  
 - **Avatar Customization:** Earn cosmetic gear or upgrades (armor, badges, etc.) that reflect real-world milestones.  
@@ -263,7 +263,7 @@ Unlike existing apps that focus on either solo avatar growth or passive global l
 
 ---
 
-## 🧩 Raid Boss Mechanic for Fitness
+##  Raid Boss Mechanic for Fitness
 
 **Core Idea:**  
 Each raid boss represents a massive community fitness goal.
@@ -277,7 +277,7 @@ Each raid boss represents a massive community fitness goal.
 
 ---
 
-## 🏗️ Layered Software Architecture
+##  Layered Software Architecture
 
 ForgeArena focuses on building a strong **fitness community** through **gamification** and **friendly competition**.  
 Users can earn XP by completing quests, tracked securely in a database with leaderboards and detailed user stats.
@@ -297,7 +297,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
-## ⚙️ Technology Stack
+##  Technology Stack
 
 | Category | Technologies |
 |-----------|--------------|
@@ -312,7 +312,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
-## 🧱 Architectural Qualities
+##  Architectural Qualities
 
 | Quality | Priority | Rationale | Trade-off |
 |----------|-----------|------------|------------|
@@ -322,7 +322,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
-## 🧩 Core Components Overview
+##  Core Components Overview
 
 ### **Presentation Layer (Client-Side)**
 - **Authentication** – Login, registration, password recovery  
@@ -347,12 +347,12 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
-## ⚙️ System Architecture Diagram
+##  System Architecture Diagram
 ![Architecture Diagram](./architecture.png)
 
 ---
 
-## 🧠 Key Architectural Decisions
+##  Key Architectural Decisions
 
 1. **Architecture Type:** Modular Monolith  
    - Simpler for current scale; can evolve to microservices later.  
@@ -363,7 +363,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
-## 🚀 Future Plans
+##  Future Plans
 
 ### **Scalability**
 - Database sharding (user-based)
@@ -377,7 +377,7 @@ Users can earn XP by completing quests, tracked securely in a database with lead
 
 ---
 
-## 🗺️ Implementation Roadmap
+##  Implementation Roadmap
 
 **Phase 1: Core Architecture (Current)**  
 - Layered backend, gamification engine, Firebase integration, React client  
