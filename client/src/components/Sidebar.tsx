@@ -5,14 +5,13 @@ import './Layout.css';
 export const SIDEBAR_TABS = [
   { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
   { id: 'ai-coach', label: 'AI Coach', icon: 'smart_toy' },
-  { id: 'duels', label: 'Duels Hub', icon: 'swords' },
+  { id: 'duels', label: 'Social & Duels', icon: 'swords' },
   { id: 'raid', label: 'Raids', icon: 'skull' },
   { id: 'clubs', label: 'Territories', icon: 'map' },
   { id: 'party', label: 'Party', icon: 'groups' },
   { id: 'avatar', label: 'Avatar', icon: 'person' },
   { id: 'profile', label: 'Profile', icon: 'badge' },
   { id: 'achievements', label: 'Achievements', icon: 'emoji_events' },
-  { id: 'social', label: 'Social', icon: 'group' },
   { id: 'settings', label: 'Settings', icon: 'settings' },
 ] as const;
 

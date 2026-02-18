@@ -634,6 +634,461 @@
   font-size: 20px;
 }
 
+/* Social & Duels Hub – 8/4 grid */
+.ds-social-duels-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .ds-social-duels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ds-social-duels-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.ds-hero-cta-duels {
+  margin-bottom: 0;
+}
+
+.ds-hero-cta-content {
+  position: relative;
+  z-index: 2;
+  max-width: 32rem;
+}
+
+.ds-hero-cta-actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.ds-btn-hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-6);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ds-btn-hero-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ds-duel-form-card {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.ds-duel-form-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  margin: 0 0 var(--space-4) 0;
+  color: var(--text-primary);
+}
+
+.ds-duel-form-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: flex-end;
+}
+
+.ds-duel-form-inline input {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  min-width: 160px;
+  font-size: var(--font-size-sm);
+}
+
+.ds-duel-form-inline select {
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-default);
+  min-width: 180px;
+  font-size: var(--font-size-sm);
+}
+
+.ds-btn-primary-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-500);
+  color: white;
+  border: none;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.ds-btn-primary-sm:hover {
+  opacity: 0.9;
+}
+
+.ds-duels-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.ds-duels-section-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.ds-link-sm {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary-500);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.ds-link-sm:hover {
+  text-decoration: underline;
+}
+
+.ds-duel-cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ds-duel-card {
+  padding: var(--space-5);
+  border-radius: var(--radius-2xl);
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  transition: box-shadow 0.2s;
+}
+
+.ds-duel-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.ds-duel-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.ds-duel-card-avatars {
+  display: flex;
+  margin-right: var(--space-4);
+}
+
+.ds-duel-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-card);
+  background: var(--color-neutral-300);
+  margin-left: -12px;
+}
+
+.ds-duel-avatar:first-child {
+  margin-left: 0;
+}
+
+.ds-duel-avatar-you {
+  background: linear-gradient(135deg, var(--color-primary-400), var(--color-primary-600));
+}
+
+.ds-duel-avatar-opp {
+  background: var(--color-neutral-400);
+}
+
+.ds-duel-card-info h4 {
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-size-base);
+  margin: 0 0 var(--space-1) 0;
+  color: var(--text-primary);
+}
+
+.ds-duel-card-info p {
+  font-size: 10px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.ds-duel-badge {
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+  text-transform: uppercase;
+}
+
+.ds-badge-amber {
+  background: var(--color-warning-light, #fef3c7);
+  color: var(--color-warning, #d97706);
+}
+
+.ds-badge-green {
+  background: rgba(34, 197, 94, 0.2);
+  color: #16a34a;
+}
+
+.ds-duel-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ds-duel-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+}
+
+.ds-duel-stat-you {
+  color: var(--color-primary-500);
+}
+
+.ds-duel-stat-target {
+  color: var(--text-tertiary);
+}
+
+.ds-duel-stat-opp {
+  color: var(--text-secondary);
+}
+
+.ds-duel-progress-bar {
+  position: relative;
+  height: 12px;
+  width: 100%;
+  background: var(--color-neutral-200);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.ds-duel-progress-opp {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--color-neutral-400);
+  border-radius: var(--radius-full);
+  z-index: 1;
+}
+
+.ds-duel-progress-you {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--color-primary-500);
+  border-radius: var(--radius-full);
+  z-index: 2;
+}
+
+.ds-duel-hint {
+  font-size: 10px;
+  font-style: italic;
+  color: var(--text-tertiary);
+  margin: 0;
+  text-align: center;
+}
+
+.ds-empty-state {
+  margin: 0;
+  color: var(--text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+/* Activity Feed (right column) */
+.ds-social-duels-right {
+  position: sticky;
+  top: calc(var(--header-height, 80px) + var(--space-4));
+}
+
+.ds-activity-feed {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 220px);
+  min-height: 400px;
+}
+
+.ds-activity-feed-header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.ds-activity-feed-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-1) 0;
+  color: var(--text-primary);
+}
+
+.ds-activity-feed-subtitle {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin: 0;
+}
+
+.ds-activity-feed-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.ds-activity-feed-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ds-activity-feed-body::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: 3px;
+}
+
+.ds-activity-item {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.ds-activity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-neutral-300);
+  flex-shrink: 0;
+}
+
+.ds-activity-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.ds-activity-text {
+  font-size: var(--font-size-sm);
+  margin: 0;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+.ds-activity-text strong {
+  color: var(--text-primary);
+}
+
+.ds-activity-text .text-primary {
+  color: var(--color-primary-500);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ds-activity-time {
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  margin: var(--space-1) 0 var(--space-3) 0;
+}
+
+.ds-activity-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.ds-activity-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  background: var(--color-neutral-100);
+  border: none;
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.ds-activity-btn:hover {
+  background: rgba(13, 89, 242, 0.1);
+  color: var(--color-primary-500);
+}
+
+.ds-activity-feed-footer {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ds-load-more {
+  width: 100%;
+  padding: var(--space-2);
+  background: var(--color-neutral-100);
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.ds-load-more:hover {
+  background: var(--color-neutral-200);
+}
+
+.ds-quests-card .ds-quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ds-quest-item h4 {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.ds-quest-item p {
+  font-size: var(--font-size-sm);
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.ds-quest-progress {
+  font-size: 12px;
+  color: var(--color-primary-500);
+  font-weight: var(--font-weight-semibold);
+}
+
 /* ============================================
    CARDS
    ============================================ */

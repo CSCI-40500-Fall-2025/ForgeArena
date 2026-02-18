@@ -207,14 +207,13 @@ function MainApp() {
   const headerTitles: Record<string, string> = {
     dashboard: `Welcome back, ${user.username}`,
     'ai-coach': 'AI Coach',
-    duels: 'Duels Hub',
+    duels: 'Social & Duels Hub',
     raid: 'Raids',
     clubs: 'Territories',
     party: 'Party',
     avatar: 'Avatar & Inventory',
     profile: 'Profile',
     achievements: 'Achievements',
-    social: 'Social',
     settings: 'Settings',
   };
   const headerTitle = headerTitles[activeTab] ?? 'ForgeArena';
@@ -436,45 +435,150 @@ function MainApp() {
                 </div>
               </div>
             </div>
-            <div className="ds-hero-cta">
-              <h3>Challenge Someone New</h3>
-              <p>Push your limits by starting a 1v1 challenge. Track steps, calories, or specific workout goals.</p>
-              <div className="duel-form" style={{ marginBottom: 0, display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', alignItems: 'flex-end' }}>
-                <input
-                  type="text"
-                  placeholder="Opponent username"
-                  value={duelForm.opponent}
-                  onChange={(e) => setDuelForm({ ...duelForm, opponent: e.target.value })}
-                  style={{ padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-lg)', border: 'none', minWidth: 160 }}
-                />
-                <select
-                  value={duelForm.challenge}
-                  onChange={(e) => setDuelForm({ ...duelForm, challenge: e.target.value })}
-                  style={{ padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-lg)', border: 'none', minWidth: 180 }}
-                >
-                  <option value="Most squats in 24h">Most squats in 24h</option>
-                  <option value="Most push-ups in 1h">Most push-ups in 1h</option>
-                  <option value="Longest run this week">Longest run this week</option>
-                </select>
-                <button type="button" className="ds-btn-white" onClick={createDuel}>
-                  <span className="material-symbols-outlined">add</span>
-                  Create Duel
-                </button>
-              </div>
-            </div>
-            <div className="ds-card">
-              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Active Duels</h3>
-              {duels.length === 0 ? (
-                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No active duels. Create one above.</p>
-              ) : (
-                duels.map(duel => (
-                  <div key={duel.id} className={`duel-item ${duel.status}`}>
-                    <h4>{duel.challenger} vs {duel.opponent}</h4>
-                    <p>{duel.challenge}</p>
-                    <p className="duel-status">Status: {duel.status}</p>
+            <div className="ds-social-duels-grid">
+              <div className="ds-social-duels-left">
+                <section className="ds-hero-cta ds-hero-cta-duels">
+                  <div className="ds-hero-cta-content">
+                    <h3>Challenge Someone New</h3>
+                    <p>Push your limits by starting a 1v1 challenge. Track steps, calories, or specific workout goals in real-time.</p>
+                    <div className="ds-hero-cta-actions">
+                      <button type="button" className="ds-btn-white" onClick={createDuel}>
+                        <span className="material-symbols-outlined">add</span>
+                        Create Duel
+                      </button>
+                      <button type="button" className="ds-btn-hero-secondary">Quick Invite</button>
+                    </div>
                   </div>
-                ))
-              )}
+                </section>
+                <section className="ds-duel-form-card">
+                  <h4 className="ds-duel-form-title">Create new duel</h4>
+                  <div className="duel-form ds-duel-form-inline">
+                    <input
+                      type="text"
+                      placeholder="Opponent username"
+                      value={duelForm.opponent}
+                      onChange={(e) => setDuelForm({ ...duelForm, opponent: e.target.value })}
+                    />
+                    <select
+                      value={duelForm.challenge}
+                      onChange={(e) => setDuelForm({ ...duelForm, challenge: e.target.value })}
+                    >
+                      <option value="Most squats in 24h">Most squats in 24h</option>
+                      <option value="Most push-ups in 1h">Most push-ups in 1h</option>
+                      <option value="Longest run this week">Longest run this week</option>
+                      <option value="10k Step Challenge">10k Step Challenge</option>
+                      <option value="Burn 500 Active Cal">Burn 500 Active Cal</option>
+                    </select>
+                    <button type="button" className="ds-btn-primary-sm" onClick={createDuel}>
+                      <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add</span>
+                      Create
+                    </button>
+                  </div>
+                </section>
+                <section className="ds-duels-section">
+                  <div className="ds-duels-section-header">
+                    <h2 className="ds-duels-section-title">Active Duels</h2>
+                    <button type="button" className="ds-link-sm">View All</button>
+                  </div>
+                  <div className="ds-duel-cards">
+                    {duels.length === 0 ? (
+                      <p className="ds-empty-state">No active duels. Create one above.</p>
+                    ) : (
+                      duels.map(duel => {
+                        const target = 10000;
+                        const myVal = 6000 + duel.id * 1200 + (duel.id % 5) * 100;
+                        const oppVal = 5500 + duel.id * 1100 + (duel.id % 7) * 80;
+                        const myPct = Math.min(100, Math.round((myVal / target) * 100));
+                        const oppPct = Math.min(100, Math.round((oppVal / target) * 100));
+                        const remaining = duel.id % 2 === 0 ? '2h Remaining' : '8h Remaining';
+                        const badgeClass = duel.id % 2 === 0 ? 'ds-badge-amber' : 'ds-badge-green';
+                        const oppLeading = oppPct > myPct;
+                        return (
+                          <div key={duel.id} className="ds-duel-card">
+                            <div className="ds-duel-card-header">
+                              <div className="ds-duel-card-avatars">
+                                <div className="ds-duel-avatar ds-duel-avatar-you" />
+                                <div className="ds-duel-avatar ds-duel-avatar-opp" />
+                              </div>
+                              <div className="ds-duel-card-info">
+                                <h4>{duel.challenge}</h4>
+                                <p>vs. {duel.opponent}</p>
+                              </div>
+                              <span className={`ds-duel-badge ${badgeClass}`}>{remaining}</span>
+                            </div>
+                            <div className="ds-duel-card-body">
+                              <div className="ds-duel-stats">
+                                <span className="ds-duel-stat-you">You: {myVal.toLocaleString()}</span>
+                                <span className="ds-duel-stat-target">Target: {target.toLocaleString()}</span>
+                                <span className="ds-duel-stat-opp">{duel.opponent}: {oppVal.toLocaleString()}</span>
+                              </div>
+                              <div className="ds-duel-progress-bar">
+                                <div className="ds-duel-progress-opp" style={{ width: `${oppPct}%` }} />
+                                <div className="ds-duel-progress-you" style={{ width: `${myPct}%` }} />
+                              </div>
+                              {oppLeading && (
+                                <p className="ds-duel-hint">{duel.opponent} is leading! Pick up the pace.</p>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
+                  </div>
+                </section>
+                {quests.length > 0 && (
+                  <section className="ds-card ds-quests-card">
+                    <h3 className="ds-card-title">Active Quests</h3>
+                    <div className="ds-quest-list">
+                      {quests.map(quest => (
+                        <div key={quest.id} className={`ds-quest-item ${quest.completed ? 'completed' : ''}`}>
+                          <h4>{quest.title}</h4>
+                          <p>{quest.description}</p>
+                          {quest.progress && <span className="ds-quest-progress">{quest.progress}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+              </div>
+              <div className="ds-social-duels-right">
+                <section className="ds-activity-feed">
+                  <div className="ds-activity-feed-header">
+                    <h2 className="ds-activity-feed-title">Activity Feed</h2>
+                    <p className="ds-activity-feed-subtitle">Updates from your gym community</p>
+                  </div>
+                  <div className="ds-activity-feed-body">
+                    {activityFeed.length === 0 ? (
+                      <p className="ds-empty-state">No activity yet.</p>
+                    ) : (
+                      activityFeed.map((activity, idx) => (
+                        <div key={activity.id} className="ds-activity-item">
+                          <div className="ds-activity-avatar" />
+                          <div className="ds-activity-body">
+                            <p className="ds-activity-text">
+                              <strong>{activity.user}</strong> {activity.action}
+                            </p>
+                            <p className="ds-activity-time">
+                              {new Date(activity.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ago
+                            </p>
+                            <div className="ds-activity-actions">
+                              <button type="button" className="ds-activity-btn">
+                                <span className="material-symbols-outlined" style={{ fontSize: 14 }}>thumb_up</span> 0
+                              </button>
+                              <button type="button" className="ds-activity-btn">
+                                <span className="material-symbols-outlined" style={{ fontSize: 14 }}>comment</span> 0
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  <div className="ds-activity-feed-footer">
+                    <button type="button" className="ds-load-more">Load More</button>
+                  </div>
+                </section>
+              </div>
             </div>
           </>
         )}
@@ -501,50 +605,6 @@ function MainApp() {
 
         {activeTab === 'ai-coach' && (
           <AICoach />
-        )}
-
-        {activeTab === 'social' && (
-          <>
-            <div className="ds-page-header">
-              <div>
-                <h1 className="ds-page-title">Social</h1>
-                <p className="ds-page-subtitle">Quests and activity from the arena.</p>
-              </div>
-            </div>
-            <div className="ds-card" style={{ marginBottom: 'var(--space-6)' }}>
-              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Active Quests</h3>
-              {quests.length === 0 ? (
-                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No active quests.</p>
-              ) : (
-                quests.map(quest => (
-                  <div key={quest.id} className={`quest ${quest.completed ? 'completed' : ''}`}>
-                    <h3>{quest.title}</h3>
-                    <p>{quest.description}</p>
-                    {quest.progress && <p>Progress: {quest.progress}</p>}
-                    <p>Reward: {quest.xpReward} XP</p>
-                    {!quest.completed && (
-                      <button onClick={() => completeQuest(quest.id)}>Complete Quest</button>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
-            <div className="ds-card">
-              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Activity Feed</h3>
-              {activityFeed.length === 0 ? (
-                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No activity yet.</p>
-              ) : (
-                activityFeed.map(activity => (
-                  <div key={activity.id} className="activity-item">
-                    <strong>{activity.user}</strong> {activity.action}
-                    <span className="activity-time">
-                      {new Date(activity.timestamp).toLocaleTimeString()}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          </>
         )}
 
         {activeTab === 'settings' && (
