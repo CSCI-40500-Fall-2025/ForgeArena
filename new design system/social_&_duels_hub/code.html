@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForgeArena | Social &amp; Duels Hub</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "text-muted": "#49659c",
+                        "surface-dark": "#2d3748",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display">
+<div class="flex min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark flex flex-col fixed h-full">
+<div class="p-6 flex items-center gap-3">
+<div class="bg-primary size-8 rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">fitness_center</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight">ForgeArena</h2>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 bg-primary/10 text-primary rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">swords</span>
+<span class="font-medium text-sm">Duels</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-medium text-sm">Social</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined">emoji_events</span>
+<span class="font-medium text-sm">Leaderboards</span>
+</a>
+</nav>
+<div class="p-4 border-t border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-slate-900/50">
+<div class="size-10 rounded-full bg-cover bg-center" data-alt="User profile avatar working out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDWT1hEK0YRKuNzx77R6Pf7y2sPZZryN4o0PYu4cpeVCCb2U08olp-GwSGjh299L5nfCnTULnw-Erc-9gQpunb7AtZ5OUGoByFdkA1zVZUhe9UsL04rRJvjCCBbra_wRLvNvLciJoGy7ukRANAtWlSy6016rdoftxtWYCezx9BZNqmtC9kAAYg0dQcZdIYlYx_vIDnBfOBwA6vyqyecHMX3NMp-UaYVuu9d55AW0CvKk4le1OKnc_IVnOhqLEj8emAXKA9h8-brCbOD')"></div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate">Alex Rivera</p>
+<p class="text-xs text-slate-500 truncate">Gold III Rank</p>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-lg">settings</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-64 p-8">
+<!-- Header Section -->
+<header class="flex justify-between items-end mb-8">
+<div>
+<h1 class="text-3xl font-black tracking-tight mb-2">Social &amp; Duels Hub</h1>
+<p class="text-slate-500 dark:text-slate-400">Compete with friends and track community achievements.</p>
+</div>
+<div class="flex gap-4">
+<div class="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-center">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">Rank</p>
+<p class="font-bold text-lg text-primary">Gold III</p>
+</div>
+<div class="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-center">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">Wins</p>
+<p class="font-bold text-lg">42</p>
+</div>
+<div class="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark text-center">
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">Friends</p>
+<p class="font-bold text-lg">128</p>
+</div>
+</div>
+</header>
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Duels -->
+<div class="col-span-8 space-y-8">
+<!-- Create New Duel Card -->
+<section>
+<div class="relative overflow-hidden rounded-2xl bg-primary p-8 text-white shadow-xl shadow-primary/20 group">
+<div class="absolute right-0 top-0 h-full w-1/3 opacity-20 group-hover:scale-110 transition-transform duration-700">
+<img class="h-full w-full object-cover" data-alt="Athletic training session action shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGJiv3ST_eMUU8cN250zGP5_2IrBlRVy_DP7Gh37QECuXXt5PX_J0mWXeT9hHQVdcxlD0-sAzijYMB6qTIDB9Di9EItBr8HwiATX9UCkYsuxfImUTwsfPGO2Fc7leb7l1kK2h0jnGueMkrsxRHM4TuQgVwWWjz-7l1KSgtOGwvUIRFVyO6vOKhxtSr0RkgAa2cedMU40j78FUXmzgyTBWY1lH_nJkmCqGMSqqaHxDvU0DUMZXFhhFDZwTnkeAy0DaQwbeStDhtcrnX"/>
+</div>
+<div class="relative z-10 max-w-lg">
+<h3 class="text-2xl font-bold mb-3">Challenge Someone New</h3>
+<p class="text-white/80 mb-6 leading-relaxed">Push your limits by starting a 1v1 challenge. Track steps, calories, or specific workout goals in real-time.</p>
+<div class="flex gap-3">
+<button class="bg-white text-primary px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-slate-100 transition-colors">
+<span class="material-symbols-outlined text-lg">add</span>
+                                        Create Duel
+                                    </button>
+<button class="bg-white/20 backdrop-blur-md text-white px-6 py-2.5 rounded-lg font-bold text-sm border border-white/30 hover:bg-white/30 transition-colors">
+                                        Quick Invite
+                                    </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Active Duels Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-bold">Active Duels</h2>
+<button class="text-primary text-sm font-semibold hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 gap-4">
+<!-- Duel Card 1 -->
+<div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-3">
+<div class="size-10 rounded-full border-2 border-white dark:border-slate-900 bg-cover bg-center" data-alt="User avatar working out" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDgAK6fuupSEUrCCnT3HCIo-cTbIWX65rN2gCE7mzmQ_CG3eN4tLF-wjUKPYuPkxI9ovUT8RGJOaT6wqiGcFtPcf4frDQuisQduiUONiijzTFG1fbBk3XMHhZhDvBdirJmIxHLoicXRXDYxKHSPTTLgxMBIimgtUob0AMEKNM095JnEr7B76x-JT5XJydvZe80kuonhMHHV3eVr8BrTe3BJznl0_S6IMV_hp7lAf6Ksr6j7Nd6TmQ3sXirzUANB81Bk-weVe2tst0A_')"></div>
+<div class="size-10 rounded-full border-2 border-white dark:border-slate-900 bg-cover bg-center" data-alt="Opponent avatar profile" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCjK8J1cy_wAJu0X0rCLT7759oAljDN5O0ZNyFeRB4dT08U9EjvnMdKdlndhO-GcZFfsc8GssvoT-1S041XFpiGSZfJt4OHHSQzs-DEZ9zHbd2lGJA6iNnXklA4ofM3-QU-KCiXSJ1GWPf_Lc_PZwv7W7_5Nj-CM-CIOQZNSupTq7zBE_vNyZOWjUv04vTGRBp9zzSJmGfFuj5EH1DUbCTA6_VUgzcm9WQyVp7qoo_BASQp8Rjh5y25C6lDx0raMF0v9hs8w-fMqkSq')"></div>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">10k Step Challenge</h4>
+<p class="text-xs text-slate-500">vs. Alex "Beast" Thompson</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[10px] font-bold rounded uppercase">2h Remaining</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span class="text-primary">You: 8,420</span>
+<span class="text-slate-400">Target: 10,000</span>
+<span class="text-slate-600 dark:text-slate-300">Alex: 7,890</span>
+</div>
+<div class="relative h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="absolute h-full bg-primary rounded-full" style="width: 84%; z-index: 10;"></div>
+<div class="absolute h-full bg-slate-300 dark:bg-slate-700 rounded-full" style="width: 79%;"></div>
+</div>
+</div>
+</div>
+<!-- Duel Card 2 -->
+<div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-6">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-3">
+<div class="size-10 rounded-full border-2 border-white dark:border-slate-900 bg-cover bg-center" data-alt="User avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDuKzlHXLybf5B8a0TpFDvAoXptk9puTjun9_n-h4Ak7Wh8gmuZV4e_9JCEOZRPzu_lsEAT5Gs9uXWAmanzBRdrJOiLyfEEYlHdUrcArcyEGQx89478zfwSa6nWx02xLd4Rp2564N-ZbrWXxaH_OBYD7xD5sF8djIgAQajyL-oUIdKIGGuNp1U_Yp5NTwoWSm_FivMWRnqIhxNNxryZ_VMHt1TPo95G3g-i89jUWXILJRpiUlV40KkeG8rya_AyR-xliV_RgxQMxBjk')"></div>
+<div class="size-10 rounded-full border-2 border-white dark:border-slate-900 bg-cover bg-center" data-alt="Female gym peer avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdyQZK1_9hXl6aHPVj4g0D0LbB_Y2cGdTzCyKr60n9DgOJ0F37RoTkCW0lu_2XDKayqVRL2CHHtQDVW4Nsfzt91yI7uPhsxnWhEAWVBOr5t3EuJxzsKv7V0cwCOiJ5u0nHWagGSmZQymigqzB4sE7IGCkB44o7iyE6wW6PRxUnaTRjlW6eTFv-QHbOurIlzdHJgRzYFtzVqUNNP0DqS_wsntwtyavqGDvjv5ZuDe74ACjYJrVRwSOmo2ogxmERRHP3g3T_QlJMRVZ6')"></div>
+</div>
+<div>
+<h4 class="font-bold text-slate-900 dark:text-white">Burn 500 Active Cal</h4>
+<p class="text-xs text-slate-500">vs. Sarah Jenkins</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold rounded uppercase">8h Remaining</span>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between text-xs font-bold mb-1">
+<span class="text-primary">You: 320</span>
+<span class="text-slate-400">Target: 500</span>
+<span class="text-slate-600 dark:text-slate-300">Sarah: 450</span>
+</div>
+<div class="relative h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="absolute h-full bg-primary rounded-full" style="width: 64%; z-index: 10;"></div>
+<div class="absolute h-full bg-slate-300 dark:bg-slate-700 rounded-full" style="width: 90%;"></div>
+</div>
+<p class="text-[10px] text-center italic text-slate-400">Sarah is leading! Pick up the pace.</p>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Right Column: Activity Feed -->
+<div class="col-span-4">
+<section class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col h-[calc(100vh-200px)] sticky top-8">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800">
+<h2 class="text-xl font-bold">Activity Feed</h2>
+<p class="text-xs text-slate-500 mt-1">Updates from your gym community</p>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar">
+<!-- Feed Item 1 -->
+<div class="relative flex gap-4">
+<div class="absolute left-5 top-10 bottom-[-32px] w-px bg-slate-200 dark:bg-slate-800"></div>
+<div class="relative">
+<div class="size-10 rounded-full bg-cover bg-center ring-4 ring-white dark:ring-slate-900" data-alt="Alex Beast avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuD8jql8eabsMR8hCbNdRzZfcyIN8lOt-GYgcAPw80N58FW_bz3OXRc5LoFJ-QAqEndWRCuWLZ6wpikXk4BMigOeiP7VLktPKCu0AL_o_4NtqnseMc4LtQ46v-C0E7e9SGzZzbALOAIAnM9QWtcXWSnGCghhP4DT3DnQUuKFtUXSv7OhrJyc07dg2DtOB0G4eROS0a6prvGgkacNBB6iyLc5VMDJ0PtfdJaO1jMkbcvR63ls4m6xfKsf3dwe1Hw_HlswtWQabAN45eDB')"></div>
+<div class="absolute -bottom-1 -right-1 bg-amber-400 size-5 rounded-full flex items-center justify-center text-white ring-2 ring-white dark:ring-slate-900">
+<span class="material-symbols-outlined text-[12px] font-bold">trending_up</span>
+</div>
+</div>
+<div class="flex-1 pt-1">
+<p class="text-sm">
+<span class="font-bold">Alex "Beast"</span> set a new personal record in <span class="font-semibold text-primary">Deadlift</span> (225 lbs).
+                                    </p>
+<p class="text-[10px] text-slate-400 font-medium mt-1 uppercase tracking-tighter">12 minutes ago</p>
+<div class="mt-3 flex gap-2">
+<button class="px-3 py-1 bg-slate-50 dark:bg-slate-800 hover:bg-primary/10 hover:text-primary transition-colors text-xs font-bold rounded-full flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">thumb_up</span> 14
+                                        </button>
+<button class="px-3 py-1 bg-slate-50 dark:bg-slate-800 hover:bg-primary/10 hover:text-primary transition-colors text-xs font-bold rounded-full flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">comment</span> 3
+                                        </button>
+</div>
+</div>
+</div>
+<!-- Feed Item 2 -->
+<div class="relative flex gap-4">
+<div class="absolute left-5 top-10 bottom-[-32px] w-px bg-slate-200 dark:bg-slate-800"></div>
+<div class="relative">
+<div class="size-10 rounded-full bg-cover bg-center ring-4 ring-white dark:ring-slate-900" data-alt="Sarah profile avatar" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCeW9RPYNGrSS0m8xMGJKanN--mfsP8YV_4YKCQpE9ZbZr-HcCCXbZwq03gBMJ6JP4bcg5CXQ0TGvsW2FxJrJL0048MT85izTfNry4wVgYW-hsI6Lztp4R8BauJJC7hE0vJ_g5bQJK_RfQ38wyucFjhspXastQu_Z0mJgpVxAoPBE9d91OGMZ4Ekzn-zdvRWFxA2SgYofcUh2L9s0c5RreXw4PvE8noDmQPD3dN2roQKu30dUMdOHGeptfLOf-FgbJa2QsSa3cozIlb')"></div>
+<div class="absolute -bottom-1 -right-1 bg-primary size-5 rounded-full flex items-center justify-center text-white ring-2 ring-white dark:ring-slate-900">
+<span class="material-symbols-outlined text-[12px] font-bold">emoji_events</span>
+</div>
+</div>
+<div class="flex-1 pt-1">
+<p class="text-sm">
+<span class="font-bold">Sarah Jenkins</span> earned the <span class="font-semibold text-primary">Early Bird</span> badge for 7 days of morning workouts.
+                                    </p>
+<div class="mt-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center gap-3">
+<div class="size-12 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">wb_sunny</span>
+</div>
+<div>
+<p class="text-xs font-bold">Early Bird Tier 2</p>
+<p class="text-[10px] text-slate-500">Unlocked 150 points</p>
+</div>
+</div>
+<p class="text-[10px] text-slate-400 font-medium mt-1 uppercase tracking-tighter">45 minutes ago</p>
+</div>
+</div>
+<!-- Feed Item 3 -->
+<div class="relative flex gap-4">
+<div class="relative">
+<div class="size-10 rounded-full bg-cover bg-center ring-4 ring-white dark:ring-slate-900" data-alt="Mike Chen profile photo" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBh45JnYAkK-L6Gi9Gr43kdwkMVhaxUdY39kkla5_X3Pfv6SiNWtmBGhPn5_b_6kDbg1Riwkt8xObBhTIZ86_-cxQVzd96ARhpBxsFGTAPjBuJJVCMjmroNT_htNsCV4weGPXqsvwUVpblOz4A81-2lwBHciiGvcQNsRVGvHj_G3niNMW3Te0sZ1TgFbvmlX0OEf3IaXhzeqpS8DO7Z1UgQslDULUoK0tqc79wxrroZNlJz3OX_-7xYHUPasz-sLtAi9FL18NA9UI0l')"></div>
+<div class="absolute -bottom-1 -right-1 bg-emerald-500 size-5 rounded-full flex items-center justify-center text-white ring-2 ring-white dark:ring-slate-900">
+<span class="material-symbols-outlined text-[12px] font-bold">directions_run</span>
+</div>
+</div>
+<div class="flex-1 pt-1">
+<p class="text-sm">
+<span class="font-bold">Mike Chen</span> finished a <span class="font-semibold text-primary">5km Night Run</span> in 24:12.
+                                    </p>
+<p class="text-[10px] text-slate-400 font-medium mt-1 uppercase tracking-tighter">2 hours ago</p>
+<div class="mt-3 overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800">
+<div class="h-24 bg-slate-200 dark:bg-slate-700 bg-cover bg-center" data-alt="Night city running route map" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDEyihtsQrLrdzYeLeQPulGfVywBQfZoKZI-WPdVGeeITV_NGcKfpfhK3I1tNN3z1_goFPb8f7s7KjpNaG-WaRV62a3rx7ue0pyuL8fYhtN4DL2UQ8bWe6Xqihfo7wkJPvDPLQdRKvbUMSHhcDDJesyeYypJlWJ1zPdbhnGznkPXHKVFYu_XVJCxWpwm9pHSRBQoQ0ateZf_u28BsC5EtDjE9byD0nHM65AQXRAyVux4ecR0zblWaaL9Nqgc4dAf3fC3YZuolkO8v0z')"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-slate-100 dark:border-slate-800">
+<button class="w-full py-2 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg text-sm font-bold hover:bg-slate-100 transition-colors">
+                                Load More
+                            </button>
+</div>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

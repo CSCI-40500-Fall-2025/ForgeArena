@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForgeArena | Raid &amp; Party</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "text-muted": "#49659c",
+                        "surface-dark": "#2d3748",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .boss-glow { box-shadow: 0 0 20px rgba(13, 89, 242, 0.15); }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-2">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">swords</span>
+</div>
+<h2 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">ForgeArena</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-semibold text-primary border-b-2 border-primary h-16 flex items-center" href="#">Raids</a>
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="#">Workouts</a>
+<a class="text-sm font-medium text-slate-500 hover:text-primary transition-colors" href="#">Equipment</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<label class="relative hidden lg:block">
+<span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+<span class="material-symbols-outlined text-lg">search</span>
+</span>
+<input class="w-64 bg-slate-100 dark:bg-slate-800 border-none rounded-lg py-2 pl-10 text-sm focus:ring-2 focus:ring-primary" placeholder="Search party or raid..." type="text"/>
+</label>
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="size-9 rounded-full bg-slate-200 overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="User profile avatar with professional athletic look" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbqlNtRuGw9Xnjz989T7dALOXQoHWWDboNGF061xbE3qfdwIVFitNGFfbVX4SNnoFKFX083kTNCA9ov0Stgb6KE-sACtSlPl6Tev6hTchBbTGNklY_CiSnELeXN_-rjg2NcjA6O4lks37VjKbUT-ITmcFIqqNDfb6ZQNjsk1iz9ssiInnpgk5Vq-2Hos2zwrstrcSQgeS6qNgaxmVzOp3WALqb_ad0XTkFRK8nNp4glVfCa7g0hLw84MDDB1cr3hPEqKVioL1lUABn"/>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-[1440px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+<!-- Left Sidebar: Party Members -->
+<aside class="lg:col-span-3 flex flex-col gap-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl p-5 shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">group</span>
+                        The Iron Vanguard
+                    </h3>
+<button class="text-xs font-bold text-primary hover:underline">Invite</button>
+</div>
+<div class="space-y-4">
+<!-- Party Member -->
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="size-10 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Male athlete profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDjGFCz3QZpqCWHjo4nt3poalujogq_TKVxbBuuGyKJ4Qgedg59xwpSmBwtU0fs6lAYIRqfJj7zhm0jyP2L0Xk8SbdEeayFcwbkptVTQ6_tM0AKtHrwBBHmDlfsRAVqyXVt5lKuex3Q2-jIuHKBbcFKv_Ye7NV1PcIKTy7sYk8zZwdjtOCl88ccObPI7cRDipjWS9v6YmM9wXs3wY75CNqzsi8tT_yc68ZWbXdgtT6hFBnNFVNVazQW5jLuTJ_sZ3oibP4P-uJZCi9J"/>
+</div>
+<span class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white dark:border-slate-900 rounded-full"></span>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold leading-none">Marcus (Leader)</p>
+<p class="text-xs text-slate-500 mt-1">Lvl 52 • 24 Day Streak</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 text-sm">shield</span>
+</div>
+<div class="flex items-center gap-3 opacity-90">
+<div class="size-10 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Female fitness enthusiast profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDycCNczZdb5aCdgqAgDbJjoxljjQinOgDeGy5HAalXi5Kgrh1Lo6wEjiERNHpe3yXK4J4u4jF2wrmcS-Rt3Skgqu_pr9rcV23ZT1t8ZOD_7uMQbv4O2KYR8226pgYTocXTYxlUNmYFncrKhp4MF0dQLRI6zunHgE-3erYyysxosx3FfUyoeG4L-AHk2snLA9dDUXaZFGRGWVR6OHxjOS9ErZ5C8CtDAm1yC8Mn2PEMHrqUwzXOyomDmzPu82aE79xEY3shZmc8OaTZ"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold leading-none">SarahFit</p>
+<p class="text-xs text-slate-500 mt-1">Lvl 48 • 15 Day Streak</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 text-sm">bolt</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="size-10 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Active male participant profile photo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByMR9tlBl_QROWBZKD-jmUwfF8tsvWpN36kxGobCu-yQW9zmkRlhdehMLDew6EUgJVMdCd3BZG9odYu13zv8pQez_pzFrpN8EIdwUe8KInvUad7zcOAnSA7v7Pje5WsaUp2n2LbAl2JH6Jt6Vr45wXSXXig-I6HZ_WqRMPBsyZAyvB2XaXBfkxIPih8W2TQ4F3JBbHFzdkfeWCpFVSbX7Sye45ceJSjRsHqPAj1sMSK_k_sBYRaeAgXHRlMrRFc7A4GxeQBdNByfOe"/>
+</div>
+<div class="flex-1">
+<p class="text-sm font-semibold leading-none">David_G</p>
+<p class="text-xs text-slate-500 mt-1">Lvl 39 • 7 Day Streak</p>
+</div>
+<span class="material-symbols-outlined text-primary/40 text-sm">target</span>
+</div>
+</div>
+<div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+<p class="text-xs text-slate-500 mb-2 uppercase tracking-wider font-bold">Party Buffs</p>
+<div class="flex gap-2">
+<div class="bg-primary/10 text-primary px-2 py-1 rounded text-[10px] font-bold">+10% XP</div>
+<div class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold">+5% Damage</div>
+</div>
+</div>
+</div>
+<!-- Raid Information Mini-card -->
+<div class="bg-slate-900 text-white rounded-xl p-5 shadow-sm overflow-hidden relative">
+<div class="relative z-10">
+<h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Time Remaining</h4>
+<p class="text-2xl font-black mb-4">02d 14h 22m</p>
+<button class="w-full py-2 bg-white/10 hover:bg-white/20 transition-colors rounded-lg text-sm font-bold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">share</span> Share Raid
+                    </button>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-8xl">schedule</span>
+</div>
+</div>
+</aside>
+<!-- Main Content: Current Raid -->
+<section class="lg:col-span-6 flex flex-col gap-6">
+<!-- Boss Status Card -->
+<div class="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800 boss-glow">
+<div class="aspect-[16/7] bg-slate-800 relative group overflow-hidden">
+<img class="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" data-alt="Cinematic metallic giant golem in a dark arena" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE_1k0hmSGtCpM0-Vwdx1dSW1EG9ugTSb1GPJFPzj8zJcBx52YYxjoKJQeEO_bp03IBg612_6dG4u_XQ4xC0-5EcbhiSStjROoIYBDzQh461mVwrOTbCoheekOq54NEVJz04AzMRRgTcviW7PmFU3-PperP0wqMUOectWJcu-CRGD4vLsrpVVdFn_5T8g7GJYayheyW18JtEj2KxOn0l68iJWl1iLn2Feg8DKeuCwOX9TlMFxgGM2HAVzIuPL2SEq4enGJJyIUmMqp"/>
+<div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+<div class="absolute bottom-6 left-6 right-6">
+<div class="flex items-end justify-between mb-2">
+<div>
+<span class="bg-primary px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest text-white mb-2 inline-block">Legendary Boss</span>
+<h1 class="text-4xl font-black text-white tracking-tighter">Iron Golem</h1>
+<p class="text-slate-300 text-sm font-medium">Lvl 99 World Event • Sector 07</p>
+</div>
+<div class="text-right">
+<p class="text-slate-400 text-xs font-bold uppercase tracking-widest">Global Difficulty</p>
+<p class="text-red-500 font-bold">Hardcore</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6">
+<div class="flex items-center justify-between mb-3">
+<span class="text-sm font-bold text-slate-500 dark:text-slate-400">Boss Integrity</span>
+<span class="text-sm font-black text-primary">450,000 / 1,000,000 HP</span>
+</div>
+<div class="h-6 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-1 border border-slate-200 dark:border-slate-700">
+<div class="h-full bg-primary rounded-full relative" style="width: 45%;">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+</div>
+</div>
+<div class="flex justify-between mt-2 text-[10px] uppercase font-black tracking-widest text-slate-400">
+<span>Shield Depleted</span>
+<span>45% Health Remaining</span>
+</div>
+</div>
+</div>
+<!-- Deal Damage Workout Area -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-2 mb-6">
+<div class="size-10 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">fitness_center</span>
+</div>
+<div>
+<h3 class="font-bold text-lg">Commit Damage</h3>
+<p class="text-sm text-slate-500 leading-none">Log your performance to attack the boss</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="space-y-4">
+<label class="block">
+<span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Workout Type</span>
+<select class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm font-medium focus:ring-primary">
+<option>Strength Training (3x Dmg)</option>
+<option>High Intensity Cardio (2x Dmg)</option>
+<option>Mobility &amp; Recovery (1.5x Dmg)</option>
+</select>
+</label>
+<div class="grid grid-cols-2 gap-4">
+<label class="block">
+<span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Sets</span>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary" type="number" value="4"/>
+</label>
+<label class="block">
+<span class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 block">Reps</span>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-lg text-sm focus:ring-primary" type="number" value="12"/>
+</label>
+</div>
+</div>
+<div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-dashed border-slate-200 dark:border-slate-700 flex flex-col justify-center items-center text-center">
+<p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Calculated Damage</p>
+<p class="text-4xl font-black text-slate-900 dark:text-white">1,450</p>
+<p class="text-xs text-primary font-bold mt-1">+120 Multiplier Bonus</p>
+</div>
+</div>
+<button class="w-full mt-6 py-4 bg-primary hover:bg-primary/90 transition-all rounded-xl text-white font-black text-lg shadow-lg shadow-primary/20 flex items-center justify-center gap-3">
+<span class="material-symbols-outlined">bolt</span>
+                    LOG WORKOUT &amp; ATTACK
+                </button>
+</div>
+</section>
+<!-- Right Sidebar: Leaderboard -->
+<aside class="lg:col-span-3">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+<div class="p-5 border-b border-slate-100 dark:border-slate-800">
+<h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-lg">leaderboard</span>
+                        Contribution Rank
+                    </h3>
+</div>
+<div class="divide-y divide-slate-100 dark:divide-slate-800">
+<!-- Rank 1 -->
+<div class="p-4 flex items-center gap-3 bg-slate-50 dark:bg-slate-800/30">
+<span class="text-lg font-black text-amber-500 w-6">1</span>
+<div class="size-8 rounded-full bg-slate-300 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Top contributor portrait" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC23TGTlkfSVyD8xI3CaiRvdnyXs5DWfYrqHn-UtDEBSMFwXiT1Nsl8hasfgwg7-0tRAhliVfkPzTZpvv8gjy2GkfnMiffZ2VuPUhp4lNI_AvJGvpXTFjwKSZ7xu5sbX_vaTwXcWlNNyHy3xymaRqXlIQiENGeToLgGulkwSlv5ZQi-I11eW8T9byD2OfWTi9dgtqd5oWOZm9odYM3kF3x7F2Sb9ebB4nEgO-dw1_zM89ZF6unfNV7kOHUiy_8659Y_MuuxuL00Hxv7"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">EliteRacer</p>
+<p class="text-[10px] text-slate-500 font-bold">42,500 DMG</p>
+</div>
+<span class="text-[10px] font-black text-slate-400">9.4%</span>
+</div>
+<!-- Rank 2 -->
+<div class="p-4 flex items-center gap-3">
+<span class="text-lg font-black text-slate-400 w-6">2</span>
+<div class="size-8 rounded-full bg-slate-300 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Second rank participant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0RgTcNLk6qtK7PsrGEq1yRyvhHUFk610f7dksECkd4nTq4HsOYfdx2TV0ApDHpEKb6dpm2FDXgS_Sdz1pBm34manyfzMsbhFFg1WksMhMzWL43N_NitaNlhj-MAslRS4aM6vZoGeQaE2X-jFKJwlFhVbWy2hN9J0_2uxapjzkUf3BdMPgTdhFnsbBZPk2HYysLb8yFa5puypnbyDYYXgvEA6zGXDn9pZ7zfgIdT5hUctbzLiqd1F2HStxdj5vAR-RzMTFG33IRT_A"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">Strongman_01</p>
+<p class="text-[10px] text-slate-500 font-bold">38,120 DMG</p>
+</div>
+<span class="text-[10px] font-black text-slate-400">8.5%</span>
+</div>
+<!-- Rank 3 -->
+<div class="p-4 flex items-center gap-3">
+<span class="text-lg font-black text-orange-400 w-6">3</span>
+<div class="size-8 rounded-full bg-slate-300 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Third rank participant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC0rAG4B78K0xR3bR7H6wKAZIFr-4OpWwzQY2vcRAI8hfl9CNKf6LhhtfdN-7TYkFv00YjfygdIegVZ-S2QMfZo2sN86zt0-IMDXPLNbY-oUoafIH1CFe7C3cI_lY2hAcGmtdjIDKPpnuA4A1qIa95s6YEYP4AQ4En_vCuG3JS2DVKtokhjqdUfqk_SLhuwB0XAMTdawkyKtJvZEKCKIdIsfvOw_F6t1Z4_xjmHGtnbgc81JBY7iIJwdszMoJetrXL95DALbrN5IBUg"/>
+</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">MuscleMind</p>
+<p class="text-[10px] text-slate-500 font-bold">35,900 DMG</p>
+</div>
+<span class="text-[10px] font-black text-slate-400">8.0%</span>
+</div>
+<!-- User's own rank -->
+<div class="p-4 flex items-center gap-3 bg-primary/5 border-l-4 border-primary">
+<span class="text-lg font-black text-primary w-6">14</span>
+<div class="size-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs">YOU</div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate text-primary">Alex_W</p>
+<p class="text-[10px] text-slate-500 font-bold">12,450 DMG</p>
+</div>
+<span class="text-[10px] font-black text-primary">2.8%</span>
+</div>
+<!-- Rank 15 -->
+<div class="p-4 flex items-center gap-3">
+<span class="text-lg font-black text-slate-300 w-6">15</span>
+<div class="size-8 rounded-full bg-slate-300"></div>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-bold truncate">GhostLifter</p>
+<p class="text-[10px] text-slate-500 font-bold">11,200 DMG</p>
+</div>
+<span class="text-[10px] font-black text-slate-400">2.5%</span>
+</div>
+</div>
+<div class="p-4 bg-slate-50 dark:bg-slate-800/50">
+<button class="w-full text-xs font-bold text-slate-500 hover:text-primary transition-colors py-1">View Full Leaderboard (522 Players)</button>
+</div>
+</div>
+<!-- Reward Preview -->
+<div class="mt-6 bg-gradient-to-br from-primary to-blue-700 rounded-xl p-5 text-white">
+<h4 class="text-xs font-bold uppercase tracking-widest opacity-80 mb-3">Potential Loot</h4>
+<div class="flex gap-3">
+<div class="size-12 rounded-lg bg-white/20 flex items-center justify-center border border-white/20">
+<span class="material-symbols-outlined text-2xl">diamond</span>
+</div>
+<div class="size-12 rounded-lg bg-white/20 flex items-center justify-center border border-white/20">
+<span class="material-symbols-outlined text-2xl">verified_user</span>
+</div>
+<div class="size-12 rounded-lg bg-white/20 flex items-center justify-center border border-white/20">
+<span class="material-symbols-outlined text-2xl">token</span>
+</div>
+</div>
+<p class="text-[10px] mt-4 opacity-70 leading-relaxed italic">Damage rewards are distributed relative to your contribution percentage at the end of the raid.</p>
+</div>
+</aside>
+</main>
+<!-- Footer Status Bar -->
+<footer class="fixed bottom-0 left-0 right-0 h-10 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between z-50">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Servers Online</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-xs text-slate-400">wifi</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">Latency: 24ms</span>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">5,241 Players Online</span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-slate-500">v2.4.12-Stable</span>
+</div>
+</footer>
+</body></html>

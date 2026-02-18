@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForgeArena Achievements</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "text-muted": "#49659c",
+                        "surface-dark": "#2d3748",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .achievement-card:hover {
+            transform: translateY(-2px);
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0d121c] dark:text-white">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Header / Nav -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-primary/10 px-6 lg:px-40 py-3 bg-white dark:bg-background-dark/50 backdrop-blur-md sticky top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8 bg-primary rounded-lg flex items-center justify-center text-white">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+<h2 class="text-[#0d121c] dark:text-white text-lg font-black leading-tight tracking-tight">ForgeArena</h2>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-primary text-sm font-semibold leading-normal" href="#">Dashboard</a>
+<a class="text-text-muted hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Workouts</a>
+<a class="text-text-muted hover:text-primary text-sm font-medium leading-normal transition-colors" href="#">Community</a>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-4">
+<label class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full">
+<div class="text-text-muted flex border-none bg-primary/5 items-center justify-center pl-4 rounded-l-lg" data-icon="Search">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 border-none bg-primary/5 focus:ring-0 h-full placeholder:text-text-muted px-4 rounded-r-lg text-sm" placeholder="Search achievements..."/>
+</div>
+</label>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/5 hover:bg-primary/10 text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20" data-alt="User profile picture of an athlete" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1t5T-CPmjJ0iynB7klVIFkLa1cWzGSujAiu4aJXAqoqED0-U86mMee02UZGKQ3U6eewrzIL_B3zrMvGYb4alO5ioZKBUcyqFYcZEnTVHvgvhjPOwLxvFuxWz5f3n4rfXn01wFRx7BsHG2MGFzcfoYt6XkBqDlzftgAc2qiwF2xQ8YqcvXiNpK-nUIxcbDk4P_PXDg9Tmf-pAx7JVpFCKiHPv61XYXFoRTF9Zuw1HhOiKKhXuCBUYilcd-f8GJgccxKvoXzUorRSev");'></div>
+</div>
+</div>
+</header>
+<main class="px-6 lg:px-40 py-10">
+<!-- Hero Stats Section -->
+<div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-10">
+<div class="flex flex-col gap-2">
+<h1 class="text-[#0d121c] dark:text-white text-4xl font-black tracking-tight">Achievements</h1>
+<p class="text-text-muted text-lg">Push your limits and unlock exclusive rewards.</p>
+</div>
+<div class="flex gap-3">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-white font-bold rounded-lg shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined text-sm">leaderboard</span>
+<span>View Global Rank</span>
+</button>
+</div>
+</div>
+<!-- Stats Overview Row -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-background-dark border border-primary/10 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">emoji_events</span>
+<p class="text-text-muted text-sm font-semibold uppercase tracking-wider">Total Trophies</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-black">42</p>
+<p class="text-[#07883b] text-sm font-bold">+3 new</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-background-dark border border-primary/10 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">military_tech</span>
+<p class="text-text-muted text-sm font-semibold uppercase tracking-wider">Forge Points</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-black">12,450</p>
+<p class="text-[#07883b] text-sm font-bold">+1.2k</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-background-dark border border-primary/10 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">public</span>
+<p class="text-text-muted text-sm font-semibold uppercase tracking-wider">Global Rank</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-black">#1,204</p>
+<p class="text-primary text-sm font-bold">Top 5%</p>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-background-dark border border-primary/10 shadow-sm">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">analytics</span>
+<p class="text-text-muted text-sm font-semibold uppercase tracking-wider">Completion</p>
+</div>
+<div class="flex items-baseline gap-2">
+<p class="text-3xl font-black">65%</p>
+<p class="text-text-muted text-sm font-medium">28/42</p>
+</div>
+<div class="w-full bg-primary/10 h-1.5 rounded-full mt-1 overflow-hidden">
+<div class="bg-primary h-full" style="width: 65%;"></div>
+</div>
+</div>
+</div>
+<!-- Categories Tabs -->
+<div class="flex flex-wrap gap-2 border-b border-primary/10 mb-8 overflow-x-auto">
+<button class="px-6 py-3 border-b-2 border-primary text-primary font-bold text-sm">All Achievements</button>
+<button class="px-6 py-3 border-b-2 border-transparent text-text-muted hover:text-primary font-medium text-sm transition-colors">Fitness</button>
+<button class="px-6 py-3 border-b-2 border-transparent text-text-muted hover:text-primary font-medium text-sm transition-colors">Social</button>
+<button class="px-6 py-3 border-b-2 border-transparent text-text-muted hover:text-primary font-medium text-sm transition-colors">Gamification</button>
+</div>
+<!-- Achievement Grid -->
+<div class="space-y-12">
+<!-- Fitness Category -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">fitness_center</span>
+                            Fitness Goals
+                        </h3>
+<span class="text-sm font-semibold text-text-muted">12/20 Unlocked</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card: Unlocked -->
+<div class="achievement-card flex flex-col bg-white dark:bg-background-dark p-6 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">directions_run</span>
+</div>
+<h4 class="font-bold text-lg mb-1">10k Club</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Completed a single run of 10 kilometers or more.</p>
+<div class="mt-auto flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded">
+<span>Unlocked</span>
+<span>OCT 12, 2023</span>
+</div>
+</div>
+<!-- Card: Unlocked -->
+<div class="achievement-card flex flex-col bg-white dark:bg-background-dark p-6 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">local_fire_department</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Streak Warrior</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Completed workouts for 7 consecutive days.</p>
+<div class="mt-auto flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded">
+<span>Unlocked</span>
+<span>SEP 30, 2023</span>
+</div>
+</div>
+<!-- Card: Locked -->
+<div class="achievement-card flex flex-col bg-background-light dark:bg-background-dark/30 p-6 rounded-xl border border-dashed border-[#ced7e8] opacity-75 grayscale">
+<div class="size-12 bg-primary/5 rounded-lg flex items-center justify-center text-text-muted mb-4">
+<span class="material-symbols-outlined text-3xl">lock</span>
+</div>
+<h4 class="font-bold text-lg mb-1 text-text-muted">Heavy Hitter</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Lift a total volume of 10,000kg in a single session.</p>
+<div class="mt-auto">
+<div class="flex justify-between text-[10px] font-bold text-text-muted mb-1 uppercase">
+<span>Progress</span>
+<span>7,200/10,000</span>
+</div>
+<div class="w-full bg-primary/10 h-1.5 rounded-full overflow-hidden">
+<div class="bg-text-muted h-full" style="width: 72%;"></div>
+</div>
+</div>
+</div>
+<!-- Card: Locked -->
+<div class="achievement-card flex flex-col bg-background-light dark:bg-background-dark/30 p-6 rounded-xl border border-dashed border-[#ced7e8] opacity-75 grayscale">
+<div class="size-12 bg-primary/5 rounded-lg flex items-center justify-center text-text-muted mb-4">
+<span class="material-symbols-outlined text-3xl">mountain_flag</span>
+</div>
+<h4 class="font-bold text-lg mb-1 text-text-muted">Summit Seeker</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Reach an elevation gain of 5,000m across all activities.</p>
+<div class="mt-auto">
+<div class="flex justify-between text-[10px] font-bold text-text-muted mb-1 uppercase">
+<span>Progress</span>
+<span>1,250/5,000</span>
+</div>
+<div class="w-full bg-primary/10 h-1.5 rounded-full overflow-hidden">
+<div class="bg-text-muted h-full" style="width: 25%;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Social Category -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">groups</span>
+                            Social &amp; Community
+                        </h3>
+<span class="text-sm font-semibold text-text-muted">8/10 Unlocked</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card: Unlocked -->
+<div class="achievement-card flex flex-col bg-white dark:bg-background-dark p-6 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">handshake</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Duo Dynamic</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Completed 10 workouts with a training partner.</p>
+<div class="mt-auto flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded">
+<span>Unlocked</span>
+<span>AUG 05, 2023</span>
+</div>
+</div>
+<!-- Card: Unlocked -->
+<div class="achievement-card flex flex-col bg-white dark:bg-background-dark p-6 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">campaign</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Community Leader</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Shared 25 helpful tips in the community forums.</p>
+<div class="mt-auto flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded">
+<span>Unlocked</span>
+<span>NOV 18, 2023</span>
+</div>
+</div>
+<!-- Card: Locked -->
+<div class="achievement-card flex flex-col bg-background-light dark:bg-background-dark/30 p-6 rounded-xl border border-dashed border-[#ced7e8] opacity-75 grayscale">
+<div class="size-12 bg-primary/5 rounded-lg flex items-center justify-center text-text-muted mb-4">
+<span class="material-symbols-outlined text-3xl">hub</span>
+</div>
+<h4 class="font-bold text-lg mb-1 text-text-muted">Influence Master</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Have 50 other athletes follow your training plans.</p>
+<div class="mt-auto">
+<div class="flex justify-between text-[10px] font-bold text-text-muted mb-1 uppercase">
+<span>Progress</span>
+<span>38/50</span>
+</div>
+<div class="w-full bg-primary/10 h-1.5 rounded-full overflow-hidden">
+<div class="bg-text-muted h-full" style="width: 76%;"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Gamification Category -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">videogame_asset</span>
+                            Forge Challenges
+                        </h3>
+<span class="text-sm font-semibold text-text-muted">8/12 Unlocked</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<!-- Card: Unlocked -->
+<div class="achievement-card flex flex-col bg-white dark:bg-background-dark p-6 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">wb_sunny</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Early Bird</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Complete 5 workouts before 7:00 AM.</p>
+<div class="mt-auto flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded">
+<span>Unlocked</span>
+<span>DEC 02, 2023</span>
+</div>
+</div>
+<!-- Card: Unlocked -->
+<div class="achievement-card flex flex-col bg-white dark:bg-background-dark p-6 rounded-xl border-l-4 border-primary shadow-sm">
+<div class="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl">military_tech</span>
+</div>
+<h4 class="font-bold text-lg mb-1">Level 50</h4>
+<p class="text-text-muted text-sm mb-4 leading-relaxed">Earned through consistent effort across all metrics.</p>
+<div class="mt-auto flex items-center justify-between text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/5 px-2 py-1 rounded">
+<span>Unlocked</span>
+<span>JAN 04, 2024</span>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="mt-20 px-6 lg:px-40 py-10 bg-white dark:bg-background-dark border-t border-primary/10 text-text-muted">
+<div class="flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-4 text-primary grayscale opacity-50">
+<span class="material-symbols-outlined text-2xl">bolt</span>
+<span class="text-sm font-bold uppercase tracking-wider">ForgeArena Performance</span>
+</div>
+<div class="flex gap-8 text-sm font-medium">
+<a class="hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms</a>
+<a class="hover:text-primary transition-colors" href="#">Help Center</a>
+</div>
+<p class="text-xs">© 2024 ForgeArena. All achievements are verified by the ForgeEngine.</p>
+</div>
+</footer>
+</div>
+</div>
+</body></html>

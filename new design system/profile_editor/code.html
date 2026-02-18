@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ForgeArena | Profile Editor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "text-muted": "#49659c",
+                        "surface-dark": "#2d3748",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-nav {
+            background-color: rgba(13, 89, 242, 0.1);
+            color: #0d59f2;
+            border-left: 4px solid #0d59f2;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<!-- Top Navigation Bar -->
+<header class="sticky top-0 z-50 w-full bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex justify-between h-16 items-center">
+<div class="flex items-center gap-2">
+<div class="bg-primary p-1.5 rounded-lg text-white">
+<span class="material-symbols-outlined text-2xl block">fitness_center</span>
+</div>
+<span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">ForgeArena</span>
+</div>
+<nav class="hidden md:flex space-x-8">
+<a class="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Workouts</a>
+<a class="text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">Leaderboard</a>
+<a class="text-sm font-semibold text-primary" href="#">Settings</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-slate-200 overflow-hidden border border-slate-200">
+<img class="h-full w-full object-cover" data-alt="User profile avatar close-up athlete" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAcZmbkDywy7rpzFabhszBL6BaP5Ii9i-Xc4M7uPCtJwDAN4PB7pVzmDu0khqIiv7tMSi2oA3fWDo0YBAdjJ6IbLfmnipc9HynYBIZW576gJ5TWtRk-zhSY8BIW9d8WVK6ySwzzHEOWYY8KlhxzasM93UvPX0Enbm2nXClIEVer6YXzqkwUbJCd9Wr_IReZz2AEO4QCK9leD0_BIRU7Y0xgKwuDR_4KDF_7LNxS5I34se-LINOzMHN7jks1mNc-9eZh7BKkWdouZnGK"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="flex flex-col md:flex-row gap-8">
+<!-- Sidebar Navigation -->
+<aside class="w-full md:w-64 flex-shrink-0">
+<div class="sticky top-24 space-y-1">
+<div class="px-3 py-2">
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">Profile Editor</h2>
+</div>
+<a class="active-nav flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-r-lg transition-all" href="#account">
+<span class="material-symbols-outlined text-[20px]">manage_accounts</span>
+                        Account Settings
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-r-lg transition-all" href="#public">
+<span class="material-symbols-outlined text-[20px]">person</span>
+                        Public Profile
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-r-lg transition-all" href="#personal">
+<span class="material-symbols-outlined text-[20px]">monitoring</span>
+                        Personal Info
+                    </a>
+<a class="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-r-lg transition-all" href="#privacy">
+<span class="material-symbols-outlined text-[20px]">shield</span>
+                        Privacy Settings
+                    </a>
+</div>
+</aside>
+<!-- Main Content Form Area -->
+<div class="flex-1 max-w-3xl">
+<div class="mb-8">
+<h1 class="text-3xl font-black text-slate-900 dark:text-white tracking-tight">Account Settings</h1>
+<p class="text-slate-500 mt-1">Manage your athletic identity and data security.</p>
+</div>
+<div class="space-y-10 pb-24">
+<!-- Public Profile Section -->
+<section class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm" id="public">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Public Profile</h3>
+<p class="text-sm text-slate-500">How you appear to the community.</p>
+</div>
+<div class="p-6 space-y-6">
+<!-- Avatar Upload -->
+<div class="flex items-center gap-6">
+<div class="relative group">
+<div class="h-24 w-24 rounded-full overflow-hidden border-4 border-slate-50 dark:border-slate-800 shadow-inner">
+<img class="h-full w-full object-cover" data-alt="Athletic user profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSFIJoq2jKnlc0jis77P4nlApWKcPSYsMv05_dLgg5XV9lu7DaYNt28-NiketkrGuya5Z2ZW_32V0ugqMvGeXM63lu90LLa1bFMaViteF4-z9CxY0V25uTG02Wu2BodtdBpp0M1gXmmmt0OThBka-PPTHMvPF382znrwvr30_jTZ7EUmsksXkVAeU2_OT8EeJ9gkVMvd2jlSMvqR1xVipIC4uRyJlGTIVQR1bi0aYwsxcLg8gPZQ1CpJnXRTLvNZQiLsW2S0Bq72xh"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-2 border-white dark:border-background-dark hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-sm block">edit</span>
+</button>
+</div>
+<div class="flex flex-col gap-2">
+<button class="px-4 py-2 bg-primary/10 text-primary text-sm font-bold rounded-lg hover:bg-primary/20 transition-colors">Upload New Photo</button>
+<p class="text-xs text-slate-400">JPG, GIF or PNG. Max size 2MB.</p>
+</div>
+</div>
+<!-- Username -->
+<div class="grid grid-cols-1 gap-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Unique Handle</label>
+<div class="relative">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-medium">@</span>
+<input class="w-full pl-8 pr-4 py-2.5 bg-background-light dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="text" value="alex_forge_88"/>
+<span class="absolute right-3 top-1/2 -translate-y-1/2 text-green-500 text-xs font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">check_circle</span> Available
+                                    </span>
+</div>
+</div>
+</div>
+</section>
+<!-- Account Details Section -->
+<section class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm" id="account">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Credentials</h3>
+<p class="text-sm text-slate-500">Essential contact and security info.</p>
+</div>
+<div class="p-6 space-y-6">
+<div class="grid grid-cols-1 gap-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Email Address</label>
+<div class="flex gap-2">
+<input class="flex-1 px-4 py-2.5 bg-background-light dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="email" value="alex.walker@performance.io"/>
+<button class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-sm font-bold rounded-lg hover:bg-slate-200 transition-colors">Verify</button>
+</div>
+</div>
+<div class="pt-2">
+<button class="flex items-center gap-2 text-primary text-sm font-bold hover:underline">
+<span class="material-symbols-outlined text-[18px]">lock_reset</span>
+                                    Change Security Password
+                                </button>
+</div>
+</div>
+</section>
+<!-- Personal Info (Biometrics) -->
+<section class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm" id="personal">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+<div>
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Personal Information</h3>
+<p class="text-sm text-slate-500">Used for power-to-weight and calorie calculations.</p>
+</div>
+<div class="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+<button class="px-3 py-1 text-xs font-bold rounded-md bg-white dark:bg-slate-700 shadow-sm">Metric</button>
+<button class="px-3 py-1 text-xs font-bold text-slate-500">Imperial</button>
+</div>
+</div>
+<div class="p-6">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="space-y-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Age</label>
+<input class="w-full px-4 py-2.5 bg-background-light dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="number" value="28"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Weight (kg)</label>
+<input class="w-full px-4 py-2.5 bg-background-light dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="number" value="74.5"/>
+</div>
+<div class="space-y-2">
+<label class="text-sm font-bold text-slate-700 dark:text-slate-300">Height (cm)</label>
+<input class="w-full px-4 py-2.5 bg-background-light dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all" type="number" value="182"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Privacy Settings -->
+<section class="bg-white dark:bg-background-dark border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm" id="privacy">
+<div class="p-6 border-b border-slate-100 dark:border-slate-800">
+<h3 class="text-lg font-bold text-slate-900 dark:text-white">Privacy Settings</h3>
+<p class="text-sm text-slate-500">Control who can see your progress.</p>
+</div>
+<div class="p-6 space-y-4">
+<!-- Toggle 1 -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-700 dark:text-slate-300">Public Profile Visibility</span>
+<span class="text-xs text-slate-500">Allow other athletes to find you via search.</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<hr class="border-slate-100 dark:border-slate-800"/>
+<!-- Toggle 2 -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-700 dark:text-slate-300">Show Weight on Leaderboards</span>
+<span class="text-xs text-slate-500">Displays your current weight category in rankings.</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<hr class="border-slate-100 dark:border-slate-800"/>
+<!-- Toggle 3 -->
+<div class="flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-sm font-bold text-slate-700 dark:text-slate-300">Allow Global Data Sharing</span>
+<span class="text-xs text-slate-500">Contribute anonymized data for platform benchmarks.</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Bar -->
+<div class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 py-4 z-40">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-end gap-4">
+<button class="px-6 py-2.5 text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">Discard Changes</button>
+<button class="px-8 py-2.5 bg-primary text-white text-sm font-black rounded-lg hover:bg-blue-700 shadow-lg shadow-primary/25 active:scale-95 transition-all">Save Changes</button>
+</div>
+</div>
+</body></html>

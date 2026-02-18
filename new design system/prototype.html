@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>ForgeArena | Gamified Fitness Ecosystem</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#0d59f2",
+                        "background-light": "#f5f6f8",
+                        "background-dark": "#101622",
+                        "text-muted": "#49659c",
+                        "surface-dark": "#2d3748",
+                        "common": "#94A3B8",
+                        "rare": "#0d59f2",
+                        "legendary": "#F59E0B",
+                    },
+                    fontFamily: {
+                        "sans": ["Inter", "sans-serif"],
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .rarity-common { border: 2px solid #94A3B8; }
+        .rarity-rare { border: 2px solid #0d59f2; }
+        .rarity-legendary { border: 2px solid #F59E0B; box-shadow: 0 0 10px rgba(245, 158, 11, 0.2); }
+        .map-gradient {
+            background: radial-gradient(circle at center, rgba(13, 89, 242, 0.05) 0%, rgba(245, 246, 248, 0) 70%);
+        }
+        .active-nav {
+            background-color: rgba(13, 89, 242, 0.1);
+            color: #0d59f2;
+            border-left: 4px solid #0d59f2;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d121c] dark:text-white min-h-screen">
+    <div id="root"></div>
+
+    <!-- React and related libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // Shared Layout Components
+        const Sidebar = () => {
+            const location = useLocation();
+            const isActive = (path) => location.pathname === path;
+
+            return (
+                <aside className="w-64 bg-white dark:bg-background-dark border-r border-gray-200 dark:border-slate-800 flex flex-col shrink-0 h-screen fixed">
+                    <div className="p-6 flex items-center gap-3">
+                        <div className="bg-primary size-10 rounded-lg flex items-center justify-center text-white">
+                            <span className="material-symbols-outlined">swords</span>
+                        </div>
+                        <h1 className="text-xl font-bold tracking-tight dark:text-white">ForgeArena</h1>
+                    </div>
+                    <nav className="flex-1 px-4 space-y-1 overflow-y-auto no-scrollbar">
+                        <Link to="/dashboard" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/dashboard') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">dashboard</span>
+                            <span>Dashboard</span>
+                        </Link>
+                        <Link to="/ai-coach" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/ai-coach') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">smart_toy</span>
+                            <span>AI Coach</span>
+                        </Link>
+                        <Link to="/duels" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/duels') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">swords</span>
+                            <span>Duels Hub</span>
+                        </Link>
+                        <Link to="/raids" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/raids') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">skull</span>
+                            <span>Raids</span>
+                        </Link>
+                        <Link to="/territories" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/territories') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">map</span>
+                            <span>Territories</span>
+                        </Link>
+                        <Link to="/avatar" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/avatar') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">person</span>
+                            <span>Avatar</span>
+                        </Link>
+                        <Link to="/achievements" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/achievements') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">emoji_events</span>
+                            <span>Achievements</span>
+                        </Link>
+                        <Link to="/settings" className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${isActive('/settings') ? 'bg-primary/10 text-primary font-semibold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-slate-800'}`}>
+                            <span className="material-symbols-outlined">settings</span>
+                            <span>Settings</span>
+                        </Link>
+                    </nav>
+                    <div className="p-4 border-t border-gray-100 dark:border-slate-800">
+                        <div className="flex items-center gap-3 p-2">
+                            <div className="size-10 rounded-full bg-gray-200 overflow-hidden shrink-0">
+                                <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDq9b94GUAJ3w0tHzJUtOVkq7Gw1BxJYdjsF-yxRLuprXmKw_f0ghEvECCjA2Vg_sMuZBdyuy2sC_Pp7y-eHsfB_gbSuHmLydEMKsrJRlz5f7Wi8AV5hg6vKT0_0DEuW6rddOtmZYFuYPugphLWJt8IfPrv8HiGznpeymP8Od9ffY3t-tJ9n5wWrDu2sQ2IQyFeYrz2m0B45sWv2MR5Wj1NysjDQrLvkbPO9cTr3eNjfK9P2ErGoA_gwpiyMd8fzUX1OWSRowpZHetk" alt="Avatar"/>
+                            </div>
+                            <div className="truncate">
+                                <p className="text-sm font-semibold dark:text-white">David Miller</p>
+                                <p className="text-xs text-gray-500">Warrior Class</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            );
+        };
+
+        const Header = ({ title, subtitle, showXP = true }) => {
+            return (
+                <header className="bg-white dark:bg-background-dark border-b border-gray-200 dark:border-slate-800 px-8 py-4 sticky top-0 z-10">
+                    <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex-1 min-w-[200px]">
+                            <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h2>
+                            {showXP ? (
+                                <div className="mt-2 flex items-center gap-4 max-w-md">
+                                    <span className="text-xs font-bold text-primary uppercase tracking-wider">Level 15</span>
+                                    <div className="flex-1 bg-gray-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                                        <div className="bg-primary h-full w-[75%]" title="75% XP Progress"></div>
+                                    </div>
+                                    <span className="text-xs font-medium text-gray-500">250 XP to Level 16</span>
+                                </div>
+                            ) : (
+                                subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+                            )}
+                        </div>
+                        <div className="flex items-center gap-3">
+                            <button className="p-2 text-gray-400 hover:text-primary transition-colors">
+                                <span className="material-symbols-outlined">notifications</span>
+                            </button>
+                            <button className="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-blue-700 transition-colors flex items-center gap-2">
+                                <span className="material-symbols-outlined text-sm">bolt</span>
+                                Level Up
+                            </button>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        // Screen Components
+        const LandingPage = () => {
+            const navigate = useNavigate();
+            return (
+                <div className="bg-white dark:bg-background-dark min-h-screen overflow-x-hidden">
+                    <header className="flex items-center justify-between border-b border-solid border-primary/10 px-6 md:px-20 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-50">
+                        <div className="flex items-center gap-3 text-primary">
+                            <div className="size-8 flex items-center justify-center bg-primary rounded-lg text-white">
+                                <span className="material-symbols-outlined text-2xl">fitness_center</span>
+                            </div>
+                            <h2 className="text-[#0d121c] dark:text-white text-xl font-bold leading-tight tracking-[-0.015em]">ForgeArena</h2>
+                        </div>
+                        <div className="hidden md:flex flex-1 justify-center gap-10">
+                            <a href="#" className="text-[#0d121c] dark:text-gray-300 text-sm font-semibold hover:text-primary transition-colors">Features</a>
+                            <a href="#" className="text-[#0d121c] dark:text-gray-300 text-sm font-semibold hover:text-primary transition-colors">How it Works</a>
+                            <a href="#" className="text-[#0d121c] dark:text-gray-300 text-sm font-semibold hover:text-primary transition-colors">Social Arena</a>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <button onClick={() => navigate('/dashboard')} className="min-w-[100px] cursor-pointer items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+                                Enter App
+                            </button>
+                        </div>
+                    </header>
+                    <main>
+                        <div className="px-6 md:px-20 py-12 md:py-24">
+                            <div className="flex flex-col gap-10 lg:flex-row items-center max-w-7xl mx-auto">
+                                <div className="flex flex-col gap-8 lg:w-1/2">
+                                    <div className="flex flex-col gap-4">
+                                        <span className="text-primary font-bold tracking-widest uppercase text-xs">Level Up Your Life</span>
+                                        <h1 className="text-[#0d121c] dark:text-white text-5xl md:text-7xl font-black leading-tight tracking-tight">
+                                            Forge Your <span className="text-primary">Legend.</span>
+                                        </h1>
+                                        <p className="text-text-muted dark:text-gray-400 text-lg md:text-xl font-normal leading-relaxed max-w-lg">
+                                            Transform your real-world sweat into digital power. Sync your workouts and power up your custom 3D avatar in the ultimate gamified fitness arena.
+                                        </p>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                        <button onClick={() => navigate('/dashboard')} className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 bg-primary text-white text-base font-bold shadow-xl shadow-primary/30 hover:scale-[1.02] transition-transform">
+                                            Start Your Journey
+                                        </button>
+                                        <button className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-xl h-14 px-8 border-2 border-primary/20 text-primary text-base font-bold hover:bg-primary/5 transition-colors">
+                                            Watch Trailer
+                                        </button>
+                                    </div>
+                                </div>
+                                <div className="lg:w-1/2 w-full relative">
+                                    <div className="absolute -inset-4 bg-primary/10 rounded-3xl blur-2xl -z-10"></div>
+                                    <div className="w-full aspect-[4/3] bg-center bg-no-repeat bg-cover rounded-2xl shadow-2xl border-4 border-white dark:border-slate-800" style={{backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBWl0s6h4liXw0i_FGhI7xg66l8--iSxvPYobWxcjoHUxIhAlMHtPitd6OwRDjbUC_mTuIg45O5uL7Peev7uq4mPxXnZzGNOEG-2ex7d-zgA5mt1c8SiRbXSwJ9cHjPNq25qByFCKU4EjlpcOgU-pHIbJoSxvPddn6UWgDbTkdPtnacx8X4PXtpm7__BNBv4hHeVVPbBnTVkga9bhbaM9aOJw4d36Tn-ICiObGI75C2-uhZFooI6Cr6DVd9RpkPzjmC-AJpFJhxDltb')"}}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const DashboardPage = () => {
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 flex flex-col overflow-y-auto">
+                        <Header title="Welcome back, David" />
+                        <div className="p-8 max-w-6xl mx-auto w-full">
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 flex flex-col">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h3 className="text-lg font-bold">BodyForge Avatar</h3>
+                                        <span className="text-xs text-gray-400 font-medium">Synced 2m ago</span>
+                                    </div>
+                                    <div className="flex gap-6 items-start">
+                                        <div className="w-1/3 aspect-[3/4] rounded-xl bg-gray-50 dark:bg-slate-800 relative overflow-hidden flex items-center justify-center border border-gray-100 dark:border-slate-800">
+                                            <img className="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBQfnkNB5ea4wipeJ5VZ_AVsccfjvCvC-Bc1-QjU5v7RaswIewRHV-vbeb7ttOewKn0ePBYbxjHzPBNDhqMLsNfUqTZa_XmBeHLJRvB24guRM9RbQF1eCR2FL0Hu5Lp_9-1sJxKZPNume7CiL9shNcYeCM4kwQ-qD8Yf3PCgn1XB1dUyGYtO3vZ-ZUj0vlyfyGTJDU5h_ZQLsm9-b7zUdp8uI44Of9Jhagpl4BieRq8_HeWWv9h2KpQBS4t2xIf1NoqeMpFvek5mNLQ" alt="Avatar"/>
+                                        </div>
+                                        <div className="flex-1 space-y-5">
+                                            {['Strength', 'Endurance', 'Agility'].map((stat, i) => (
+                                                <div key={stat}>
+                                                    <div className="flex justify-between text-sm mb-1.5">
+                                                        <span className="font-medium text-gray-600 dark:text-gray-400">{stat}</span>
+                                                        <span className="font-bold text-primary">{[80, 65, 40][i]}%</span>
+                                                    </div>
+                                                    <div className="bg-gray-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                                                        <div className="bg-primary h-full rounded-full" style={{width: `${[80, 65, 40][i]}%`}}></div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <div className="pt-2">
+                                                <p className="text-xs text-gray-500 italic">"Focus on Agility quests to unlock the 'Windrunner' perk."</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-6">
+                                    <h3 className="text-lg font-bold mb-6">Quick-Log Workout</h3>
+                                    <form className="space-y-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Exercise</label>
+                                            <select className="w-full rounded-lg border-gray-200 dark:border-slate-800 dark:bg-slate-800 text-sm focus:ring-primary focus:border-primary">
+                                                <option>Select Exercise</option>
+                                                <option>Bench Press</option>
+                                                <option>Back Squats</option>
+                                                <option>Deadlifts</option>
+                                            </select>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Weight (kg)</label>
+                                                <input className="w-full rounded-lg border-gray-200 dark:border-slate-800 dark:bg-slate-800 text-sm" type="number" placeholder="0"/>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Reps</label>
+                                                <input className="w-full rounded-lg border-gray-200 dark:border-slate-800 dark:bg-slate-800 text-sm" type="number" placeholder="0"/>
+                                            </div>
+                                        </div>
+                                        <button className="w-full bg-primary text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-all flex items-center justify-center gap-2 mt-4">
+                                            <span className="material-symbols-outlined text-lg">add_task</span>
+                                            Log Session
+                                        </button>
+                                    </form>
+                                </div>
+                                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-6 flex flex-col relative overflow-hidden">
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="bg-red-50 dark:bg-red-900/20 p-2 rounded-lg">
+                                            <span className="material-symbols-outlined text-red-500">skull</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold">Active Raid: Iron Golem</h3>
+                                            <p className="text-xs text-gray-500">Tier 3 Strength Boss</p>
+                                        </div>
+                                    </div>
+                                    <div className="mb-6 relative h-48 rounded-xl overflow-hidden group">
+                                        <img className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD9VjX6sCJFiIAcZU-obQxyy9E0TsPxrl0SWhXQ0295nrzkTshUcUD6I5qPNHff8xMaCSmnNkPQ-0hGu8sPC-1JYHarzqZZBynh-bAaQK-CC1THestqrvNu9DOB7vkUlEBIni7kZc1NhkeZSvFP0fNw_eqrFVGsRIiT8xs37OVe-D7nvFqOkorU-6vl2PDwGaG9ARJuQmpH4aGBUGAtWf0B8fyIIFupCjcVCWXvk-ccRDmH9Ukx4vwqUz7mxd-ShfZ-BOCDmr8DovNc" alt="Boss"/>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4">
+                                            <p className="text-white text-xs font-medium leading-relaxed opacity-90">A massive construct of pure steel. Defeat him by completing your weekly strength goals.</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between items-end">
+                                            <span className="text-xs font-bold text-gray-400 uppercase tracking-tighter">HP: 1,250 / 2,000</span>
+                                            <span className="text-sm font-bold text-red-600">62% Health</span>
+                                        </div>
+                                        <div className="bg-gray-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden border border-gray-200 dark:border-slate-700">
+                                            <div className="bg-red-500 h-full w-[62%] rounded-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-gray-100 dark:border-slate-800 p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h3 className="text-lg font-bold">AI Coach Recommendations</h3>
+                                        <span className="material-symbols-outlined text-primary">auto_awesome</span>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="p-4 rounded-xl border border-primary/20 bg-primary/5 flex items-start gap-4">
+                                            <div className="bg-primary text-white p-2 rounded-lg shrink-0">
+                                                <span className="material-symbols-outlined text-base">directions_run</span>
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Recommended: 17 Squats for Agility</p>
+                                                <p className="text-xs text-gray-500 mt-1">Based on your Agility gap (40%), completing this set will grant +15 XP.</p>
+                                                <button className="mt-3 text-xs font-bold text-primary hover:underline flex items-center gap-1">Start Set <span className="material-symbols-outlined text-xs">arrow_forward</span></button>
+                                            </div>
+                                        </div>
+                                        <div className="p-4 rounded-xl border border-gray-100 dark:border-slate-800 bg-gray-50 dark:bg-slate-800/50 flex items-start gap-4">
+                                            <div className="bg-gray-200 dark:bg-slate-700 text-gray-600 p-2 rounded-lg shrink-0">
+                                                <span className="material-symbols-outlined text-base">restaurant</span>
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-sm font-bold text-gray-900 dark:text-white">Post-Workout Nutrition</p>
+                                                <p className="text-xs text-gray-500 mt-1">Consume 25g of protein within 45 minutes.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const AICoachPage = () => {
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 flex flex-col lg:flex-row p-6 gap-6 max-w-[1600px] mx-auto w-full">
+                        <div className="flex-1 flex flex-col gap-6">
+                            <section className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div>
+                                    <h1 className="text-3xl font-black tracking-tight">Performance Command</h1>
+                                    <p className="text-text-muted mt-1">Ready for high-intensity. Recovery: 94%</p>
+                                </div>
+                                <button className="bg-primary text-white px-6 py-2.5 rounded-lg font-bold text-sm shadow-lg shadow-primary/20 flex items-center gap-2 hover:bg-primary/90 transition-all">
+                                    <span className="material-symbols-outlined !text-sm">play_arrow</span>
+                                    Start Session
+                                </button>
+                            </section>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#e7ebf4] dark:border-slate-800 shadow-sm">
+                                    <h3 className="font-bold flex items-center gap-2 mb-4">
+                                        <span className="material-symbols-outlined text-primary">calendar_today</span>
+                                        Today's Plan
+                                    </h3>
+                                    <div className="space-y-1">
+                                        {['Dynamic Warm-up', 'Back Squat 5x5', 'Plyo-Box Jumps 4x10'].map(task => (
+                                            <label key={task} className="flex items-center gap-3 p-3 rounded-lg hover:bg-background-light dark:hover:bg-slate-800 cursor-pointer transition-colors group">
+                                                <input className="w-5 h-5 rounded border-gray-300 text-primary" type="checkbox"/>
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-semibold">{task}</p>
+                                                    <p className="text-xs text-text-muted">Target: Professional standard</p>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-[#e7ebf4] dark:border-slate-800 shadow-sm flex flex-col items-center">
+                                    <h3 className="font-bold self-start flex items-center gap-2 mb-6">
+                                        <span className="material-symbols-outlined text-primary">analytics</span>
+                                        Fitness Assessment
+                                    </h3>
+                                    <div className="w-40 h-40 rounded-full border-[10px] border-primary/10 flex items-center justify-center relative">
+                                        <div className="absolute inset-0 rounded-full border-[10px] border-primary border-t-transparent border-r-transparent rotate-[45deg]"></div>
+                                        <div className="text-center">
+                                            <span className="text-3xl font-black">Tier 4</span>
+                                            <p className="text-[10px] uppercase font-bold text-text-muted">Elite Athlete</p>
+                                        </div>
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-2 mt-6 w-full text-center">
+                                        {['Power', 'Agility', 'Endurance'].map((stat, i) => (
+                                            <div key={stat} className="p-2 bg-background-light dark:bg-slate-800 rounded-lg">
+                                                <p className="text-[10px] uppercase font-bold text-text-muted">{stat}</p>
+                                                <p className="font-bold text-primary">{[88, 72, 94][i]}/100</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <aside className="w-full lg:w-[380px] bg-white dark:bg-slate-900 rounded-2xl border border-[#e7ebf4] dark:border-slate-800 flex flex-col h-[calc(100vh-120px)] shadow-xl overflow-hidden">
+                            <div className="p-5 border-b border-[#e7ebf4] dark:border-slate-800 bg-primary/5">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg">
+                                        <span className="material-symbols-outlined">smart_toy</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold leading-none">ForgeMaster AI</h3>
+                                        <div className="flex items-center gap-1.5 mt-1">
+                                            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                                            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">Coach Online</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-5 space-y-4 no-scrollbar">
+                                <div className="bg-background-light dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[85%]">Good morning! Your recovery is at 94% today.</div>
+                                <div className="bg-primary text-white p-3 rounded-2xl rounded-tr-none text-sm leading-relaxed max-w-[85%] self-end">Should I push my squat weight?</div>
+                                <div className="bg-background-light dark:bg-slate-800 p-3 rounded-2xl rounded-tl-none text-sm leading-relaxed max-w-[85%]">Yes, you can increase to 235lbs for the final sets.</div>
+                            </div>
+                            <div className="p-4 border-t border-[#e7ebf4] dark:border-slate-800">
+                                <div className="flex items-center gap-2 bg-[#f1f4f9] dark:bg-slate-800 p-2 rounded-xl">
+                                    <input className="flex-1 bg-transparent border-none focus:ring-0 text-sm py-1" placeholder="Ask Coach Master..." type="text"/>
+                                    <button className="bg-primary text-white p-2 rounded-lg"><span className="material-symbols-outlined !text-lg">send</span></button>
+                                </div>
+                            </div>
+                        </aside>
+                    </main>
+                </div>
+            );
+        };
+
+        const DuelsPage = () => {
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 p-8">
+                        <header className="flex justify-between items-end mb-8">
+                            <div>
+                                <h1 className="text-3xl font-black tracking-tight mb-2">Social & Duels Hub</h1>
+                                <p className="text-slate-500 dark:text-slate-400">Compete with friends and track community achievements.</p>
+                            </div>
+                            <div className="flex gap-4">
+                                {['Rank', 'Wins', 'Friends'].map((label, i) => (
+                                    <div key={label} className="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-center">
+                                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1">{label}</p>
+                                        <p className="font-bold text-lg text-primary">{['Gold III', '42', '128'][i]}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </header>
+                        <div className="grid grid-cols-12 gap-8">
+                            <div className="col-span-8 space-y-8">
+                                <section className="relative overflow-hidden rounded-2xl bg-primary p-8 text-white shadow-xl group">
+                                    <div className="relative z-10 max-w-lg">
+                                        <h3 className="text-2xl font-bold mb-3">Challenge Someone New</h3>
+                                        <p className="text-white/80 mb-6 leading-relaxed">Push your limits by starting a 1v1 challenge. Track steps, calories, or specific workout goals.</p>
+                                        <div className="flex gap-3">
+                                            <button className="bg-white text-primary px-6 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2">
+                                                <span className="material-symbols-outlined text-lg">add</span>
+                                                Create Duel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section>
+                                    <h2 className="text-xl font-bold mb-4">Active Duels</h2>
+                                    <div className="grid grid-cols-1 gap-4">
+                                        <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="size-10 rounded-full bg-blue-500 flex items-center justify-center text-white">AR</div>
+                                                    <div>
+                                                        <h4 className="font-bold">10k Step Challenge</h4>
+                                                        <p className="text-xs text-slate-500">vs. Alex "Beast" Thompson</p>
+                                                    </div>
+                                                </div>
+                                                <span className="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 text-[10px] font-bold rounded">2h Remaining</span>
+                                            </div>
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between text-xs font-bold">
+                                                    <span className="text-primary">You: 8,420</span>
+                                                    <span className="text-slate-600 dark:text-gray-300">Alex: 7,890</span>
+                                                </div>
+                                                <div className="h-3 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-primary" style={{width: '84%'}}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div className="col-span-4">
+                                <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 h-[calc(100vh-250px)] overflow-y-auto no-scrollbar">
+                                    <h2 className="text-xl font-bold mb-6">Activity Feed</h2>
+                                    <div className="space-y-8">
+                                        <div className="flex gap-4">
+                                            <div className="size-10 rounded-full bg-slate-200 shrink-0 overflow-hidden">
+                                                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8jql8eabsMR8hCbNdRzZfcyIN8lOt-GYgcAPw80N58FW_bz3OXRc5LoFJ-QAqEndWRCuWLZ6wpikXk4BMigOeiP7VLktPKCu0AL_o_4NtqnseMc4LtQ46v-C0E7e9SGzZzbALOAIAnM9QWtcXWSnGCghhP4DT3DnQUuKFtUXSv7OhrJyc07dg2DtOB0G4eROS0a6prvGgkacNBB6iyLc5VMDJ0PtfdJaO1jMkbcvR63ls4m6xfKsf3dwe1Hw_HlswtWQabAN45eDB" alt="User"/>
+                                            </div>
+                                            <div>
+                                                <p className="text-sm"><span className="font-bold">Alex "Beast"</span> set a new PR in <span className="text-primary font-bold">Deadlift</span> (225 lbs).</p>
+                                                <p className="text-[10px] text-slate-400 mt-1 uppercase font-bold">12m ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const RaidsPage = () => {
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <section className="lg:col-span-8 flex flex-col gap-6">
+                            <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-800">
+                                <div className="aspect-[16/7] bg-slate-800 relative">
+                                    <img className="w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAE_1k0hmSGtCpM0-Vwdx1dSW1EG9ugTSb1GPJFPzj8zJcBx52YYxjoKJQeEO_bp03IBg612_6dG4u_XQ4xC0-5EcbhiSStjROoIYBDzQh461mVwrOTbCoheekOq54NEVJz04AzMRRgTcviW7PmFU3-PperP0wqMUOectWJcu-CRGD4vLsrpVVdFn_5T8g7GJYayheyW18JtEj2KxOn0l68iJWl1iLn2Feg8DKeuCwOX9TlMFxgGM2HAVzIuPL2SEq4enGJJyIUmMqp" alt="Boss"/>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent"></div>
+                                    <div className="absolute bottom-6 left-6">
+                                        <span className="bg-primary px-2 py-1 rounded text-[10px] font-black uppercase tracking-widest text-white mb-2 inline-block">Legendary Boss</span>
+                                        <h1 className="text-4xl font-black text-white tracking-tighter">Iron Golem</h1>
+                                    </div>
+                                </div>
+                                <div className="p-6">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <span className="text-sm font-bold text-slate-500">Boss Integrity</span>
+                                        <span className="text-sm font-black text-primary">450,000 / 1,000,000 HP</span>
+                                    </div>
+                                    <div className="h-6 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden p-1 border border-slate-200 dark:border-slate-800">
+                                        <div className="h-full bg-primary rounded-full" style={{width: '45%'}}></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-800">
+                                <h3 className="font-bold text-lg mb-6">Commit Damage</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-4">
+                                        <div>
+                                            <span className="text-xs font-bold text-slate-500 uppercase block mb-1">Workout Type</span>
+                                            <select className="w-full rounded-lg border-slate-200 dark:bg-slate-800 dark:border-slate-700 text-sm">
+                                                <option>Strength Training (3x Dmg)</option>
+                                                <option>Cardio (2x Dmg)</option>
+                                            </select>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <input className="w-full rounded-lg border-slate-200 dark:bg-slate-800 dark:border-slate-700 text-sm" type="number" value="4"/>
+                                            <input className="w-full rounded-lg border-slate-200 dark:bg-slate-800 dark:border-slate-700 text-sm" type="number" value="12"/>
+                                        </div>
+                                    </div>
+                                    <div className="bg-slate-50 dark:bg-slate-800 p-5 rounded-xl border border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center">
+                                        <p className="text-xs font-bold text-slate-400 uppercase">Calculated Damage</p>
+                                        <p className="text-4xl font-black">1,450</p>
+                                    </div>
+                                </div>
+                                <button className="w-full mt-6 py-4 bg-primary text-white font-black text-lg rounded-xl shadow-lg shadow-primary/20">LOG WORKOUT & ATTACK</button>
+                            </div>
+                        </section>
+                        <aside className="lg:col-span-4 flex flex-col gap-6">
+                            <div className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800">
+                                <h3 className="font-bold mb-4 flex items-center gap-2"><span className="material-symbols-outlined text-primary">group</span> The Iron Vanguard</h3>
+                                <div className="space-y-4">
+                                    {['EliteRacer', 'Strongman_01', 'MuscleMind'].map((name, i) => (
+                                        <div key={name} className="flex items-center gap-3">
+                                            <div className="size-8 rounded-full bg-slate-200"></div>
+                                            <div className="flex-1">
+                                                <p className="text-sm font-bold">{name}</p>
+                                                <p className="text-[10px] text-slate-500">{[42500, 38120, 35900][i]} DMG</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </aside>
+                    </main>
+                </div>
+            );
+        };
+
+        const TerritoriesPage = () => {
+            return (
+                <div className="flex h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 flex overflow-hidden">
+                        <aside className="w-[400px] border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-background-dark p-6 overflow-y-auto no-scrollbar">
+                            <section className="mb-8">
+                                <h2 className="text-sm font-bold uppercase text-slate-400 mb-4">My Club Influence</h2>
+                                <div className="bg-slate-50 dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center"><span className="material-symbols-outlined">shield</span></div>
+                                        <div><h3 className="font-bold">Iron Legion</h3><p className="text-xs text-slate-500">Tier 4 Elite Syndicate</p></div>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-white dark:bg-slate-900 p-3 rounded-lg shadow-sm">
+                                            <p className="text-[10px] font-bold text-slate-400">Rank</p>
+                                            <p className="text-xl font-bold">#12</p>
+                                        </div>
+                                        <div className="bg-white dark:bg-slate-900 p-3 rounded-lg shadow-sm">
+                                            <p className="text-[10px] font-bold text-slate-400">Territories</p>
+                                            <p className="text-xl font-bold">42</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            <section>
+                                <h2 className="text-sm font-bold uppercase text-slate-400 mb-4">Global Leaderboard</h2>
+                                <div className="space-y-2">
+                                    {['Apex Predators', 'Iron Legion', 'Neon Shadows'].map((club, i) => (
+                                        <div key={club} className={`p-3 rounded-xl flex items-center gap-4 border ${i === 1 ? 'bg-primary/5 border-primary/20' : 'border-transparent hover:bg-slate-50 dark:hover:bg-slate-800'}`}>
+                                            <div className="font-black text-slate-300 w-6">0{i+1}</div>
+                                            <div className="flex-1">
+                                                <h4 className="text-sm font-bold">{club}</h4>
+                                                <p className="text-[10px] text-slate-500">128k TP • 156 Members</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </section>
+                        </aside>
+                        <div className="flex-1 relative bg-slate-200 dark:bg-slate-800">
+                            <div className="absolute inset-0 map-gradient bg-[#f0f2f5] dark:bg-slate-900 overflow-hidden">
+                                <img className="w-full h-full object-cover opacity-60 mix-blend-multiply grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrDqgUEisqhq-GbhS5dNdVzUkieJAWlTttzwMj8zABSfwfQU5IkCyd6eyDauWUpuT0Ngp9ExSF0B3rGJGLXVKuGpE8J98NXlOLWrVndD0NBA8_sZlNDRpSWemA1qU8Gon2grfzJ3REULvxrNUUd8x5WgH6R3PeHqia6iDXqmRtBpJ48y4wICWe1FTCyDfXNE88RcJ_qfdYzjpwWBPjPzVrx-LAnmJHW5ND6zW-BeF39qqj6eRzWPcD2MXSwDmdL8EXtWGimyth3uFV" alt="Map"/>
+                                <div className="absolute top-1/2 left-1/3 group cursor-pointer">
+                                    <div className="size-12 bg-primary/20 rounded-full animate-ping absolute"></div>
+                                    <div className="size-8 bg-primary text-white border-2 border-white rounded-full flex items-center justify-center relative shadow-lg"><span className="material-symbols-outlined text-sm">fitness_center</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const AvatarPage = () => {
+            return (
+                <div className="flex h-screen overflow-hidden">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 flex flex-col lg:flex-row h-screen">
+                        <section className="relative w-full lg:w-[40%] bg-slate-200 dark:bg-slate-800 border-r border-[#e2e8f0] dark:border-slate-800">
+                            <div className="absolute inset-0 bg-gradient-to-b from-slate-300/50 to-slate-100/50 dark:from-slate-900/50 dark:to-slate-800/50"></div>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <img className="max-w-md w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa_mHh1dOXu44l-u4-SPvh9HUZmo_9yj5kVVY6qKAHSsmaSpLbZJd7Prz-AnxYE646NESIsfwyIYHGiTDI_K8FwxSkP1WnwKSPCEqEJuW5VDY7AIpDFg76ypgjtme21uQZtTZrOsh2VvZXgRp5jvYiXqG665uWgzS-FRFDh6_pPAEVHBdtJOfLB3pseYx8UCHqb1EzzXrNqe7ONik1rdq2u47-oKOeNFz4pzrPogdsNJGzIYDTutXxVFp4zm9PIaGnIVp9fDtXztoY" alt="Character"/>
+                            </div>
+                            <div className="absolute top-6 left-6">
+                                <span className="bg-primary text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Level 42</span>
+                                <h1 className="text-2xl font-bold dark:text-white">ShadowStryker</h1>
+                            </div>
+                        </section>
+                        <section className="flex-1 bg-white dark:bg-slate-900 flex flex-col">
+                            <div className="border-b dark:border-slate-800 px-8 pt-4 flex gap-8">
+                                <button className="pb-3 text-slate-400 font-bold text-sm tracking-wide">AVATAR</button>
+                                <button className="pb-3 border-b-2 border-primary text-primary font-bold text-sm tracking-wide">INVENTORY</button>
+                                <button className="pb-3 text-slate-400 font-bold text-sm tracking-wide">REWARDS</button>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-8 no-scrollbar">
+                                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+                                    <div className="rarity-legendary rounded-lg p-2 bg-white dark:bg-slate-800 transition-transform hover:-translate-y-1">
+                                        <div className="aspect-square bg-slate-50 dark:bg-slate-700 rounded mb-2 overflow-hidden">
+                                            <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuIXwvQ52zUGXQIexTW9WFGBD4qrvmnb8mPL7O9DNF1AuZG0AzM7ix-ixpajobKQQ2x61ejJ9XZyD2mCBLgtUcjgoeyYZqDRmGqzCujqFRtMIbSxTAa6AyEM0cBiOLpT6YttzJx9lV9IuYX563XNCEzM45YoaHi0OuQOKXZQFADhYijtxlnIg2oKDjg--7zJ_WM7pAFmtsf-CUY0H3NvsEOnoH3AuzoGhrH24iEeNZTNuy6rks8eRuKCdHkZi5RbnGuZMbaXo_l5Sv" alt="Item"/>
+                                        </div>
+                                        <p className="text-xs font-bold truncate">Vanguard Apex</p>
+                                    </div>
+                                    <div className="rarity-rare rounded-lg p-2 bg-white dark:bg-slate-800 transition-transform hover:-translate-y-1">
+                                        <div className="aspect-square bg-slate-50 dark:bg-slate-700 rounded mb-2 overflow-hidden">
+                                            <img className="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW9FODPeHyn-mGb3OS41PzAylGnYSetW4P7J-B9sfNWmtIZx0Jx3NByWeLu_iLkylMcuKderPkreKzYoBpP2pYZB9Q--PrSWAL3YqFrJmLvRN1lJnZ3fr3nWBYt6XA8Xsv6MdNPLK-PNNZqyQvmamPUY0CeYzt2UcvUmg1HKNZgWKB0O2GpEfLU5iugNNNwxsdcye0kPClJ24yn3loEqFyyIzYZFKDwFX9vvxMRXBUA9jPZu-Kem2gg00nWE9UnBMZvfbP5v-e_tbE" alt="Item"/>
+                                        </div>
+                                        <p className="text-xs font-bold truncate">Tactical Core II</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            );
+        };
+
+        const AchievementsPage = () => {
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 p-10 bg-white dark:bg-slate-900">
+                        <div className="mb-10">
+                            <h1 className="text-4xl font-black mb-2">Achievements</h1>
+                            <p className="text-text-muted">Push your limits and unlock exclusive rewards.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+                            {['Total Trophies', 'Forge Points', 'Global Rank', 'Completion'].map((stat, i) => (
+                                <div key={stat} className="p-6 rounded-xl border border-primary/10 shadow-sm">
+                                    <p className="text-text-muted text-sm font-semibold mb-2 uppercase">{stat}</p>
+                                    <p className="text-3xl font-black">{['42', '12,450', '#1,204', '65%'][i]}</p>
+                                </div>
+                            ))}
+                        </div>
+                        <section>
+                            <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><span className="material-symbols-outlined text-primary">fitness_center</span> Fitness Goals</h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                <div className="achievement-card p-6 rounded-xl border-l-4 border-primary bg-white dark:bg-slate-800 shadow-sm">
+                                    <div className="size-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary mb-4"><span className="material-symbols-outlined text-3xl">directions_run</span></div>
+                                    <h4 className="font-bold text-lg">10k Club</h4>
+                                    <p className="text-slate-500 text-sm mb-4">Completed a single run of 10km.</p>
+                                    <div className="bg-primary/5 text-primary text-[10px] font-bold py-1 px-2 rounded uppercase text-center">Unlocked</div>
+                                </div>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            );
+        };
+
+        const SettingsPage = () => {
+            return (
+                <div className="flex min-h-screen">
+                    <Sidebar />
+                    <main className="flex-1 ml-64 p-10 bg-white dark:bg-slate-900">
+                        <div className="max-w-3xl">
+                            <h1 className="text-3xl font-black mb-8">Account Settings</h1>
+                            <div className="space-y-10">
+                                <section className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                                    <div className="p-6 border-b dark:border-slate-800"><h3 className="text-lg font-bold">Public Profile</h3></div>
+                                    <div className="p-6 space-y-6">
+                                        <div className="flex items-center gap-6">
+                                            <div className="size-24 rounded-full overflow-hidden bg-slate-200"><img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSFIJoq2jKnlc0jis77P4nlApWKcPSYsMv05_dLgg5XV9lu7DaYNt28-NiketkrGuya5Z2ZW_32V0ugqMvGeXM63lu90LLa1bFMaViteF4-z9CxY0V25uTG02Wu2BodtdBpp0M1gXmmmt0OThBka-PPTHMvPF382znrwvr30_jTZ7EUmsksXkVAeU2_OT8EeJ9gkVMvd2jlSMvqR1xVipIC4uRyJlGTIVQR1bi0aYwsxcLg8gPZQ1CpJnXRTLvNZQiLsW2S0Bq72xh" alt="Avatar"/></div>
+                                            <button className="px-4 py-2 bg-primary/10 text-primary font-bold rounded-lg">Upload New Photo</button>
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <label className="text-sm font-bold">Unique Handle</label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">@</span>
+                                                <input className="w-full pl-8 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border-none rounded-lg" type="text" value="alex_forge_88"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <section className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-sm">
+                                    <div className="p-6 border-b dark:border-slate-800"><h3 className="text-lg font-bold">Privacy Settings</h3></div>
+                                    <div className="p-6">
+                                        <div className="flex items-center justify-between">
+                                            <div><p className="font-bold">Public Profile Visibility</p><p className="text-xs text-slate-500">Allow others to find you.</p></div>
+                                            <div className="w-11 h-6 bg-primary rounded-full relative"><div className="size-5 bg-white rounded-full absolute right-0.5 top-0.5 shadow-sm"></div></div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div className="mt-10 flex justify-end gap-4">
+                                <button className="px-6 py-2.5 font-bold text-slate-500">Discard</button>
+                                <button className="px-8 py-2.5 bg-primary text-white font-black rounded-lg shadow-lg">Save Changes</button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <MemoryRouter>
+                    <Routes>
+                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/ai-coach" element={<AICoachPage />} />
+                        <Route path="/duels" element={<DuelsPage />} />
+                        <Route path="/raids" element={<RaidsPage />} />
+                        <Route path="/territories" element={<TerritoriesPage />} />
+                        <Route path="/avatar" element={<AvatarPage />} />
+                        <Route path="/achievements" element={<AchievementsPage />} />
+                        <Route path="/settings" element={<SettingsPage />} />
+                    </Routes>
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>

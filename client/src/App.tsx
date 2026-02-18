@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
-import UserProfile from './components/UserProfile';
+import AppLayout from './components/AppLayout';
 import ProfileScreen from './components/ProfileScreen';
 import AICoach from './components/AICoach';
 import AvatarEditor from './components/AvatarEditor';
@@ -204,38 +204,36 @@ function MainApp() {
   const xpToNextLevel = user.avatar.level * 100 - user.avatar.xp;
   const xpProgress = (user.avatar.xp / (user.avatar.level * 100)) * 100;
 
+  const headerTitles: Record<string, string> = {
+    dashboard: `Welcome back, ${user.username}`,
+    'ai-coach': 'AI Coach',
+    duels: 'Duels Hub',
+    raid: 'Raids',
+    clubs: 'Territories',
+    party: 'Party',
+    avatar: 'Avatar & Inventory',
+    profile: 'Profile',
+    achievements: 'Achievements',
+    social: 'Social',
+    settings: 'Settings',
+  };
+  const headerTitle = headerTitles[activeTab] ?? 'ForgeArena';
+  const showXP = activeTab === 'dashboard';
+
   return (
     <div className="App">
-      <header className="header">
-        <div className="header-content">
-          <div className="header-left">
-            <h1>ForgeArena</h1>
-            <p>Gamified Fitness Platform - Proof of Concept</p>
-          </div>
-          <UserProfile className="header-user" />
-        </div>
-      </header>
+      <AppLayout
+        activeTab={activeTab}
+        onNavigate={setActiveTab}
+        headerTitle={headerTitle}
+        showXP={showXP}
+        level={user.avatar.level}
+        xpProgress={xpProgress}
+        xpToNextLevel={xpToNextLevel}
+      >
+        {message && <div className="global-message">{message}</div>}
 
-      <nav className="nav-tabs">
-        {['dashboard', 'avatar', 'ai-coach', 'profile', 'achievements', 'duels', 'clubs', 'party', 'raid', 'social'].map(tab => (
-          <button 
-            key={tab}
-            className={`nav-tab ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab === 'ai-coach' ? 'AI Coach' : 
-             tab === 'avatar' ? 'Avatar & Inventory' : 
-             tab === 'clubs' ? 'Clubs' :
-             tab === 'party' ? 'Party' :
-             tab === 'raid' ? 'Raid' :
-             tab.charAt(0).toUpperCase() + tab.slice(1)}
-          </button>
-        ))}
-      </nav>
-
-      {message && <div className="global-message">{message}</div>}
-
-      <div className="dashboard">
+        <div className="dashboard">
         {activeTab === 'dashboard' && (
           <>
             {/* Avatar Section */}
@@ -421,7 +419,15 @@ function MainApp() {
             </div>
           </>
         )}
-      </div>
+
+        {activeTab === 'settings' && (
+          <div className="card">
+            <h2>Settings</h2>
+            <p>Account and app settings will appear here. Use Profile for now.</p>
+          </div>
+        )}
+        </div>
+      </AppLayout>
     </div>
   );
 }
