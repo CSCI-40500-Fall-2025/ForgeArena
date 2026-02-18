@@ -415,10 +415,12 @@ const AvatarEditor: React.FC = () => {
         </div>
       )}
 
-      {/* Header */}
-      <div className="editor-header">
-        <h1>Avatar Editor</h1>
-        <p className="subtitle">Customize your warrior's appearance and gear</p>
+      {/* Header - design system */}
+      <div className="ds-page-header" style={{ marginBottom: 'var(--space-6)' }}>
+        <div>
+          <h1 className="ds-page-title">Avatar & Inventory</h1>
+          <p className="ds-page-subtitle">Customize your warrior's appearance and gear</p>
+        </div>
       </div>
 
       {/* Tab Navigation */}

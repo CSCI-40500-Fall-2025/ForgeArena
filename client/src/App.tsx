@@ -235,85 +235,171 @@ function MainApp() {
 
         <div className="dashboard">
         {activeTab === 'dashboard' && (
-          <>
-            {/* Avatar Section */}
-            <div className="card avatar-card">
-              <h2>{user.username}'s Avatar</h2>
-              <div className="avatar-stats">
-                <div className="level">Level {user.avatar.level}</div>
-                <div className="xp-bar">
-                  <div className="xp-fill" style={{width: `${xpProgress}%`}}></div>
-                  <span className="xp-text">{user.avatar.xp} XP ({xpToNextLevel} to next level)</span>
-                </div>
-                <div className="stats">
-                  STR: {user.avatar.strength} | 
-                  END: {user.avatar.endurance} | 
-                  AGI: {user.avatar.agility}
+          <div className="dashboard-grid">
+            {/* BodyForge Avatar - design system */}
+            <div className="ds-card">
+              <div className="ds-card-header">
+                <h3 className="ds-card-title">BodyForge Avatar</h3>
+                <span className="ds-card-meta">Synced 2m ago</span>
+              </div>
+              <div className="ds-avatar-block">
+                <div className="ds-avatar-figure">{user.username.charAt(0).toUpperCase()}</div>
+                <div className="ds-avatar-stats">
+                  {['Strength', 'Endurance', 'Agility'].map((label, i) => {
+                    const val = [user.avatar.strength, user.avatar.endurance, user.avatar.agility][i];
+                    const pct = Math.min(100, Math.round((val / 100) * 100));
+                    return (
+                      <div key={label}>
+                        <div className="ds-stat-row">
+                          <span>{label}</span>
+                          <span>{pct}%</span>
+                        </div>
+                        <div className="ds-stat-bar-wrap">
+                          <div className="ds-stat-bar-fill" style={{ width: `${pct}%` }} />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <p className="ds-tip">Focus on Agility quests to unlock the Windrunner perk.</p>
                 </div>
               </div>
             </div>
 
-            {/* Workout Logger */}
-            <div className="card workout-card">
-              <h2>Log Workout</h2>
-              <div className="workout-form">
-                <select 
-                  value={workoutForm.exercise} 
-                  onChange={(e) => setWorkoutForm({...workoutForm, exercise: e.target.value})}
+            {/* Quick-Log Workout - design system */}
+            <div className="ds-card">
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-6)' }}>Quick-Log Workout</h3>
+              <div className="ds-form-group">
+                <label className="ds-form-label">Exercise</label>
+                <select
+                  className="ds-form-select"
+                  value={workoutForm.exercise}
+                  onChange={(e) => setWorkoutForm({ ...workoutForm, exercise: e.target.value })}
                 >
                   <option value="squat">Squats</option>
                   <option value="pushup">Push-ups</option>
                   <option value="pullup">Pull-ups</option>
                   <option value="run">Running</option>
                 </select>
-                <input 
-                  type="number" 
-                  value={workoutForm.reps} 
-                  onChange={(e) => setWorkoutForm({...workoutForm, reps: parseInt(e.target.value)})}
-                  placeholder="Reps"
-                />
-                <button onClick={logWorkout}>Log Workout</button>
               </div>
+              <div className="ds-form-row">
+                <div className="ds-form-group">
+                  <label className="ds-form-label">Weight (kg)</label>
+                  <input className="ds-form-input" type="number" placeholder="0" />
+                </div>
+                <div className="ds-form-group">
+                  <label className="ds-form-label">Reps</label>
+                  <input
+                    className="ds-form-input"
+                    type="number"
+                    placeholder="0"
+                    value={workoutForm.reps}
+                    onChange={(e) => setWorkoutForm({ ...workoutForm, reps: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+              </div>
+              <button type="button" className="ds-btn-primary-icon" onClick={logWorkout}>
+                <span className="material-symbols-outlined">add_task</span>
+                Log Session
+              </button>
             </div>
 
-            {/* Raid Boss */}
-            {raidBoss && (
-              <div className="card raid-card">
-                <h2>Raid Boss</h2>
-                <h3>{raidBoss.name}</h3>
-                <p>{raidBoss.description}</p>
-                <div className="boss-hp">
-                  <div className="hp-bar">
-                    <div 
-                      className="hp-fill" 
-                      style={{width: `${(raidBoss.currentHP / raidBoss.totalHP) * 100}%`}}
-                    ></div>
+            {/* Active Raid - design system */}
+            {raidBoss ? (
+              <div className="ds-card">
+                <div className="ds-raid-header">
+                  <div className="ds-raid-icon">
+                    <span className="material-symbols-outlined">skull</span>
                   </div>
-                  <p>{raidBoss.currentHP.toLocaleString()} / {raidBoss.totalHP.toLocaleString()} HP</p>
-                  <p>{raidBoss.participants} warriors participating!</p>
+                  <div>
+                    <h3 className="ds-raid-title">Active Raid: {raidBoss.name}</h3>
+                    <p className="ds-raid-subtitle">Tier 3 Strength Boss</p>
+                  </div>
+                </div>
+                <div className="ds-raid-hero">
+                  <div className="ds-raid-hero-overlay">
+                    <p>{raidBoss.description}</p>
+                  </div>
+                </div>
+                <div className="ds-hp-row">
+                  <span className="ds-hp-label">HP: {raidBoss.currentHP.toLocaleString()} / {raidBoss.totalHP.toLocaleString()}</span>
+                  <span className="ds-hp-value">{Math.round((raidBoss.currentHP / raidBoss.totalHP) * 100)}% Health</span>
+                </div>
+                <div className="ds-hp-bar">
+                  <div className="ds-hp-bar-fill" style={{ width: `${(raidBoss.currentHP / raidBoss.totalHP) * 100}%` }} />
+                </div>
+              </div>
+            ) : (
+              <div className="ds-card">
+                <div className="ds-raid-header">
+                  <div className="ds-raid-icon">
+                    <span className="material-symbols-outlined">skull</span>
+                  </div>
+                  <div>
+                    <h3 className="ds-raid-title">No active raid</h3>
+                    <p className="ds-raid-subtitle">Check back for the next boss</p>
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Leaderboard */}
-            <div className="card leaderboard-card">
-              <h2>Leaderboard</h2>
-              {leaderboard.map((player, index) => (
-                <div key={index} className={`leaderboard-entry ${player.username === user.username ? 'you' : ''}`}>
-                  <span className="rank">#{index + 1}</span>
-                  <span className="name">{player.username}</span>
-                  <span className="level">Lv.{player.level}</span>
-                  <span className="xp">{player.xp} XP</span>
+            {/* AI Coach Recommendations - design system */}
+            <div className="ds-card">
+              <div className="ds-reco-header">
+                <h3 className="ds-card-title">AI Coach Recommendations</h3>
+                <span className="material-symbols-outlined">auto_awesome</span>
+              </div>
+              <div className="ds-reco-list">
+                <div className="ds-reco-item ds-reco-item-primary">
+                  <div className="ds-reco-icon">
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>directions_run</span>
+                  </div>
+                  <div className="ds-reco-body">
+                    <p>Recommended: 17 Squats for Agility</p>
+                    <p className="ds-reco-desc">Based on your Agility gap, completing this set will grant +15 XP.</p>
+                    <button type="button" className="ds-reco-link">Start Set <span className="material-symbols-outlined" style={{ fontSize: 14 }}>arrow_forward</span></button>
+                  </div>
                 </div>
-              ))}
+                <div className="ds-reco-item">
+                  <div className="ds-reco-icon">
+                    <span className="material-symbols-outlined" style={{ fontSize: 16 }}>restaurant</span>
+                  </div>
+                  <div className="ds-reco-body">
+                    <p>Post-Workout Nutrition</p>
+                    <p className="ds-reco-desc">Consume 25g of protein within 45 minutes.</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </>
+
+            {/* Leaderboard - spans full width below grid */}
+            <div className="ds-card" style={{ gridColumn: '1 / -1' }}>
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Leaderboard</h3>
+              {leaderboard.length === 0 ? (
+                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No entries yet.</p>
+              ) : (
+                leaderboard.map((player, index) => (
+                  <div key={index} className={`leaderboard-entry ${player.username === user.username ? 'you' : ''}`}>
+                    <span className="rank">#{index + 1}</span>
+                    <span className="name">{player.username}</span>
+                    <span className="level">Lv.{player.level}</span>
+                    <span className="xp">{player.xp} XP</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
         )}
 
         {activeTab === 'achievements' && (
           <>
-            <div className="card achievements-card">
-              <h2>Achievements</h2>
+            <div className="ds-page-header">
+              <div>
+                <h1 className="ds-page-title">Achievements</h1>
+                <p className="ds-page-subtitle">Push your limits and unlock exclusive rewards.</p>
+              </div>
+            </div>
+            <div className="ds-card">
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Achievements</h3>
               <div className="achievements-grid">
                 {achievements.map(achievement => (
                   <div key={achievement.id} className={`achievement ${achievement.unlocked ? 'unlocked' : 'locked'}`}>
@@ -330,37 +416,65 @@ function MainApp() {
 
         {activeTab === 'duels' && (
           <>
-            <div className="card duels-card">
-              <h2>Duels & Challenges</h2>
-              <div className="duel-form">
-                <h3>Create New Duel</h3>
-                <input 
-                  type="text" 
+            <div className="ds-page-header">
+              <div>
+                <h1 className="ds-page-title">Social & Duels Hub</h1>
+                <p className="ds-page-subtitle">Compete with friends and track community achievements.</p>
+              </div>
+              <div className="ds-stat-pills">
+                <div className="ds-stat-pill">
+                  <div className="ds-stat-pill-label">Rank</div>
+                  <div className="ds-stat-pill-value">Gold III</div>
+                </div>
+                <div className="ds-stat-pill">
+                  <div className="ds-stat-pill-label">Wins</div>
+                  <div className="ds-stat-pill-value">{duels.filter((d: Duel) => d.status === 'won').length || '0'}</div>
+                </div>
+                <div className="ds-stat-pill">
+                  <div className="ds-stat-pill-label">Friends</div>
+                  <div className="ds-stat-pill-value">128</div>
+                </div>
+              </div>
+            </div>
+            <div className="ds-hero-cta">
+              <h3>Challenge Someone New</h3>
+              <p>Push your limits by starting a 1v1 challenge. Track steps, calories, or specific workout goals.</p>
+              <div className="duel-form" style={{ marginBottom: 0, display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)', alignItems: 'flex-end' }}>
+                <input
+                  type="text"
                   placeholder="Opponent username"
                   value={duelForm.opponent}
-                  onChange={(e) => setDuelForm({...duelForm, opponent: e.target.value})}
+                  onChange={(e) => setDuelForm({ ...duelForm, opponent: e.target.value })}
+                  style={{ padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-lg)', border: 'none', minWidth: 160 }}
                 />
-                <select 
+                <select
                   value={duelForm.challenge}
-                  onChange={(e) => setDuelForm({...duelForm, challenge: e.target.value})}
+                  onChange={(e) => setDuelForm({ ...duelForm, challenge: e.target.value })}
+                  style={{ padding: 'var(--space-2) var(--space-4)', borderRadius: 'var(--radius-lg)', border: 'none', minWidth: 180 }}
                 >
                   <option value="Most squats in 24h">Most squats in 24h</option>
                   <option value="Most push-ups in 1h">Most push-ups in 1h</option>
                   <option value="Longest run this week">Longest run this week</option>
                 </select>
-                <button onClick={createDuel}>Send Challenge</button>
+                <button type="button" className="ds-btn-white" onClick={createDuel}>
+                  <span className="material-symbols-outlined">add</span>
+                  Create Duel
+                </button>
               </div>
-              
-              <div className="active-duels">
-                <h3>Active Duels</h3>
-                {duels.map(duel => (
+            </div>
+            <div className="ds-card">
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Active Duels</h3>
+              {duels.length === 0 ? (
+                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No active duels. Create one above.</p>
+              ) : (
+                duels.map(duel => (
                   <div key={duel.id} className={`duel-item ${duel.status}`}>
                     <h4>{duel.challenger} vs {duel.opponent}</h4>
                     <p>{duel.challenge}</p>
                     <p className="duel-status">Status: {duel.status}</p>
                   </div>
-                ))}
-              </div>
+                ))
+              )}
             </div>
           </>
         )}
@@ -391,40 +505,61 @@ function MainApp() {
 
         {activeTab === 'social' && (
           <>
-            <div className="card quests-card">
-              <h2>Active Quests</h2>
-              {quests.map(quest => (
-                <div key={quest.id} className={`quest ${quest.completed ? 'completed' : ''}`}>
-                  <h3>{quest.title}</h3>
-                  <p>{quest.description}</p>
-                  {quest.progress && <p>Progress: {quest.progress}</p>}
-                  <p>Reward: {quest.xpReward} XP</p>
-                  {!quest.completed && (
-                    <button onClick={() => completeQuest(quest.id)}>Complete Quest</button>
-                  )}
-                </div>
-              ))}
+            <div className="ds-page-header">
+              <div>
+                <h1 className="ds-page-title">Social</h1>
+                <p className="ds-page-subtitle">Quests and activity from the arena.</p>
+              </div>
             </div>
-
-            <div className="card activity-card">
-              <h2>Activity Feed</h2>
-              {activityFeed.map(activity => (
-                <div key={activity.id} className="activity-item">
-                  <strong>{activity.user}</strong> {activity.action}
-                  <span className="activity-time">
-                    {new Date(activity.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-              ))}
+            <div className="ds-card" style={{ marginBottom: 'var(--space-6)' }}>
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Active Quests</h3>
+              {quests.length === 0 ? (
+                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No active quests.</p>
+              ) : (
+                quests.map(quest => (
+                  <div key={quest.id} className={`quest ${quest.completed ? 'completed' : ''}`}>
+                    <h3>{quest.title}</h3>
+                    <p>{quest.description}</p>
+                    {quest.progress && <p>Progress: {quest.progress}</p>}
+                    <p>Reward: {quest.xpReward} XP</p>
+                    {!quest.completed && (
+                      <button onClick={() => completeQuest(quest.id)}>Complete Quest</button>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="ds-card">
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Activity Feed</h3>
+              {activityFeed.length === 0 ? (
+                <p style={{ margin: 0, color: 'var(--text-tertiary)', fontSize: 'var(--font-size-sm)' }}>No activity yet.</p>
+              ) : (
+                activityFeed.map(activity => (
+                  <div key={activity.id} className="activity-item">
+                    <strong>{activity.user}</strong> {activity.action}
+                    <span className="activity-time">
+                      {new Date(activity.timestamp).toLocaleTimeString()}
+                    </span>
+                  </div>
+                ))
+              )}
             </div>
           </>
         )}
 
         {activeTab === 'settings' && (
-          <div className="card">
-            <h2>Settings</h2>
-            <p>Account and app settings will appear here. Use Profile for now.</p>
-          </div>
+          <>
+            <div className="ds-page-header">
+              <div>
+                <h1 className="ds-page-title">Settings</h1>
+                <p className="ds-page-subtitle">Account and app preferences.</p>
+              </div>
+            </div>
+            <div className="ds-card">
+              <h3 className="ds-card-title" style={{ marginBottom: 'var(--space-4)' }}>Settings</h3>
+              <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: 'var(--font-size-sm)' }}>Account and app settings will appear here. Use Profile for now.</p>
+            </div>
+          </>
         )}
         </div>
       </AppLayout>

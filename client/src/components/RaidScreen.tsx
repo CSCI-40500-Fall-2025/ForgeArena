@@ -573,6 +573,14 @@ const RaidScreen: React.FC = () => {
 
   return (
     <div className="raid-container">
+      <div className="ds-page-header" style={{ marginBottom: 'var(--space-6)' }}>
+        <div>
+          <h1 className="ds-page-title">Raids</h1>
+          <p className="ds-page-subtitle">
+            {party ? `Party: ${party.name} • ${party.memberCount} members` : 'Join a party to challenge raid bosses.'}
+          </p>
+        </div>
+      </div>
       {message && (
         <div className={`message-toast ${message.type}`}>
           {message.text}

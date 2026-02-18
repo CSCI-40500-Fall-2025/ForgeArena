@@ -785,6 +785,12 @@ const ClubsScreen: React.FC = () => {
 
   return (
     <div className="clubs-screen">
+      <div className="ds-page-header" style={{ marginBottom: 'var(--space-4)' }}>
+        <div>
+          <h1 className="ds-page-title">Territories</h1>
+          <p className="ds-page-subtitle">Clubs, map, and rankings.</p>
+        </div>
+      </div>
       {message && (
         <div className={`message-toast ${message.type}`}>
           {message.text}

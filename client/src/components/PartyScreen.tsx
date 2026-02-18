@@ -575,6 +575,14 @@ const PartyScreen: React.FC = () => {
 
   return (
     <div className="party-container">
+      <div className="ds-page-header" style={{ marginBottom: 'var(--space-6)' }}>
+        <div>
+          <h1 className="ds-page-title">Party</h1>
+          <p className="ds-page-subtitle">
+            {party ? `${party.name} • ${party.memberCount} members` : 'Create or join a party to raid together.'}
+          </p>
+        </div>
+      </div>
       {message && (
         <div className={`message-toast ${message.type}`}>
           {message.text}

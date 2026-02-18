@@ -146,9 +146,11 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <div className="profile-container">
-      <div className="profile-header">
-        <h2>Your Profile</h2>
-        <p>Manage your display handle and avatar</p>
+      <div className="ds-page-header" style={{ marginBottom: 'var(--space-6)' }}>
+        <div>
+          <h1 className="ds-page-title">Profile</h1>
+          <p className="ds-page-subtitle">Manage your display handle and avatar</p>
+        </div>
       </div>
 
       {message && <div className="profile-success">{message}</div>}

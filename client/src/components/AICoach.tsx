@@ -356,6 +356,8 @@ const AICoach: React.FC = () => {
   }
 
   return (
+    <div className="ai-coach-layout">
+      <div className="ai-coach-main">
     <div className="ai-coach-container">
       {/* AI Coach Header */}
       <div className="ai-coach-header">
@@ -974,6 +976,40 @@ const AICoach: React.FC = () => {
       <div className="ai-coach-footer">
         <p>ForgeMaster AI v2.0 - Multi-Agent System - 100% Free</p>
       </div>
+    </div>
+      </div>
+      {/* Design system: chat sidebar */}
+      <aside className="ai-coach-sidebar">
+        <div className="ai-coach-sidebar-inner">
+          <div className="ai-coach-chat-header">
+            <div className="ai-coach-chat-header-inner">
+              <div className="ai-coach-chat-avatar">
+                <span className="material-symbols-outlined">smart_toy</span>
+              </div>
+              <div>
+                <h3 className="ai-coach-chat-title">ForgeMaster AI</h3>
+                <div className="ai-coach-chat-status">
+                  <span className="ai-coach-chat-status-dot" />
+                  <span className="ai-coach-chat-status-text">Coach Online</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="ai-coach-chat-messages">
+            <div className="ai-coach-msg ai-coach-msg-bot">Good morning! Your recovery is at 94% today.</div>
+            <div className="ai-coach-msg ai-coach-msg-user">Should I push my squat weight?</div>
+            <div className="ai-coach-msg ai-coach-msg-bot">Yes, you can increase to 235lbs for the final sets.</div>
+          </div>
+          <div className="ai-coach-chat-input-wrap">
+            <div className="ai-coach-chat-input-inner">
+              <input type="text" placeholder="Ask Coach Master..." aria-label="Message" />
+              <button type="button" className="ai-coach-chat-send" title="Send">
+                <span className="material-symbols-outlined">send</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   );
 };

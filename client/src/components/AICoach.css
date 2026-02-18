@@ -7,20 +7,190 @@
    CONTAINER
    ============================================ */
 
+/* Design system: two-column layout (main + chat sidebar) */
+.ai-coach-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .ai-coach-layout {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+.ai-coach-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.ai-coach-sidebar {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .ai-coach-sidebar {
+    width: 380px;
+    position: sticky;
+    top: calc(var(--space-4) + 80px);
+    max-height: calc(100vh - 120px);
+  }
+}
+
+.ai-coach-sidebar-inner {
+  background: var(--surface-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+  min-height: 400px;
+}
+
+.ai-coach-chat-header {
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--color-primary-10);
+}
+
+.ai-coach-chat-header-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ai-coach-chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-xl);
+  background: var(--color-primary-500);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.ai-coach-chat-title {
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.ai-coach-chat-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.ai-coach-chat-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.ai-coach-chat-status-text {
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ai-coach-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ai-coach-msg {
+  max-width: 85%;
+  padding: var(--space-3);
+  border-radius: var(--radius-2xl);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.ai-coach-msg-bot {
+  align-self: flex-start;
+  border-top-left-radius: 0;
+  background: var(--color-neutral-100);
+}
+
+.ai-coach-msg-user {
+  align-self: flex-end;
+  border-top-right-radius: 0;
+  background: var(--color-primary-500);
+  color: var(--text-inverse);
+}
+
+.ai-coach-chat-input-wrap {
+  padding: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.ai-coach-chat-input-inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-neutral-100);
+  padding: var(--space-2);
+  border-radius: var(--radius-xl);
+}
+
+.ai-coach-chat-input-inner input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--font-size-sm);
+  outline: none;
+}
+
+.ai-coach-chat-send {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--color-primary-500);
+  color: var(--text-inverse);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-coach-chat-send .material-symbols-outlined {
+  font-size: 20px;
+}
+
 .ai-coach-container {
   background: var(--surface-card);
   border-radius: var(--radius-2xl);
   padding: var(--space-6);
   color: var(--text-primary);
   font-family: var(--font-family-sans);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-subtle);
   position: relative;
   overflow: hidden;
   animation: fadeInUp var(--transition-slow) ease-out;
 }
 
-/* Top accent gradient */
 .ai-coach-container::before {
   content: '';
   position: absolute;
@@ -28,14 +198,7 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, 
-    var(--color-primary-500), 
-    var(--color-secondary-500), 
-    var(--color-accent-500),
-    var(--color-primary-500)
-  );
-  background-size: 300% 100%;
-  animation: gradientShift 4s linear infinite;
+  background: var(--color-primary-500);
 }
 
 @keyframes gradientShift {
@@ -72,10 +235,10 @@
 
 @keyframes avatarPulse {
   0%, 100% { 
-    box-shadow: var(--shadow-lg), 0 0 20px rgba(0, 189, 183, 0.3);
+    box-shadow: var(--shadow-lg), var(--shadow-glow-primary);
   }
   50% { 
-    box-shadow: var(--shadow-xl), 0 0 30px rgba(0, 189, 183, 0.5);
+    box-shadow: var(--shadow-xl), 0 0 30px rgba(13, 89, 242, 0.5);
   }
 }
 
